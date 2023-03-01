@@ -1,10 +1,16 @@
 #include "Fish.hpp"
 #include <iostream>
 
-// a very important line
+Fish::Fish(std::vector<float> position, std::vector<float> velocity, std::vector<float> direction, float size)
+    : pos(position)
+    , vel(velocity)
+    , dir(direction)
+    , size(size)
+{}
 
-Fish::Fish(std::vector<float> position, std::vector<float> velocity, std::vector<float> direction)
-    : pos(position), vel(velocity), dir(direction) {}
+// Constructeur vide à modifier
+Fish::Fish()
+    : pos({0, 0}), vel({1.f, -1.f}), dir({1.f, -1.f}), size(0.02f) {}
 
 void Fish::updatePosition(std::vector<float> position)
 {
@@ -22,7 +28,6 @@ void Fish::drawFish(p6::Context& context)
 {
     context.square(
         p6::Center{this->pos[0], this->pos[1]},
-        p6::Radius{
-            0.02f}
+        p6::Radius{this->size}
     );
 }

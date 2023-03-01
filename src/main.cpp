@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     std::vector<float> v = {0.001f, 0.001f};
     std::vector<float> d = {1.f, -1.f};
 
-    Fish f(p, v, d);
+    Fish f(p, v, d, 0.05f);
 
     // std::cout << p[0] << std::endl;
 
