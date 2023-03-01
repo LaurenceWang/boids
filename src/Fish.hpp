@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "p6/p6.h"
 
 class Fish {
 private:
@@ -14,6 +15,7 @@ public:
     Fish(std::vector<float> position, std::vector<float> velocity, std::vector<float> direction);
     ~Fish() = default;
 
-    void drawFish();
-    
+    void drawFish(p6::Context& context);
+    void updatePosition(std::vector<float> position);
+    void move();
 };

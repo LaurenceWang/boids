@@ -27,11 +27,11 @@ int main(int argc, char* argv[])
     ctx.maximize_window();
 
     std::vector<float> p = {0.f, 0.f};
-    float              v = 0.001;
-    // std::vector<float> v(0.001);
+    // float              v = 0.001;
+    std::vector<float> v = {0.001f, 0.001f};
     std::vector<float> d = {1.f, -1.f};
 
-    Fish f(p, d, d);
+    Fish f(p, v, d);
 
     // std::cout << p[0] << std::endl;
 
@@ -53,18 +53,21 @@ int main(int argc, char* argv[])
     // Declare your infinite update loop.
     ctx.update = [&]() {
         ctx.background(p6::NamedColor::Blue);
-        ctx.circle(
+        /*ctx.circle(
             p6::Center{ctx.mouse()},
             p6::Radius{0.2f}
-        );
+        );*/
 
-        p[0] += v * d[0];
+        f.move();
+        f.drawFish(ctx);
+
+        /*p[0] += v * d[0];
         p[1] += v * d[1];
 
         ctx.square(
             p6::Center{p[0], p[1]},
             p6::Radius{0.02f}
-        );
+        );*/
 
         /*for (int i = 0; i < 100; ++i)
         {
