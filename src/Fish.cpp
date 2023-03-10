@@ -1,7 +1,7 @@
 #include "Fish.hpp"
 #include <iostream>
 
-Fish::Fish(std::vector<float> position, std::vector<float> velocity, std::vector<float> direction, float size)
+Fish::Fish(glm::vec2 position, glm::vec2 velocity, glm::vec2 direction, float size)
     : pos(position)
     , vel(velocity)
     , dir(direction)
@@ -10,24 +10,24 @@ Fish::Fish(std::vector<float> position, std::vector<float> velocity, std::vector
 
 // Constructeur vide à modifier
 Fish::Fish()
-    : pos({0, 0}), vel({1.f, -1.f}), dir({1.f, -1.f}), size(0.02f) {}
+    : pos({0, 0}), vel({0.001f, 0.001f}), dir({1.f, -1.f}), size(0.02f) {}
 
-void Fish::updatePosition(std::vector<float> position)
+void Fish::updatePosition(glm::vec2 position)
 {
-    this->pos[0] += position[0];
-    this->pos[1] += position[1];
+    this->pos.x += position.x;
+    this->pos.y += position.y;
 }
 
 void Fish::move()
 {
-    std::vector<float> newPos = {this->vel[0] * this->dir[0], this->vel[1] * this->dir[1]};
+    glm::vec2 newPos = glm::vec2(this->vel.x * this->dir.x, this->vel.y * this->dir.y);
     updatePosition(newPos);
 }
 
 void Fish::drawFish(p6::Context& context)
 {
-    context.square(
-        p6::Center{this->pos[0], this->pos[1]},
+    context.equilateral_triangle(
+        p6::Center{this->pos.x, this->pos.y},
         p6::Radius{this->size}
     );
 }

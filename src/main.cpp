@@ -26,12 +26,12 @@ int main(int argc, char* argv[])
     auto ctx = p6::Context{{.title = "Simple-p6-Setup"}};
     ctx.maximize_window();
 
-    std::vector<float> p = {0.f, 0.f};
-    // float              v = 0.001;
-    std::vector<float> v = {0.001f, 0.001f};
-    std::vector<float> d = {1.f, -1.f};
+    glm::vec2 p = glm::vec2(0.f, 0.f);
+    glm::vec2 v = glm::vec2(0.003f, 0.003f);
+    glm::vec2 d = glm::vec2(-1.f, 1.f);
 
     Fish f(p, v, d, 0.05f);
+    Fish f2;
 
     // std::cout << p[0] << std::endl;
 
@@ -61,6 +61,11 @@ int main(int argc, char* argv[])
         f.move();
         f.drawFish(ctx);
 
+        // f2.move();
+        // f2.drawFish(ctx);
+
+        // ctx.triangle(p6::Point2D(-0.05,-0.05), p6::Point2D(0.05,-0.05), p6::Point2D(0.05,0.05), p6::Center(0,0),  );
+        // ctx.equilateral_triangle(p6::Center(0, 0), p6::Radius{0.02f});
         /*p[0] += v * d[0];
         p[1] += v * d[1];
 
@@ -69,15 +74,15 @@ int main(int argc, char* argv[])
             p6::Radius{0.02f}
         );*/
 
-        /*for (int i = 0; i < 100; ++i)
+        for (int i = 0; i < 100; ++i)
         {
             coordinates[i] += speed[i];
             coordinates[i + 1] += speed[i];
-            ctx.square(
+            ctx.equilateral_triangle(
                 p6::Center{coordinates[i], coordinates[i + 1]},
                 p6::Radius{0.02f}
             );
-        }*/
+        }
     };
 
     // Should be done last. It starts the infinite loop.
