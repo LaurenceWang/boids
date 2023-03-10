@@ -50,4 +50,4 @@ std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& school)
             neighbors.push_back(school[i]);
         }
     }
-};
+}
