@@ -12,7 +12,7 @@ private:
 
 public:
     Fish();
-    Fish(const Fish& f);
+    Fish(const Fish& f) = default;
     Fish(glm::vec2 position, glm::vec2 velocity, glm::vec2 direction, float size);
     ~Fish() = default;
 

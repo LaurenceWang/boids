@@ -28,6 +28,7 @@ void Fish::drawFish(p6::Context& context)
 {
     context.equilateral_triangle(
         p6::Center{this->pos.x, this->pos.y},
-        p6::Radius{this->size}
+        p6::Radius{this->size},
+        p6::Rotation{p6::Angle(p6::Radians{this->dir.y})}
     );
 }

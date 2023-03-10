@@ -43,6 +43,16 @@ int main(int argc, char* argv[])
         coordinates.push_back(uniformRealDistribution(generator));
     }
 
+    std::vector<Fish> boids;
+
+    for (int i = 0; i < 100; ++i)
+    {
+        glm::vec2 coord = glm::vec2(uniformRealDistribution2(generator), uniformRealDistribution(generator));
+        glm::vec2 velo  = glm::vec2(uniformRealDistribution3(generator), uniformRealDistribution3(generator));
+        Fish      b(coord, velo, coord, 0.05f);
+        boids.push_back(b);
+    }
+
     std::vector<float> speed;
     speed.reserve(100);
     for (int i = 0; i < 100; ++i)
@@ -58,14 +68,17 @@ int main(int argc, char* argv[])
             p6::Radius{0.2f}
         );*/
 
-        f.move();
-        f.drawFish(ctx);
+        // f.move();
+        // f.drawFish(ctx);
 
         // f2.move();
         // f2.drawFish(ctx);
 
         // ctx.triangle(p6::Point2D(-0.05,-0.05), p6::Point2D(0.05,-0.05), p6::Point2D(0.05,0.05), p6::Center(0,0),  );
-        // ctx.equilateral_triangle(p6::Center(0, 0), p6::Radius{0.02f});
+
+        p.x += v.x * d.x;
+        p.y += v.y * d.y;
+        ctx.equilateral_triangle(p6::Center(p.x, p.y), p6::Radius{0.02f}, p6::Rotation{p6::Angle(p6::Radians{p.y})});
         /*p[0] += v * d[0];
         p[1] += v * d[1];
 
@@ -74,14 +87,20 @@ int main(int argc, char* argv[])
             p6::Radius{0.02f}
         );*/
 
-        for (int i = 0; i < 100; ++i)
+        /*for (int i = 0; i < 100; ++i)
         {
             coordinates[i] += speed[i];
             coordinates[i + 1] += speed[i];
             ctx.equilateral_triangle(
                 p6::Center{coordinates[i], coordinates[i + 1]},
-                p6::Radius{0.02f}
+                p6::Radius{0.05f}
             );
+        }*/
+
+        for (unsigned int i = 0; i < boids.size(); ++i)
+        {
+            boids[i].move();
+            boids[i].drawFish(ctx);
         }
     };
 
