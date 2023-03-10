@@ -50,3 +50,15 @@ void Fish::steerAway(glm::vec2 awayDir)
     this->dir.x = awayDir.x;
     this->dir.y = awayDir.y;
 }
+std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& school)
+{
+    std::vector<Fish> neighbors = {};
+    uint              vecSize   = school.size();
+    for (uint i = 0; i < vecSize; i++)
+    {
+        if (glm::distance(this->pos, school[i].pos) < 10)
+        {
+            neighbors.push_back(school[i]);
+        }
+    }
+}
