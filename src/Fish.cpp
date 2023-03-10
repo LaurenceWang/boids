@@ -38,3 +38,16 @@ double Fish::getDistance(Fish& f) const
 {
     return std::sqrt(std::pow(f.pos.x - this->pos.x, 2) + std::pow(f.pos.y - this->pos.y, 2));
 }
+
+std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& school)
+{
+    std::vector<Fish> neighbors = {};
+    uint              vecSize   = school.size();
+    for (uint i = 0; i < vecSize; i++)
+    {
+        if (glm::distance(this->pos, school[i].pos) < 10)
+        {
+            neighbors.push_back(school[i]);
+        }
+    }
+};
