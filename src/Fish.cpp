@@ -38,3 +38,15 @@ double Fish::getDistance(Fish& f) const
 {
     return std::sqrt(std::pow(f.pos.x - this->pos.x, 2) + std::pow(f.pos.y - this->pos.y, 2));
 }
+
+glm::vec2 Fish::getAwayDir(Fish& f) const
+{
+    glm::vec2 newDir = glm::vec2(this->pos.x - f.pos.x, this->pos.y - f.pos.y);
+    return newDir;
+}
+
+void Fish::steerAway(glm::vec2 awayDir)
+{
+    this->dir.x = awayDir.x;
+    this->dir.y = awayDir.y;
+}

@@ -103,6 +103,14 @@ int main(int argc, char* argv[])
         for (unsigned int i = 0; i < boids.size(); ++i)
         {
             boids[i].move();
+            for (unsigned int j = 0; j < boids.size(); ++j)
+            {
+                if (boids[j].getDistance(boids[j + 1]) < 0.1)
+                {
+                    boids[j + 1].steerAway(boids[j].getAwayDir(boids[j + 1]));
+                }
+            }
+            // boids[i].move();
             boids[i].drawFish(ctx);
         }
     };
