@@ -50,15 +50,81 @@ void Fish::steerAway(glm::vec2 awayDir)
     this->dir.x = awayDir.x;
     this->dir.y = awayDir.y;
 }
-std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& school)
+
+glm::vec2 Fish::getPos() const
 {
-    std::vector<Fish> neighbors = {};
-    uint              vecSize   = school.size();
-    for (uint i = 0; i < vecSize; i++)
+    return this->pos;
+}
+
+glm::vec2 Fish::seperationForce(std::vector<Fish> const& boids) const
+{
+    glm::vec2 sForce = {};
+
+    std::vector<Fish> const neighbors = getNeighbors(boids);
+    for (auto const& neighbor : neighbors)
+        sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
+
+    return sForce;
+}
+
+glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
+{
+    glm::vec2               aForce(0, 0);
+    std::vector<Fish> const neighbors = getNeighbors(boids);
+    if (boids.empty())
     {
-        if (glm::distance(this->pos, school[i].pos) < 10)
+        return glm::normalize(aForce);
+    }
+    for (auto const& neighbor : neighbors)
+
+        aForce += neighbor.dir;
+
+    aForce /= boids.size();
+    return glm::normalize(aForce);
+}
+
+glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
+{
+    glm::vec2 cForce(0, 0);
+    if (boids.empty())
+    {
+        return glm::normalize(cForce);
+    }
+
+    std::vector<Fish> const neighbors = getNeighbors(boids);
+    for (auto const& neighbor : neighbors)
+        cForce += neighbor.pos;
+
+    cForce /= boids.size();
+    return cForce;
+}
+
+void Fish::applyForces(std::vector<Fish> const& boids)
+{
+    glm::vec2 sForce = seperationForce(boids);
+    // glm::vec2 aForce = alignmentForce(boids);
+    // glm::vec2 cForce = cohesionForce(boids);
+    glm::vec2 steeringForce = {};
+    // steeringForce += seperationForce(boids);
+    steeringForce += alignmentForce(boids) * 0.0001f;
+    steeringForce += cohesionForce(boids) * 0.001f;
+
+    // std::cout << "x : " << steeringForce.x << " y : " << steeringForce.y << std::endl;
+    // std::cout << "sForce : " << sForce.x << "sForce : " << sForce.y << std::endl;
+    vel += steeringForce;
+    std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
+}
+
+std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids) const
+{
+    std::vector<Fish> neighbors{};
+    for (const auto& fish : boids)
+    {
+        if (glm::distance(this->pos, fish.pos) < 0.5)
         {
-            neighbors.push_back(school[i]);
+            neighbors.push_back(fish);
         }
     }
+
+    return neighbors;
 }

@@ -45,14 +45,15 @@ int main(int argc, char* argv[])
 
     std::vector<Fish> boids;
 
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 25; ++i)
     {
         // glm::vec2 coord = glm::vec2(uniformRealDistribution2(generator), uniformRealDistribution(generator));
         // glm::vec2 velo  = glm::vec2(uniformRealDistribution3(generator), uniformRealDistribution3(generator));
         glm::vec2 coord = p6::random::point();
         glm::vec2 direc = p6::random::direction();
-        glm::vec2 velo  = glm::vec2(p6::random::number(0, 0.005f), p6::random::number(0, 0.005f));
-        Fish      b(coord, velo, direc, 0.05f);
+        glm::vec2 velo  = glm::vec2(0.001, 0.001);
+        // glm::vec2 velo  = glm::vec2(p6::random::number(0, 0.005f), p6::random::number(0, 0.005f));
+        Fish b(coord, velo, direc, 0.05f);
         boids.push_back(b);
     }
 
@@ -100,19 +101,30 @@ int main(int argc, char* argv[])
             );
         }*/
 
-        for (unsigned int i = 0; i < boids.size(); ++i)
+        for (auto& boid : boids)
         {
-            boids[i].move();
-            for (unsigned int j = 0; j < boids.size(); ++j)
-            {
-                if (boids[j].getDistance(boids[j + 1]) < 0.1)
-                {
-                    boids[j + 1].steerAway(boids[j].getAwayDir(boids[j + 1]));
-                }
-            }
-            // boids[i].move();
-            boids[i].drawFish(ctx);
+            boid.applyForces(boids);
+            boid.move();
+            boid.drawFish(ctx);
         }
+        // for (unsigned int i = 0; i < boids.size(); ++i)
+        // {
+        //     boids[i].move();
+
+        //     /*for (unsigned int j = 0; j < boids.size(); ++j)
+        //     {
+        //         if (boids[j].getDistance(boids[j + 1]) < 0.1)
+        //         {
+        //             std::cout << "haha" << std::endl;
+        //             // boids[j + 1].steerAway(boids[j].getAwayDir(boids[j + 1]));
+        //         }
+        //     }
+        //     // boids[i].move();*/
+
+        //     /*std::cout << "getDistance" << boids[i].getDistance(boids[i + 1]) << std::endl;
+        //     std::cout << "glm::distance" << glm::distance(boids[i].getPos(), boids[i + 1].getPos());*/
+        //     boids[i].drawFish(ctx);
+        // }
     };
 
     // Should be done last. It starts the infinite loop.
