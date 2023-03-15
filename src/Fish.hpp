@@ -25,7 +25,7 @@ public:
     void              steerAway(glm::vec2 awayDir);
     std::vector<Fish> getNeighbors(const std::vector<Fish>& boids) const;
     glm::vec2         getPos() const;
-    glm::vec2         seperationForce(std::vector<Fish> const& boids) const;
+    glm::vec2         separationForce(std::vector<Fish> const& boids) const;
     glm::vec2         alignmentForce(std::vector<Fish> const& boids) const;
     glm::vec2         cohesionForce(std::vector<Fish> const& boids) const;
     void              applyForces(std::vector<Fish> const& boids);

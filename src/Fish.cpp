@@ -56,13 +56,17 @@ glm::vec2 Fish::getPos() const
     return this->pos;
 }
 
-glm::vec2 Fish::seperationForce(std::vector<Fish> const& boids) const
+glm::vec2 Fish::separationForce(std::vector<Fish> const& boids) const
 {
     glm::vec2 sForce = {};
 
     std::vector<Fish> const neighbors = getNeighbors(boids);
     for (auto const& neighbor : neighbors)
-        sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
+        if (glm::distance(pos, neighbor.pos) > 0.001f)
+        {
+            sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
+        }
+    // sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
 
     return sForce;
 }
@@ -79,38 +83,38 @@ glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
 
         aForce += neighbor.dir;
 
-    aForce /= boids.size();
+    aForce /= neighbors.size();
     return glm::normalize(aForce);
 }
 
 glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
 {
-    glm::vec2 cForce(0, 0);
-    if (boids.empty())
+    glm::vec2               cForce(0, 0);
+    std::vector<Fish> const neighbors = getNeighbors(boids);
+    if (neighbors.empty())
     {
         return glm::normalize(cForce);
     }
 
-    std::vector<Fish> const neighbors = getNeighbors(boids);
     for (auto const& neighbor : neighbors)
         cForce += neighbor.pos;
 
-    cForce /= boids.size();
+    cForce /= neighbors.size();
     return cForce;
 }
 
 void Fish::applyForces(std::vector<Fish> const& boids)
 {
-    glm::vec2 sForce = seperationForce(boids);
+    glm::vec2 sForce = separationForce(boids);
     // glm::vec2 aForce = alignmentForce(boids);
     // glm::vec2 cForce = cohesionForce(boids);
     glm::vec2 steeringForce = {};
-    // steeringForce += seperationForce(boids);
+    steeringForce += separationForce(boids) * 0.0001f;
     steeringForce += alignmentForce(boids) * 0.0001f;
-    steeringForce += cohesionForce(boids) * 0.001f;
+    steeringForce += cohesionForce(boids) * 0.0001f;
 
     // std::cout << "x : " << steeringForce.x << " y : " << steeringForce.y << std::endl;
-    // std::cout << "sForce : " << sForce.x << "sForce : " << sForce.y << std::endl;
+    std::cout << "sForce : " << sForce.x << "sForce : " << sForce.y << std::endl;
     vel += steeringForce;
     std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
 }
