@@ -8,8 +8,11 @@ Fish::Fish(glm::vec2 position, Speed speed, float size)
 {}
 
 // Constructeur vide à modifier
+/*Fish::Fish()
+    : pos({0, 0}), vel({0.001f, 0.001f}), dir({1.f, -1.f}), size(0.02f) {}*/
+
 Fish::Fish()
-    : pos({0, 0}), s(glm::vec2(1.f, -1.f), 0.001f), size(0.02f) {}
+    : pos({0, 0}), s(glm::vec2(1.f, 1.f), 0.1f), size(0.02f) {}
 
 void Fish::updatePosition(glm::vec2 position)
 {
@@ -17,9 +20,15 @@ void Fish::updatePosition(glm::vec2 position)
     this->pos.y += position.y;
 }
 
-void Fish::move()
+/*void Fish::move()
 {
     glm::vec2 newPos = glm::vec2(this->s.getVel() * (this->s.getDir()).x, this->s.getVel() * (this->s.getDir()).y);
+    updatePosition(newPos);
+}*/
+
+void Fish::move()
+{
+    glm::vec2 newPos = glm::vec2(this->s.getDir() * this->s.getVel());
     updatePosition(newPos);
 }
 
@@ -27,8 +36,8 @@ void Fish::drawFish(p6::Context& context) const
 {
     context.equilateral_triangle(
         p6::Center{this->pos.x, this->pos.y},
-        p6::Radius{this->size},
-        p6::Rotation{p6::Angle(p6::Radians{this->s.getDir().y})}
+        p6::Radius{this->size}
+        //,p6::Rotation{p6::Angle(p6::Radians{this->s.getDir().y});
     );
 }
 
@@ -43,10 +52,11 @@ glm::vec2 Fish::getAwayDir(Fish& f) const
     return newDir;
 }
 
-void Fish::steerAway(glm::vec2 awayDir)
+/*void Fish::steerAway(glm::vec2 awayDir)
 {
-    this->s.setDir({awayDir.x, awayDir.y});
-}
+    this->dir.x = awayDir.x;
+    this->dir.y = awayDir.y;
+}*/
 
 glm::vec2 Fish::getPos() const
 {
@@ -80,7 +90,8 @@ glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
     }
     for (auto const& neighbor : neighbors)
     {
-        aForce += neighbor.s.getDir();
+        aForce += (neighbor.s.getDir() * neighbor.s.getVel());
+        // aForce += glm::normalize(neighbor.speed);
     }
 
     aForce /= neighbors.size();
@@ -93,7 +104,7 @@ glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
     std::vector<Fish> const neighbors = getNeighbors(boids);
     if (neighbors.empty())
     {
-        return glm::normalize(cForce);
+        return cForce;
     }
 
     for (auto const& neighbor : neighbors)
@@ -102,6 +113,7 @@ glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
     }
 
     cForce /= neighbors.size();
+    cForce -= pos;
     return cForce;
 }
 
@@ -111,14 +123,15 @@ void Fish::applyForces(std::vector<Fish> const& boids)
     // glm::vec2 aForce = alignmentForce(boids);
     // glm::vec2 cForce = cohesionForce(boids);
     glm::vec2 steeringForce = {};
-    steeringForce += separationForce(boids) * 0.03f;
-    steeringForce += alignmentForce(boids) * 0.03f;
-    steeringForce += cohesionForce(boids) * 0.01f;
+    steeringForce += separationForce(boids) * 0.1f;
+    steeringForce += alignmentForce(boids) * 0.1f;
+    steeringForce += cohesionForce(boids) * 0.1f;
 
     // std::cout << "x : " << steeringForce.x << " y : " << steeringForce.y << std::endl;
     // std::cout << "sForce : " << sForce.x << " sForce : " << sForce.y << std::endl;
     s.setDir(s.getDir() + steeringForce);
     // dir += steeringForce;
+    // std::cout << "vel : " << speed.x << " vel " << speed.y << std::endl;
     // std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
 }
 
