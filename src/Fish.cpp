@@ -1,15 +1,14 @@
 #include "Fish.hpp"
 #include <math.h>
 #include <iostream>
+#include "Speed.hpp"
 
-Fish::Fish(glm::vec2 position, glm::vec2 sp, float size)
-    : pos(position)
-    , speed(sp)
-    , size(size)
+Fish::Fish(glm::vec2 position, Speed speed, float size)
+    : pos(position), s(speed), size(size)
 {}
 
 Fish::Fish()
-    : pos({0, 0}), speed({0.1f, 0.1f}), size(0.02f) {}
+    : pos({0, 0}), s(glm::vec2(1.f, 1.f), 0.1f), size(0.02f) {}
 
 void Fish::updatePosition(glm::vec2 position)
 {
@@ -19,7 +18,7 @@ void Fish::updatePosition(glm::vec2 position)
 
 void Fish::move()
 {
-    glm::vec2 newPos = glm::vec2(this->speed);
+    glm::vec2 newPos = glm::vec2(this->s.getDir() * this->s.getVel());
     updatePosition(newPos);
 }
 
@@ -28,7 +27,7 @@ void Fish::drawFish(p6::Context& context) const
     context.equilateral_triangle(
         p6::Center{this->pos.x, this->pos.y},
         p6::Radius{this->size}
-
+        //,p6::Rotation{p6::Angle(p6::Radians{this->s.getDir().y});
     );
 }
 
@@ -75,7 +74,8 @@ glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
     }
     for (auto const& neighbor : neighbors)
     {
-        aForce += glm::normalize(neighbor.speed);
+        aForce += glm::normalize(neighbor.s.getDir() * neighbor.s.getVel());
+        // aForce += glm::normalize(neighbor.speed);
     }
 
     aForce /= neighbors.size();
@@ -103,6 +103,7 @@ glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
 
 void Fish::applyForces(std::vector<Fish> const& boids)
 {
+    glm::vec2 speed         = s.getDir() * s.getVel();
     glm::vec2 steeringForce = {};
     steeringForce += separationForce(boids) * 0.00001f;
     steeringForce += alignmentForce(boids) * 0.02f;
@@ -115,6 +116,11 @@ void Fish::applyForces(std::vector<Fish> const& boids)
 
     // std::cout << "vel : " << speed.x << " vel " << speed.y << std::endl;
     //  std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
+    s.setVel(speed.x);
+    s.setDir({1, speed.y / s.getVel()});
+    // dir += steeringForce;
+    // std::cout << "vel : " << speed.x << " vel " << speed.y << std::endl;
+    // std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
 }
 
 std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids) const

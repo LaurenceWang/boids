@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     }
 
     // Actual app
-    auto ctx = p6::Context{{.title = "Simple-p6-Setup"}};
+    auto ctx = p6::Context{{.title = "Swimming with boids"}};
     ctx.maximize_window();
 
     std::vector<Fish> boids;
@@ -33,9 +33,8 @@ int main(int argc, char* argv[])
         glm::vec2 coord = p6::random::point();
         glm::vec2 direc = p6::random::direction();
         float     velo  = p6::random::number(0, 0.001f);
-        glm::vec2 speed = direc * velo;
-        ;
-        Fish b(coord, speed, 0.02f);
+        Speed     speed = Speed(direc, velo);
+        Fish      b(coord, speed, 0.02f);
         boids.push_back(b);
     }
 
