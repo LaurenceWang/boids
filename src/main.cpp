@@ -51,9 +51,9 @@ int main(int argc, char* argv[])
         // glm::vec2 velo  = glm::vec2(uniformRealDistribution3(generator), uniformRealDistribution3(generator));
         glm::vec2 coord = p6::random::point();
         // glm::vec2 coord = glm::vec2(0, 0);
-        glm::vec2 direc = {p6::random::number(0.0000001f, 0.001f), p6::random::number(0, 0.001f)};
+        glm::vec2 direc = p6::random::direction();
         // glm::vec2 velo  = glm::vec2(0.001, 0.001);
-        float velo = p6::random::number(0.000001f, 0.001f);
+        float velo = p6::random::number(0, 0.00001f);
         // glm::vec2(p6::random::number(0, 0.001f), p6::random::number(0, 0.001f));
         Speed speed = Speed(direc, velo);
         Fish  b(coord, speed, 0.05f);
