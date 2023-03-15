@@ -1,20 +1,20 @@
 #pragma once
 
 #include <vector>
+#include "Speed.hpp"
 #include "p6/p6.h"
 
 // rename m_attribut
 class Fish {
 private:
     glm::vec2 pos;
-    glm::vec2 vel;
-    glm::vec2 dir;
+    Speed     s;
     float     size;
 
 public:
     Fish();
     Fish(const Fish& f) = default;
-    Fish(glm::vec2 position, glm::vec2 velocity, glm::vec2 direction, float size);
+    Fish(glm::vec2 position, Speed s, float size);
     ~Fish() = default;
 
     void              drawFish(p6::Context& context) const;
