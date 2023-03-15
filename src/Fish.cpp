@@ -77,7 +77,7 @@ glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
 {
     glm::vec2               aForce(0, 0);
     std::vector<Fish> const neighbors = getNeighbors(boids);
-    if (boids.empty())
+    if (neighbors.empty())
     {
         return glm::normalize(aForce);
     }
