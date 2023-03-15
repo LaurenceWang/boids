@@ -58,14 +58,14 @@ glm::vec2 Fish::getPos() const
 
 glm::vec2 Fish::separationForce(std::vector<Fish> const& boids) const
 {
-    glm::vec2 sForce = {};
+    glm::vec2 sForce = {0, 0};
 
     std::vector<Fish> const neighbors = getNeighbors(boids);
     for (auto const& neighbor : neighbors)
     {
-        if (glm::distance(pos, neighbor.pos) > 0.001f)
+        if ((glm::distance(pos, neighbor.pos) > 0.001f) && (glm::distance(pos, neighbor.pos) < 5.0f))
         {
-            sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
+            sForce -= (pos - neighbor.pos);
         }
         // sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
     }
@@ -100,7 +100,7 @@ glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
     for (auto const& neighbor : neighbors)
         cForce += neighbor.pos;
 
-    cForce /= neighbors.size();
+    cForce /= (neighbors.size() - 1);
     return cForce;
 }
 
@@ -110,9 +110,9 @@ void Fish::applyForces(std::vector<Fish> const& boids)
     // glm::vec2 aForce = alignmentForce(boids);
     // glm::vec2 cForce = cohesionForce(boids);
     glm::vec2 steeringForce = {};
-    steeringForce += separationForce(boids) * 0.0001f;
-    steeringForce += alignmentForce(boids) * 0.0001f;
-    steeringForce += cohesionForce(boids) * 0.0001f;
+    steeringForce += separationForce(boids) * 0.00001f;
+    steeringForce += alignmentForce(boids) * 0.00001f;
+    steeringForce += cohesionForce(boids) * 0.00001f;
 
     // std::cout << "x : " << steeringForce.x << " y : " << steeringForce.y << std::endl;
     std::cout << "sForce : " << sForce.x << "sForce : " << sForce.y << std::endl;
@@ -125,7 +125,7 @@ std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids) const
     std::vector<Fish> neighbors{};
     for (const auto& fish : boids)
     {
-        if (glm::distance(this->pos, fish.pos) < 0.5)
+        if ((this->pos != fish.pos) && (glm::distance(this->pos, fish.pos) < 15))
         {
             neighbors.push_back(fish);
         }
