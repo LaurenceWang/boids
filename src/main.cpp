@@ -45,15 +45,15 @@ int main(int argc, char* argv[])
 
     std::vector<Fish> boids;
 
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 50; ++i)
     {
         // glm::vec2 coord = glm::vec2(uniformRealDistribution2(generator), uniformRealDistribution(generator));
         // glm::vec2 velo  = glm::vec2(uniformRealDistribution3(generator), uniformRealDistribution3(generator));
         glm::vec2 coord = p6::random::point();
         glm::vec2 direc = p6::random::direction();
-        glm::vec2 velo  = glm::vec2(0.001, 0.001);
-        // glm::vec2 velo  = glm::vec2(p6::random::number(0, 0.005f), p6::random::number(0, 0.005f));
-        Fish b(coord, velo, direc, 0.05f);
+        // glm::vec2 velo  = glm::vec2(0.001, 0.001);
+        glm::vec2 velo = glm::vec2(p6::random::number(0, 0.001f), p6::random::number(0, 0.001f));
+        Fish      b(coord, velo, velo, 0.05f);
         boids.push_back(b);
     }
 

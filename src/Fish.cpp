@@ -62,10 +62,12 @@ glm::vec2 Fish::separationForce(std::vector<Fish> const& boids) const
 
     std::vector<Fish> const neighbors = getNeighbors(boids);
     for (auto const& neighbor : neighbors)
+    {
         if (glm::distance(pos, neighbor.pos) > 0.001f)
         {
-            sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
+            sForce += glm::normalize((pos - neighbor.pos)) / glm::distance(pos, neighbor.pos);
         }
+    }
     // sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
 
     return sForce;
@@ -80,8 +82,9 @@ glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
         return glm::normalize(aForce);
     }
     for (auto const& neighbor : neighbors)
-
+    {
         aForce += neighbor.dir;
+    }
 
     aForce /= neighbors.size();
     return glm::normalize(aForce);
@@ -97,7 +100,9 @@ glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
     }
 
     for (auto const& neighbor : neighbors)
+    {
         cForce += neighbor.pos;
+    }
 
     cForce /= neighbors.size();
     return cForce;
@@ -109,14 +114,15 @@ void Fish::applyForces(std::vector<Fish> const& boids)
     // glm::vec2 aForce = alignmentForce(boids);
     // glm::vec2 cForce = cohesionForce(boids);
     glm::vec2 steeringForce = {};
-    steeringForce += separationForce(boids) * 0.0001f;
-    steeringForce += alignmentForce(boids) * 0.0001f;
-    steeringForce += cohesionForce(boids) * 0.0001f;
+    steeringForce += separationForce(boids) * 0.03f;
+    steeringForce += alignmentForce(boids) * 0.03f;
+    steeringForce += cohesionForce(boids) * 0.01f;
 
     // std::cout << "x : " << steeringForce.x << " y : " << steeringForce.y << std::endl;
-    std::cout << "sForce : " << sForce.x << "sForce : " << sForce.y << std::endl;
+    // std::cout << "sForce : " << sForce.x << " sForce : " << sForce.y << std::endl;
     vel += steeringForce;
-    std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
+    // dir += steeringForce;
+    // std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
 }
 
 std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids) const
@@ -124,7 +130,7 @@ std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids) const
     std::vector<Fish> neighbors{};
     for (const auto& fish : boids)
     {
-        if (glm::distance(this->pos, fish.pos) < 0.5)
+        if (glm::distance(this->pos, fish.pos) < 0.1)
         {
             neighbors.push_back(fish);
         }
