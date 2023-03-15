@@ -7,14 +7,16 @@
 class Fish {
 private:
     glm::vec2 pos;
-    glm::vec2 vel;
-    glm::vec2 dir;
-    float     size;
+    glm::vec2 speed;
+    // float vel;
+    // glm::vec2 dir; // Unit vector
+    float size;
 
 public:
     Fish();
     Fish(const Fish& f) = default;
-    Fish(glm::vec2 position, glm::vec2 velocity, glm::vec2 direction, float size);
+    // Fish(glm::vec2 position, glm::vec2 velocity, glm::vec2 direction, float size);
+    Fish(glm::vec2 position, glm::vec2 speed, float size);
     ~Fish() = default;
 
     void              drawFish(p6::Context& context) const;

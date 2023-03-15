@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     glm::vec2 v = glm::vec2(0.003f, 0.003f);
     glm::vec2 d = glm::vec2(-1.f, 1.f);
 
-    Fish f(p, v, d, 0.05f);
+    // Fish f(p, v, d, 0.05f);
     Fish f2;
 
     // std::cout << p[0] << std::endl;
@@ -50,10 +50,13 @@ int main(int argc, char* argv[])
         // glm::vec2 coord = glm::vec2(uniformRealDistribution2(generator), uniformRealDistribution(generator));
         // glm::vec2 velo  = glm::vec2(uniformRealDistribution3(generator), uniformRealDistribution3(generator));
         glm::vec2 coord = p6::random::point();
+        // glm::vec2 coord = glm::vec2(0, 0);
         glm::vec2 direc = p6::random::direction();
         // glm::vec2 velo  = glm::vec2(0.001, 0.001);
-        glm::vec2 velo = glm::vec2(p6::random::number(0, 0.001f), p6::random::number(0, 0.001f));
-        Fish      b(coord, velo, velo, 0.05f);
+        float     velo  = p6::random::number(0, 0.00001f);
+        glm::vec2 speed = direc * velo;
+        // glm::vec2(p6::random::number(0, 0.001f), p6::random::number(0, 0.001f));
+        Fish b(coord, speed, 0.05f);
         boids.push_back(b);
     }
 
