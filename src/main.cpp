@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
     std::vector<Fish> boids;
 
-    for (int i = 0; i < 25; ++i)
+    for (int i = 0; i < 100; ++i)
     {
         // glm::vec2 coord = glm::vec2(uniformRealDistribution2(generator), uniformRealDistribution(generator));
         // glm::vec2 velo  = glm::vec2(uniformRealDistribution3(generator), uniformRealDistribution3(generator));
