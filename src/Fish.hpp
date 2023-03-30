@@ -17,16 +17,13 @@ public:
     Fish(glm::vec2 position, Speed s, float size);
     ~Fish() = default;
 
-    void drawFish(p6::Context& context) const;
-    void updatePosition(glm::vec2 position);
-    void move();
-    // double            getDistance(Fish& f) const;
-    // glm::vec2         getAwayDir(Fish& f) const;
-    // void              steerAway(glm::vec2 awayDir);
-    std::vector<Fish> getNeighbors(const std::vector<Fish>& boids) const;
+    void              drawFish(p6::Context& context) const;
+    void              updatePosition(glm::vec2 position);
+    void              move();
+    std::vector<Fish> getNeighbors(const std::vector<Fish>& boids, float& radius) const;
     glm::vec2         getPos() const;
-    glm::vec2         separationForce(std::vector<Fish> const& boids) const;
-    glm::vec2         alignmentForce(std::vector<Fish> const& boids) const;
-    glm::vec2         cohesionForce(std::vector<Fish> const& boids) const;
+    glm::vec2         separationForce(std::vector<Fish> const& boids, float& radius) const;
+    glm::vec2         alignmentForce(std::vector<Fish> const& boids, float& radius) const;
+    glm::vec2         cohesionForce(std::vector<Fish> const& boids, float& radius) const;
     void              applyForces(std::vector<Fish> const& boids, Params& p);
 };

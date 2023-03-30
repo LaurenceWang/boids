@@ -10,11 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-    /*unsigned                              seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937                          generator(seed);
-    std::uniform_real_distribution<float> uniformRealDistribution(-1, 1);
-    std::uniform_real_distribution<float> uniformRealDistribution2(-1.9, 1.9);
-    std::uniform_real_distribution<float> uniformRealDistribution3(-0.001, 0.001);*/
     { // Run the tests
         if (doctest::Context{}.run() != 0)
             return EXIT_FAILURE;
@@ -30,16 +25,18 @@ int main(int argc, char* argv[])
     auto        fishNb = 100;
     std::string text   = "Hello";
 
-    Params p{0.00001f, 0.02f, 0.015f};
+    Params p{0.001f, 0.02f, 1.5f, 0.1f, 0.02f};
     // std::vector<Fish> boids;
 
     ctx.imgui = [&]() {
         // Show a simple window
         ImGui::Begin("Boids sliders");
         ImGui::SliderInt("fish number", &fishNb, 50, 150);
-        ImGui::SliderFloat("separation strength", &p.sepStr, 0.00001f, 0.0001f);
+        ImGui::SliderFloat("fish size", &p.fishSize, 0.02f, 0.08f);
+        ImGui::SliderFloat("separation strength", &p.sepStr, 0.001f, 0.01f);
         ImGui::SliderFloat("alignment strength", &p.aliStr, 0.005f, 0.05f);
-        ImGui::SliderFloat("cohestion strength", &p.steerStr, 0.005, 0.03);
+        ImGui::SliderFloat("cohestion strength", &p.steerStr, 0.1f, 2.5f);
+        ImGui::SliderFloat("neighbour radius", &p.neighRadius, 0.07f, 0.5f);
         ImGui::InputText("Text", &text);
         ImGui::End();
 
@@ -48,29 +45,12 @@ int main(int argc, char* argv[])
 
     std::cout << fishNb << std::endl;
 
-    /*for (int i = 0; i < fishNb; ++i)
-    {
-        glm::vec2 coord = p6::random::point();
-        glm::vec2 direc = p6::random::direction();
-        float     velo  = p6::random::number(0, 0.001f);
-        Speed     speed = Speed(direc, velo);
-        Fish      b(coord, speed, 0.02f);
-        boids.push_back(b);
-    }*/
-
     Boids boids;
-    boids.generateFish(fishNb);
+    boids.generateFish(fishNb, p.fishSize);
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
         ctx.background(p6::NamedColor::Blue);
-
-        /*for (auto& boid : boids)
-        {
-            boid.applyForces(boids, p);
-            boid.move();
-            boid.drawFish(ctx);
-        }*/
         boids.runBoids(p, ctx);
     };
 

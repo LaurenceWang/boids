@@ -26,32 +26,16 @@ void Fish::drawFish(p6::Context& context) const
 {
     context.equilateral_triangle(
         p6::Center{this->_pos.x, this->_pos.y},
-        p6::Radius{this->_size}
-        //,p6::Rotation{p6::Angle(p6::Radians{this->s.getDir().y});
+        p6::Radius{this->_size},
+        p6::Angle{p6::Radians{_s.getDir().y}}
     );
 }
 
-/*double Fish::getDistance(Fish& f) const
-{
-    return std::sqrt(std::pow(f.pos.x - this->pos.x, 2) + std::pow(f.pos.y - this->pos.y, 2));
-}
-
-glm::vec2 Fish::getAwayDir(Fish& f) const
-{
-    glm::vec2 newDir = glm::vec2(this->pos.x - f.pos.x, this->pos.y - f.pos.y);
-    return newDir;
-}
-
-glm::vec2 Fish::getPos() const
-{
-    return this->pos;
-}*/
-
-glm::vec2 Fish::separationForce(std::vector<Fish> const& boids) const
+glm::vec2 Fish::separationForce(std::vector<Fish> const& boids, float& radius) const
 {
     glm::vec2 sForce = {};
 
-    std::vector<Fish> const neighbors = getNeighbors(boids);
+    std::vector<Fish> const neighbors = getNeighbors(boids, radius);
     for (auto const& neighbor : neighbors)
     {
         if (glm::distance(_pos, neighbor._pos) > 0.001f)
@@ -64,10 +48,10 @@ glm::vec2 Fish::separationForce(std::vector<Fish> const& boids) const
     return sForce;
 }
 
-glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
+glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids, float& radius) const
 {
     glm::vec2               aForce(0, 0);
-    std::vector<Fish> const neighbors = getNeighbors(boids);
+    std::vector<Fish> const neighbors = getNeighbors(boids, radius);
     if (neighbors.empty())
     {
         return aForce;
@@ -82,10 +66,10 @@ glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids) const
     return aForce;
 }
 
-glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids) const
+glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids, float& radius) const
 {
     glm::vec2               cForce(0, 0);
-    std::vector<Fish> const neighbors = getNeighbors(boids);
+    std::vector<Fish> const neighbors = getNeighbors(boids, radius);
     if (neighbors.empty())
     {
         return cForce;
@@ -105,36 +89,25 @@ void Fish::applyForces(std::vector<Fish> const& boids, Params& p)
 {
     glm::vec2 speed         = _s.getDir() * _s.getVel();
     glm::vec2 steeringForce = {};
-    /*steeringForce += separationForce(boids) * 0.00001f;
-    steeringForce += alignmentForce(boids) * 0.02f;
-    steeringForce += cohesionForce(boids) * 0.015f;*/
+    steeringForce += separationForce(boids, p.neighRadius) * p.sepStr;
+    steeringForce += alignmentForce(boids, p.neighRadius) * p.aliStr;
+    steeringForce += cohesionForce(boids, p.neighRadius) * p.steerStr;
 
-    steeringForce += separationForce(boids) * p.sepStr;
-    steeringForce += alignmentForce(boids) * p.aliStr;
-    steeringForce += cohesionForce(boids) * p.steerStr;
-
-    // std::cout << "x : " << steeringForce.x << " y : " << steeringForce.y << std::endl;
-    // std::cout << "sForce : " << sForce.x << " sForce : " << sForce.y << std::endl;
     speed += steeringForce;
-    speed *= 0.1;
+    speed *= 0.05;
 
-    // std::cout << "vel : " << speed.x << " vel " << speed.y << std::endl;
-    //  std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
     _s.setVel(speed.x);
     _s.setDir({1, speed.y / _s.getVel()});
-    // dir += steeringForce;
-    // std::cout << "vel : " << speed.x << " vel " << speed.y << std::endl;
-    // std::cout << "vel : " << vel.x << " vel " << vel.y << std::endl;
 }
 
-std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids) const
+std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radius) const
 {
     std::vector<Fish> neighbors{};
     for (const auto& fish : boids)
     {
         // if (*this != fish)
         //{
-        if (glm::distance(this->_pos, fish._pos) < 0.08)
+        if (glm::distance(this->_pos, fish._pos) < radius)
         {
             neighbors.push_back(fish);
         }

@@ -14,6 +14,6 @@ public:
     explicit Boids(std::vector<Fish>& fish);
     ~Boids() = default;
 
-    void generateFish(int& nbFish);
+    void generateFish(int& nbFish, float& fishSize);
     void runBoids(Params p, p6::Context& context);
 };

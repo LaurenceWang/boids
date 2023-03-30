@@ -10,15 +10,16 @@ Boids::Boids()
     _fishpack = f;
 }
 
-void Boids::generateFish(int& nbFish)
+void Boids::generateFish(int& nbFish, float& fishSize)
 {
     for (int i = 0; i < nbFish; ++i)
     {
         glm::vec2 coord = p6::random::point();
         glm::vec2 direc = p6::random::direction();
-        float     velo  = p6::random::number(0, 0.001f);
-        Speed     speed = Speed(direc, velo);
-        Fish      b(coord, speed, 0.02f);
+        float     velo  = 0.1f;
+        // float velo  = p6::random::number(0, 0.1f);
+        Speed speed = Speed(direc, velo);
+        Fish  b(coord, speed, fishSize);
         _fishpack.push_back(b);
     }
 }
