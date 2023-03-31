@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 
     // Actual app
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
-    ctx.maximize_window();
+    // ctx.maximize_window();
     auto        fishNb = 100;
     std::string text   = "Hello";
 
@@ -49,15 +49,49 @@ int main(int argc, char* argv[])
     Boids boids;
     boids.generateFish(fishNb, p.fishSize);
 
-    std::vector<Obstacle> borders;
+    std::vector<Obstacle> obs;
     Obstacle              o;
-    borders.push_back((o));
+    obs.push_back((o));
+
+    // std::vector<Obstacle> borders;
+    /*for (float i = 0; i < ctx.inverse_aspect_ratio(); i += 0.01f)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -ctx.inverse_aspect_ratio() + i * 150 * 0.02f), 0.02f);
+
+        obs.push_back(bor);
+    }*/
+
+    /*for (float i = 0; i < ctx.aspect_ratio(); i += 0.01f)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 150 * 0.02f, -ctx.inverse_aspect_ratio()), 0.02f);
+
+        obs.push_back(bor);
+    }*/
+    for (int i = 0; i < ctx.inverse_aspect_ratio() * 70; ++i)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -ctx.inverse_aspect_ratio() + i * 2 * 0.02f), 0.02f);
+
+        obs.push_back(bor);
+    }
+
+    for (int i = 0; i < ctx.aspect_ratio() * 70; ++i)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * 0.02f, -ctx.inverse_aspect_ratio()), 0.02f);
+
+        obs.push_back(bor);
+    }
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
         ctx.background(p6::NamedColor::Blue);
-        boids.runBoids(p, ctx, borders);
-        o.draw(ctx);
+        boids.runBoids(p, ctx, obs);
+
+        for (int i = 0; i < obs.size(); ++i)
+        {
+            obs[i].draw(ctx);
+        }
+        // o.draw(ctx);
+        // bor.draw(ctx);
     };
 
     // Should be done last. It starts the infinite loop.
