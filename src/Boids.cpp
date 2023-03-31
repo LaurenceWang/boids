@@ -24,11 +24,12 @@ void Boids::generateFish(int& nbFish, float& fishSize)
     }
 }
 
-void Boids::runBoids(Params p, p6::Context& context)
+void Boids::runBoids(Params p, p6::Context& context, const std::vector<Obstacle>& obstacles)
 {
     for (auto& boid : _fishpack)
     {
         boid.applyForces(_fishpack, p);
+        boid.applyObstacleForces(obstacles);
         boid.move();
         boid.drawFish(context);
     }

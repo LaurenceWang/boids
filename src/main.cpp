@@ -5,6 +5,7 @@
 #include <random>
 #include "Boids.hpp"
 #include "Fish.hpp"
+#include "Obstacle.hpp"
 #include "Params.hpp"
 #include "doctest/doctest.h"
 
@@ -48,10 +49,15 @@ int main(int argc, char* argv[])
     Boids boids;
     boids.generateFish(fishNb, p.fishSize);
 
+    std::vector<Obstacle> borders;
+    Obstacle              o;
+    borders.push_back((o));
+
     // Declare your infinite update loop.
     ctx.update = [&]() {
         ctx.background(p6::NamedColor::Blue);
-        boids.runBoids(p, ctx);
+        boids.runBoids(p, ctx, borders);
+        o.draw(ctx);
     };
 
     // Should be done last. It starts the infinite loop.

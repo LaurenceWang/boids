@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Obstacle.hpp"
 #include "Params.hpp"
 #include "Speed.hpp"
 #include "p6/p6.h"
@@ -26,4 +27,6 @@ public:
     glm::vec2         alignmentForce(std::vector<Fish> const& boids, float& radius) const;
     glm::vec2         cohesionForce(std::vector<Fish> const& boids, float& radius) const;
     void              applyForces(std::vector<Fish> const& boids, Params& p);
+    void              applyObstacleForces(std::vector<Obstacle> const& obstacles);
+    glm::vec2         obstacleForces(std::vector<Obstacle> const& obstacle);
 };

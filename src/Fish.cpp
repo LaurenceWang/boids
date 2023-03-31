@@ -100,6 +100,32 @@ void Fish::applyForces(std::vector<Fish> const& boids, Params& p)
     _s.setDir({1, speed.y / _s.getVel()});
 }
 
+void Fish::applyObstacleForces(std::vector<Obstacle> const& obstacles)
+{
+    glm::vec2 speed = _s.getDir() * _s.getVel();
+    speed += obstacleForces(obstacles);
+
+    // speed *= 0.01;
+    _s.setVel(speed.x);
+    _s.setDir({1, speed.y / _s.getVel()});
+}
+
+glm::vec2 Fish::obstacleForces(std::vector<Obstacle> const& obstacles)
+{
+    glm::vec2 oForce(0, 0);
+    for (const auto& obstacle : obstacles)
+    {
+        if (glm::distance(_pos, obstacle.getPos()) < obstacle.getRadius() * 1.5)
+        {
+            oForce += glm::normalize(_pos - obstacle.getPos());
+        }
+    }
+
+    oForce *= 0.01;
+
+    return oForce;
+}
+
 std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radius) const
 {
     std::vector<Fish> neighbors{};

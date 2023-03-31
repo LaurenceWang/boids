@@ -15,5 +15,5 @@ public:
     ~Boids() = default;
 
     void generateFish(int& nbFish, float& fishSize);
-    void runBoids(Params p, p6::Context& context);
+    void runBoids(Params p, p6::Context& context, const std::vector<Obstacle>& obstacles);
 };
