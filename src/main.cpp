@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <cstddef>
+#include "doctest/parts/doctest_fwd.h"
 #include "p6/p6.h"
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <random>
@@ -8,6 +9,7 @@
 #include "Obstacle.hpp"
 #include "Params.hpp"
 #include "doctest/doctest.h"
+#include "imgui.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -23,28 +25,13 @@ int main(int argc, char* argv[])
     // Actual app
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
     // ctx.maximize_window();
-    auto        fishNb = 100;
-    std::string text   = "Hello";
-
+    auto   fishNb = 100;
     Params p{0.001f, 0.02f, 1.5f, 0.1f, 0.02f};
+    imguiinit(&ctx, p);
+
     // std::vector<Fish> boids;
 
-    ctx.imgui = [&]() {
-        // Show a simple window
-        ImGui::Begin("Boids sliders");
-        ImGui::SliderInt("fish number", &fishNb, 50, 150);
-        ImGui::SliderFloat("fish size", &p.fishSize, 0.02f, 0.08f);
-        ImGui::SliderFloat("separation strength", &p.sepStr, 0.001f, 0.01f);
-        ImGui::SliderFloat("alignment strength", &p.aliStr, 0.005f, 0.05f);
-        ImGui::SliderFloat("cohestion strength", &p.steerStr, 0.1f, 2.5f);
-        ImGui::SliderFloat("neighbour radius", &p.neighRadius, 0.07f, 0.5f);
-        ImGui::InputText("Text", &text);
-        ImGui::End();
-
-        // ImGui::ShowDemoWindow();
-    };
-
-    std::cout << fishNb << std::endl;
+    // std::cout << fishNb << std::endl;
 
     Boids boids;
     boids.generateFish(fishNb, p.fishSize);
@@ -67,16 +54,30 @@ int main(int argc, char* argv[])
 
         obs.push_back(bor);
     }*/
-    for (int i = 0; i < ctx.inverse_aspect_ratio() * 70; ++i)
+    for (int i = 0; i < ctx.inverse_aspect_ratio() * 100; ++i)
     {
-        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -ctx.inverse_aspect_ratio() + i * 2 * 0.02f), 0.02f);
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -1 + i * 2 * 0.02f), 0.02f);
 
         obs.push_back(bor);
     }
 
     for (int i = 0; i < ctx.aspect_ratio() * 70; ++i)
     {
-        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * 0.02f, -ctx.inverse_aspect_ratio()), 0.02f);
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * 0.02f, -1), 0.02f);
+
+        obs.push_back(bor);
+    }
+
+    for (int i = 0; i < ctx.aspect_ratio() * 70; ++i)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * 0.02f, 1), 0.02f);
+
+        obs.push_back(bor);
+    }
+
+    for (int i = 0; i < ctx.inverse_aspect_ratio() * 100; ++i)
+    {
+        Obstacle bor(glm::vec2(+ctx.aspect_ratio(), -1 + i * 2 * 0.02f), 0.02f);
 
         obs.push_back(bor);
     }

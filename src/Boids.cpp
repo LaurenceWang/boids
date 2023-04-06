@@ -34,3 +34,18 @@ void Boids::runBoids(Params p, p6::Context& context, const std::vector<Obstacle>
         boid.drawFish(context);
     }
 }
+
+int Boids::sizeFishpack()
+{
+    return (this->_fishpack.size());
+}
+
+void adjustBoids(int& nbFish, Boids school)
+{
+    if (nbFish <= school.sizeFishpack())
+    {
+    }
+    else
+    {
+    }
+}
