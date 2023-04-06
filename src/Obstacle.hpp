@@ -13,5 +13,6 @@ public:
     Obstacle(glm::vec2 position, float rad);
     void      draw(p6::Context& ctx) const;
     float     getRadius() const;
+    void      updateBorderPosition(p6::Context& ctx, int i);
     glm::vec2 getPos() const;
 };

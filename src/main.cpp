@@ -67,16 +67,38 @@ int main(int argc, char* argv[])
 
         obs.push_back(bor);
     }*/
-    for (int i = 0; i < ctx.inverse_aspect_ratio() * 70; ++i)
+
+    /*for (int i = 0; i < ctx.aspect_ratio() * 70; ++i)
     {
-        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -ctx.inverse_aspect_ratio() + i * 2 * 0.02f), 0.02f);
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -1 + i * 0.04f), 0.02f);
+
+        obs.push_back(bor);
+    }*/
+
+    /*for (int i = 0; i < ctx.aspect_ratio() * 40; ++i)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -1 + i * 2 * (ctx.aspect_ratio() / 70)), ctx.aspect_ratio() / 70);
 
         obs.push_back(bor);
     }
 
-    for (int i = 0; i < ctx.aspect_ratio() * 70; ++i)
+    for (int i = 0; i < ctx.aspect_ratio() * 40; ++i)
     {
-        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * 0.02f, -ctx.inverse_aspect_ratio()), 0.02f);
+        Obstacle bor(glm::vec2(ctx.aspect_ratio(), -1 + i * 2 * (ctx.aspect_ratio() / 70)), ctx.aspect_ratio() / 70);
+
+        obs.push_back(bor);
+    }*/
+
+    for (int i = 0; i < ctx.aspect_ratio() * 40; ++i)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * (ctx.aspect_ratio() / 70), -1), ctx.aspect_ratio() / 70);
+
+        obs.push_back(bor);
+    }
+
+    for (int i = 0; i < 71; ++i)
+    {
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * (2 * ctx.aspect_ratio() / 70), 1), ctx.aspect_ratio() / 70);
 
         obs.push_back(bor);
     }
@@ -88,6 +110,7 @@ int main(int argc, char* argv[])
 
         for (int i = 0; i < obs.size(); ++i)
         {
+            obs[i].updateBorderPosition(ctx, i);
             obs[i].draw(ctx);
         }
         // o.draw(ctx);

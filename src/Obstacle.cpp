@@ -16,6 +16,27 @@ glm::vec2 Obstacle::getPos() const
     return _pos;
 }
 
+void Obstacle::updateBorderPosition(p6::Context& ctx, int i)
+{
+    if (i > 70)
+    {
+        i = i % 70;
+    }
+    _pos.x = -ctx.aspect_ratio() + i * (2 * ctx.aspect_ratio() / 70);
+    if (_pos.x < 0)
+    {
+        //_pos.x += -ctx.aspect_ratio() - _pos.x;
+
+        _radius = ctx.aspect_ratio() / 70;
+    }
+    else
+    {
+        //_pos.x  = ctx.aspect_ratio() - _pos.x;
+        _radius = ctx.aspect_ratio() / 70;
+        //_pos.x += ctx.aspect_ratio() - _pos.x;
+    }
+}
+
 void Obstacle::draw(p6::Context& ctx) const
 {
     // ctx.rectangle(p6::TopRightCorner{_pos}, p6::Radii{_pos.x * 0.5f, _pos.y * 0.5f});
