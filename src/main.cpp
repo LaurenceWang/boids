@@ -25,9 +25,11 @@ int main(int argc, char* argv[])
     // Actual app
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
     // ctx.maximize_window();
-    auto   fishNb = 100;
+    int    fishNb = 100;
     Params p{0.001f, 0.02f, 1.5f, 0.1f, 0.02f};
-    imguiinit(&ctx, p);
+    bool   nbChanged   = false;
+    bool   sizeChanged = false;
+    imguiinit(&ctx, p, fishNb, nbChanged, sizeChanged);
 
     // std::vector<Fish> boids;
 
@@ -84,13 +86,22 @@ int main(int argc, char* argv[])
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
+        if (nbChanged)
+        {
+            boids.adjustBoids(fishNb, p.fishSize);
+        }
+        if (sizeChanged)
+        {
+            boids.resizeBoids(p.fishSize);
+        }
         ctx.background(p6::NamedColor::Blue);
         boids.runBoids(p, ctx, obs);
 
         for (int i = 0; i < obs.size(); ++i)
         {
             obs[i].draw(ctx);
-        }
+        };
+
         // o.draw(ctx);
         // bor.draw(ctx);
     };

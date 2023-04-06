@@ -10,7 +10,7 @@ Boids::Boids()
     _fishpack = f;
 }
 
-void Boids::generateFish(int& nbFish, float& fishSize)
+void Boids::generateFish(int nbFish, float& fishSize)
 {
     for (int i = 0; i < nbFish; ++i)
     {
@@ -40,12 +40,26 @@ int Boids::sizeFishpack()
     return (this->_fishpack.size());
 }
 
-void adjustBoids(int& nbFish, Boids school)
+void Boids::adjustBoids(int nbFish, float fishSize)
 {
-    if (nbFish <= school.sizeFishpack())
+    if (nbFish > this->sizeFishpack())
     {
+        this->generateFish(nbFish - this->sizeFishpack(), fishSize);
     }
+
     else
     {
+        for (int i; this->sizeFishpack() - nbFish; i++)
+            this->_fishpack.pop_back();
     }
+}
+
+void Boids::resizeBoids(float fishSize)
+{
+    Boids copy = (*this);
+    for (int i; this->sizeFishpack(); i++)
+    {
+        this->_fishpack.pop_back();
+    };
+    (*this) = copy;
 }
