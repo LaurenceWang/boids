@@ -1,10 +1,13 @@
 #include "Obstacle.hpp"
 
 Obstacle::Obstacle()
-    : _pos(p6::random::point()), _radius(p6::random::number(0.1, 0.2f)) {}
+    : _pos(p6::random::point()), _radius(p6::random::number(0.03, 0.18f)), _isBorderX(false), _isBorderY(false) {}
 
 Obstacle::Obstacle(glm::vec2 position, float rad)
-    : _pos(position), _radius(rad) {}
+    : _pos(position), _radius(rad), _isBorderX(false), _isBorderY(false) {}
+
+Obstacle::Obstacle(glm::vec2 position, float rad, bool borderX, bool borderY)
+    : _pos(position), _radius(rad), _isBorderX(borderX), _isBorderY(borderY) {}
 
 float Obstacle::getRadius() const
 {
@@ -16,29 +19,46 @@ glm::vec2 Obstacle::getPos() const
     return _pos;
 }
 
+void Obstacle::updateBorderX(p6::Context& ctx)
+{
+    if (_isBorderX)
+    {
+        if (_pos.x < 0)
+        {
+            _pos.x += -ctx.aspect_ratio() - _pos.x;
+        }
+        else
+        {
+            _pos.x += ctx.aspect_ratio() - _pos.x;
+        }
+        _radius = ctx.aspect_ratio() / 70;
+    }
+}
+
+void Obstacle::updateBorderY(p6::Context& ctx, int nb)
+{
+    if (_isBorderY)
+    {
+        if (nb > 71)
+        {
+            nb = nb % 71;
+        }
+        _pos.x  = -ctx.aspect_ratio() + nb * (2 * ctx.aspect_ratio() / 70);
+        _radius = ctx.aspect_ratio() / 70;
+    }
+}
+
 void Obstacle::updateBorderPosition(p6::Context& ctx, int i)
 {
-    if (i > 70)
-    {
-        i = i % 70;
-    }
-    _pos.x = -ctx.aspect_ratio() + i * (2 * ctx.aspect_ratio() / 70);
-    if (_pos.x < 0)
-    {
-        //_pos.x += -ctx.aspect_ratio() - _pos.x;
-
-        _radius = ctx.aspect_ratio() / 70;
-    }
-    else
-    {
-        //_pos.x  = ctx.aspect_ratio() - _pos.x;
-        _radius = ctx.aspect_ratio() / 70;
-        //_pos.x += ctx.aspect_ratio() - _pos.x;
-    }
+    updateBorderX(ctx);
+    updateBorderY(ctx, i);
 }
 
 void Obstacle::draw(p6::Context& ctx) const
 {
     // ctx.rectangle(p6::TopRightCorner{_pos}, p6::Radii{_pos.x * 0.5f, _pos.y * 0.5f});
-    ctx.square(p6::Center{_pos}, p6::Radius{_radius});
+    if (!_isBorderX && !_isBorderY)
+    {
+        ctx.square(p6::Center{_pos}, p6::Radius{_radius});
+    }
 }

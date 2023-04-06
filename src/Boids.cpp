@@ -10,7 +10,7 @@ Boids::Boids()
     _fishpack = f;
 }
 
-void Boids::generateFish(int& nbFish, float& fishSize)
+void Boids::generateFish(int nbFish, float& fishSize)
 {
     for (int i = 0; i < nbFish; ++i)
     {
@@ -33,4 +33,33 @@ void Boids::runBoids(Params p, p6::Context& context, const std::vector<Obstacle>
         boid.move();
         boid.drawFish(context);
     }
+}
+
+int Boids::sizeFishpack()
+{
+    return (this->_fishpack.size());
+}
+
+void Boids::adjustBoids(int nbFish, float fishSize)
+{
+    if (nbFish > this->sizeFishpack())
+    {
+        this->generateFish(nbFish - this->sizeFishpack(), fishSize);
+    }
+
+    else
+    {
+        for (int i; this->sizeFishpack() - nbFish; i++)
+            this->_fishpack.pop_back();
+    }
+}
+
+void Boids::resizeBoids(float fishSize)
+{
+    Boids copy = (*this);
+    for (int i; this->sizeFishpack(); i++)
+    {
+        this->_fishpack.pop_back();
+    };
+    (*this) = copy;
 }
