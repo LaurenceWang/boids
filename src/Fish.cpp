@@ -22,6 +22,11 @@ void Fish::move()
     updatePosition(newPos);
 }
 
+void Fish::resize(float newSize)
+{
+    _size = newSize;
+}
+
 void Fish::drawFish(p6::Context& context) const
 {
     context.equilateral_triangle(

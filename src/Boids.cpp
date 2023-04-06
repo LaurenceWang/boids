@@ -56,10 +56,15 @@ void Boids::adjustBoids(int nbFish, float fishSize)
 
 void Boids::resizeBoids(float fishSize)
 {
-    Boids copy = (*this);
+    /*Boids copy = (*this);
     for (int i; this->sizeFishpack(); i++)
     {
         this->_fishpack.pop_back();
     };
-    (*this) = copy;
+    (*this) = copy;*/
+
+    for (auto& boid : _fishpack)
+    {
+        boid.resize(fishSize);
+    }
 }

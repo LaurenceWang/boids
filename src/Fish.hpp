@@ -21,6 +21,7 @@ public:
     void              drawFish(p6::Context& context) const;
     void              updatePosition(glm::vec2 position);
     void              move();
+    void              resize(float newSize);
     std::vector<Fish> getNeighbors(const std::vector<Fish>& boids, float& radius) const;
     glm::vec2         getPos() const;
     glm::vec2         separationForce(std::vector<Fish> const& boids, float& radius) const;
