@@ -29,13 +29,15 @@ void Boids::generateFish(int nbFish, float& fishSize, int fam)
     }
 }
 
-void Boids::runBoids(Params p, p6::Context& context, const std::vector<Obstacle>& obstacles)
+void Boids::runBoids(Params p, p6::Context& context, const std::vector<Obstacle>& obstacles, std::vector<Food>& food)
 {
     for (auto& boid : _fishpack)
     {
         boid.applyForces(_fishpack, p);
         boid.applyObstacleForces(obstacles);
+        boid.applyFoodForces(food, _fishpack.size());
         boid.move();
+        // context.fill = {1.f, 0.7f, 0.2f};
         boid.drawFish(context);
     }
 }
