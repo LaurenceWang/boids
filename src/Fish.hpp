@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Family.hpp"
 #include "Obstacle.hpp"
 #include "Params.hpp"
 #include "Speed.hpp"
@@ -9,13 +10,12 @@
 class Fish {
 private:
     glm::vec2 _pos;
-    Speed     _s;
-    float     _size;
+    Family    _family;
 
 public:
     Fish();
     Fish(const Fish& f) = default;
-    Fish(glm::vec2 position, Speed s, float size);
+    Fish(glm::vec2 position, Family fam);
     ~Fish() = default;
 
     void              drawFish(p6::Context& context) const;

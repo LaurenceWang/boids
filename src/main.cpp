@@ -35,7 +35,8 @@ int main(int argc, char* argv[])
     // std::cout << fishNb << std::endl;
 
     Boids boids;
-    boids.generateFish(fishNb, p.fishSize);
+    boids.generateFish(fishNb, p.fishSize, 0);
+    boids.generateFish(20, p.fishSize, 1);
 
     ObstacleCollection obstacle;
 
@@ -43,6 +44,7 @@ int main(int argc, char* argv[])
     obstacle.generateBorders(ctx);
 
     // Declare your infinite update loop.
+
     ctx.update = [&]() {
         if (nbChanged)
         {
@@ -52,7 +54,7 @@ int main(int argc, char* argv[])
         {
             boids.resizeBoids(p.fishSize);
         }
-        ctx.background(p6::NamedColor::Blue);
+        ctx.background({0.33, 0.8, 0.98});
         boids.runBoids(p, ctx, obstacle.getObstacles());
         obstacle.runObstacles(ctx);
     };

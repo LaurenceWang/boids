@@ -1,5 +1,10 @@
 #include "Boids.hpp"
 
+Family carpe{1, Speed(glm::vec2(p6::random::direction()), 0.1f), 0.02f, p6::Color(0.58, 0.09, 0.13)};
+Family saumon{1, Speed(glm::vec2(p6::random::direction()), 0.1f), 0.02f, p6::Color(0.98, 0.44, 0.41)};
+
+std::vector<Family> species = {carpe, saumon};
+
 Boids::Boids(std::vector<Fish>& fish)
     : _fishpack(fish)
 {}
@@ -10,7 +15,7 @@ Boids::Boids()
     _fishpack = f;
 }
 
-void Boids::generateFish(int nbFish, float& fishSize)
+void Boids::generateFish(int nbFish, float& fishSize, int fam)
 {
     for (int i = 0; i < nbFish; ++i)
     {
@@ -19,7 +24,7 @@ void Boids::generateFish(int nbFish, float& fishSize)
         float     velo  = 0.1f;
         // float velo  = p6::random::number(0, 0.1f);
         Speed speed = Speed(direc, velo);
-        Fish  b(coord, speed, fishSize);
+        Fish  b(coord, species[fam]);
         _fishpack.push_back(b);
     }
 }
@@ -44,7 +49,7 @@ void Boids::adjustBoids(int nbFish, float fishSize)
 {
     if (nbFish > this->sizeFishpack())
     {
-        this->generateFish(nbFish - this->sizeFishpack(), fishSize);
+        this->generateFish(nbFish - this->sizeFishpack(), fishSize, 1);
     }
 
     else
@@ -59,7 +64,7 @@ void Boids::resizeBoids(float fishSize)
     /*Boids copy = (*this);
     for (int i; this->sizeFishpack(); i++)
     {
-        this->_fishpack.pop_back();
+        this->_fishpack.pop_back();e
     };
     (*this) = copy;*/
 

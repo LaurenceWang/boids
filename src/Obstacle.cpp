@@ -56,6 +56,11 @@ void Obstacle::updateBorderPosition(p6::Context& ctx, int i)
 
 void Obstacle::draw(p6::Context& ctx) const
 {
+    ctx.fill   = {0.16, 0.32, 0.29};
+    ctx.stroke = {0.16, 0.32, 0.29};
+
+    ctx.use_fill   = true;
+    ctx.use_stroke = true;
     // ctx.rectangle(p6::TopRightCorner{_pos}, p6::Radii{_pos.x * 0.5f, _pos.y * 0.5f});
     if (!_isBorderX && !_isBorderY)
     {
