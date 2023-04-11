@@ -131,6 +131,29 @@ glm::vec2 Fish::obstacleForces(std::vector<Obstacle> const& obstacles)
     return oForce;
 }
 
+glm::vec2 Fish::foodForces(std::vector<Food> const& food, int boidsLength) const
+{
+    glm::vec2 fForce(0, 0);
+
+    for (const auto& f : food)
+    {
+        fForce += glm::normalize(f.getPos() - _pos);
+        fForce *= 0.001f / glm::distance(f.getPos(), _pos);
+    }
+
+    fForce /= boidsLength;
+
+    return fForce;
+}
+
+void Fish::applyFoodForces(std::vector<Food> const& food, int boidsLength)
+{
+    glm::vec2 speed = _s.getDir() * _s.getVel();
+    speed += foodForces(food, boidsLength);
+    _s.setVel(speed.x);
+    _s.setDir({1, speed.y / _s.getVel()});
+}
+
 std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radius) const
 {
     std::vector<Fish> neighbors{};

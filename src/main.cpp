@@ -5,6 +5,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <random>
 #include "Boids.hpp"
+#include "Food.hpp"
 #include "ObstacleCollection.hpp"
 #include "Params.hpp"
 #include "doctest/doctest.h"
@@ -30,10 +31,6 @@ int main(int argc, char* argv[])
     bool   sizeChanged = false;
     imguiinit(&ctx, p, fishNb, nbChanged, sizeChanged);
 
-    // std::vector<Fish> boids;
-
-    // std::cout << fishNb << std::endl;
-
     Boids boids;
     boids.generateFish(fishNb, p.fishSize);
 
@@ -41,6 +38,12 @@ int main(int argc, char* argv[])
 
     obstacle.generateObstacles(3);
     obstacle.generateBorders(ctx);
+
+    Food              seaweed;
+    Food              seaweed2;
+    std::vector<Food> meals;
+    meals.push_back(seaweed);
+    meals.push_back(seaweed2);
 
     // Declare your infinite update loop.
     ctx.update = [&]() {
@@ -53,8 +56,10 @@ int main(int argc, char* argv[])
             boids.resizeBoids(p.fishSize);
         }
         ctx.background(p6::NamedColor::Blue);
-        boids.runBoids(p, ctx, obstacle.getObstacles());
+        boids.runBoids(p, ctx, obstacle.getObstacles(), meals);
         obstacle.runObstacles(ctx);
+        seaweed.draw(ctx);
+        seaweed2.draw(ctx);
     };
 
     // Should be done last. It starts the infinite loop.

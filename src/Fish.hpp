@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Food.hpp"
 #include "Obstacle.hpp"
 #include "Params.hpp"
 #include "Speed.hpp"
@@ -30,4 +31,8 @@ public:
     void              applyForces(std::vector<Fish> const& boids, Params& p);
     void              applyObstacleForces(std::vector<Obstacle> const& obstacles);
     glm::vec2         obstacleForces(std::vector<Obstacle> const& obstacle);
+
+    glm::vec2 foodForces(std::vector<Food> const& food, int boidsLength) const;
+
+    void applyFoodForces(std::vector<Food> const& food, int boidsLength);
 };

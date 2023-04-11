@@ -56,9 +56,8 @@ void Obstacle::updateBorderPosition(p6::Context& ctx, int i)
 
 void Obstacle::draw(p6::Context& ctx) const
 {
-    // ctx.rectangle(p6::TopRightCorner{_pos}, p6::Radii{_pos.x * 0.5f, _pos.y * 0.5f});
     if (!_isBorderX && !_isBorderY)
     {
-        ctx.square(p6::Center{_pos}, p6::Radius{_radius});
+        ctx.circle(p6::Center{_pos}, p6::Radius{_radius});
     }
 }
