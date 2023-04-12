@@ -124,18 +124,16 @@ void Fish::applyObstacleForces(std::vector<Obstacle> const& obstacles)
     _family._s.setDir({1, speed.y / _family._s.getVel()});
 }
 
-using ObstacleHandler = std::function<void(Obstacle const&)>;
-
-glm::vec2 Fish::obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
+glm::vec2 Fish::obstacleForces(std::vector<Obstacle> const& obstacles)
 {
     glm::vec2 oForce(0, 0);
-
-    for_each_obstacle([&](const auto& obstacle) {
+    for (const auto& obstacle : obstacles)
+    {
         if (glm::distance(_pos, obstacle.getPos()) < obstacle.getRadius() * 1.5)
         {
             oForce += glm::normalize(_pos - obstacle.getPos());
         }
-    });
+    }
 
     oForce *= 0.01;
 
@@ -148,8 +146,8 @@ glm::vec2 Fish::foodForces(std::vector<Food> const& food, int boidsLength) const
 
     for (const auto& f : food)
     {
-        fForce += glm::normalize(f.getPos() - _pos)
-                  * 0.001f / glm::distance(f.getPos(), _pos);
+        fForce += glm::normalize(f.getPos() - _pos);
+        fForce *= 0.001f / glm::distance(f.getPos(), _pos);
     }
 
     fForce /= boidsLength;

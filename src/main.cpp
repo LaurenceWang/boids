@@ -26,16 +26,16 @@ int main(int argc, char* argv[])
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
     // ctx.maximize_window();
     int    fishNb = 100;
-    Params p{.sepStr = 0.001f, 0.02f, 1.5f, 0.1f, 0.02f}; // TODO name all the values
-    bool   nbChanged   = false;
-    bool   sizeChanged = false;
-    imguiinit(&ctx, p, fishNb, nbChanged, sizeChanged);
+    Params p{0.001f, 0.02f, 1.5f, 0.1f, 0.02f};
 
     Boids boids;
     boids.generateFish(fishNb, p.fishSize, 0);
     boids.generateFish(20, p.fishSize, 1);
 
-    ObstacleCollection obstacle; // TODO utiliser un constructeur plutôt que des méthodes d'init?
+    imGuiInit(&ctx, p, fishNb, boids);
+
+    ObstacleCollection obstacle;
+
     obstacle.generateObstacles(3);
     obstacle.generateBorders(ctx);
 
@@ -46,27 +46,9 @@ int main(int argc, char* argv[])
     // Declare your infinite update loop.
 
     ctx.update = [&]() {
-        if (nbChanged)
-        {
-            boids.adjustBoids(fishNb, p.fishSize);
-        }
-        if (sizeChanged)
-        {
-            boids.resizeBoids(p.fishSize);
-        }
-
         ctx.background({0.33, 0.8, 0.98});
         seaweed.draw(ctx);
-        const auto for_eachçbstacle = [](ObstacleHandler const& handler) {
-            for (auto const& obstacle : obstacles)
-            {
-                handler(obstacle);
-            }
-            for (auto const& obstacle : obstacles2)
-            {
-                handler(obstacle);
-            }
-        } boids.runBoids(p, ctx, for_eachçbstacle, meals);
+        boids.runBoids(p, ctx, obstacle.getObstacles(), meals);
         obstacle.runObstacles(ctx);
     };
 
