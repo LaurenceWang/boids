@@ -11,12 +11,13 @@
 class Fish {
 private:
     glm::vec2 _pos;
+    Speed     _s;
     Family    _family;
 
 public:
     Fish();
     Fish(const Fish& f) = default;
-    Fish(glm::vec2 position, Family fam);
+    Fish(glm::vec2 position, Speed speed, Family fam);
     ~Fish() = default;
 
     void              drawFish(p6::Context& context) const;

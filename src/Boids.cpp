@@ -1,7 +1,7 @@
 #include "Boids.hpp"
 
-Family carpe{1, Speed(glm::vec2(p6::random::direction()), 0.1f), 0.02f, p6::Color(0.58, 0.09, 0.13)};
-Family saumon{1, Speed(glm::vec2(p6::random::direction()), 0.1f), 0.02f, p6::Color(0.98, 0.44, 0.41)};
+Family carpe{1, 0.02f, p6::Color(0.58, 0.09, 0.13)};
+Family saumon{1, 0.02f, p6::Color(0.98, 0.44, 0.41)};
 
 std::vector<Family> species = {carpe, saumon};
 
@@ -24,7 +24,7 @@ void Boids::generateFish(int nbFish, float& fishSize, int fam)
         float     velo  = 0.1f;
         // float velo  = p6::random::number(0, 0.1f);
         Speed speed = Speed(direc, velo);
-        Fish  b(coord, species[fam]);
+        Fish  b(coord, speed, species[fam]);
         _fishpack.push_back(b);
     }
 }
