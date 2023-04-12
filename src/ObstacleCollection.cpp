@@ -21,30 +21,32 @@ void ObstacleCollection::generateObstacles(int nbObstacles)
 
 void ObstacleCollection::generateBorders(p6::Context& ctx)
 {
-    for (int i = 0; i < 71; ++i)
+    const int borderLength = 70;
+
+    for (int i = 0; i < borderLength + 1; ++i)
     {
-        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -1 + i * 2 * (ctx.aspect_ratio() / 70)), ctx.aspect_ratio() / 70, true, false);
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -1 + i * 2 * (ctx.aspect_ratio() / borderLength)), ctx.aspect_ratio() / borderLength, true, false);
 
         _obstacles.push_back(bor);
     }
 
-    for (int i = 0; i < 71; ++i)
+    for (int i = 0; i < borderLength + 1; ++i)
     {
-        Obstacle bor(glm::vec2(ctx.aspect_ratio(), -1 + i * 2 * (ctx.aspect_ratio() / 70)), ctx.aspect_ratio() / 70, true, false);
+        Obstacle bor(glm::vec2(ctx.aspect_ratio(), -1 + i * 2 * (ctx.aspect_ratio() / borderLength)), ctx.aspect_ratio() / borderLength, true, false);
 
         _obstacles.push_back(bor);
     }
 
-    for (int i = 0; i < 71; ++i)
+    for (int i = 0; i < borderLength + 1; ++i)
     {
-        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * (ctx.aspect_ratio() / 70), -1), ctx.aspect_ratio() / 70, false, true);
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * 2 * (ctx.aspect_ratio() / borderLength), -1), ctx.aspect_ratio() / borderLength, false, true);
 
         _obstacles.push_back(bor);
     }
 
-    for (int i = 0; i < 71; ++i)
+    for (int i = 0; i < borderLength + 1; ++i)
     {
-        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * (2 * ctx.aspect_ratio() / 70), 1), ctx.aspect_ratio() / 70, false, true);
+        Obstacle bor(glm::vec2(-ctx.aspect_ratio() + i * (2 * ctx.aspect_ratio() / borderLength), 1), ctx.aspect_ratio() / borderLength, false, true);
 
         _obstacles.push_back(bor);
     }

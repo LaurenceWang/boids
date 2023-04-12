@@ -41,8 +41,10 @@ int main(int argc, char* argv[])
     obstacle.generateBorders(ctx);
 
     Food              seaweed;
+    Food              seaweed2;
     std::vector<Food> meals;
     meals.push_back(seaweed);
+    meals.push_back(seaweed2);
 
     // Declare your infinite update loop.
 
@@ -58,6 +60,7 @@ int main(int argc, char* argv[])
 
         ctx.background({0.33, 0.8, 0.98});
         seaweed.draw(ctx);
+        seaweed2.draw(ctx);
         boids.runBoids(p, ctx, obstacle.getObstacles(), meals);
         obstacle.runObstacles(ctx);
     };
