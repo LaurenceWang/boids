@@ -8,12 +8,12 @@
 class Boids {
 private:
     std::vector<Fish> _fishpack;
+    Family            _family;
 
 public:
     Boids();
     Boids(const Boids& b) = default;
     explicit Boids(std::vector<Fish>& fish);
-    ~Boids() = default;
 
     int  sizeFishpack();
     void generateFish(int nbFish, float& fishSize, int fam);

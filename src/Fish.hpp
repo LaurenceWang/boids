@@ -17,7 +17,7 @@ private:
 public:
     Fish();
     Fish(const Fish& f) = default;
-    Fish(glm::vec2 position, Speed speed, Family fam);
+    Fish(glm::vec2 position, Speed s, Family fam);
     ~Fish() = default;
 
     void              drawFish(p6::Context& context) const;
