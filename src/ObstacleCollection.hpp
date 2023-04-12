@@ -11,8 +11,7 @@ private:
 public:
     ObstacleCollection();
     ObstacleCollection(const ObstacleCollection& o) = default;
-    explicit ObstacleCollection(std::vector<Obstacle>& o);
-    ~ObstacleCollection() = default;
+    explicit ObstacleCollection(std::vector<Obstacle> const& o);
 
     void                  generateObstacles(int nbObstacles);
     void                  generateBorders(p6::Context& ctx);

@@ -1,6 +1,6 @@
 #include "ObstacleCollection.hpp"
 
-ObstacleCollection::ObstacleCollection(std::vector<Obstacle>& o)
+ObstacleCollection::ObstacleCollection(std::vector<Obstacle> const& o)
     : _obstacles(o)
 {}
 
@@ -21,7 +21,7 @@ void ObstacleCollection::generateObstacles(int nbObstacles)
 
 void ObstacleCollection::generateBorders(p6::Context& ctx)
 {
-    for (int i = 0; i < 71; ++i)
+    for (int i = 0; i < 71; ++i) // Use a constant to not duplicate the 71
     {
         Obstacle bor(glm::vec2(-ctx.aspect_ratio(), -1 + i * 2 * (ctx.aspect_ratio() / 70)), ctx.aspect_ratio() / 70, true, false);
 

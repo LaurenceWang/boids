@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
     // ctx.maximize_window();
     int    fishNb = 100;
-    Params p{0.001f, 0.02f, 1.5f, 0.1f, 0.02f};
+    Params p{.sepStr = 0.001f, 0.02f, 1.5f, 0.1f, 0.02f}; // TODO name all the values
     bool   nbChanged   = false;
     bool   sizeChanged = false;
     imguiinit(&ctx, p, fishNb, nbChanged, sizeChanged);
@@ -35,8 +35,7 @@ int main(int argc, char* argv[])
     boids.generateFish(fishNb, p.fishSize, 0);
     boids.generateFish(20, p.fishSize, 1);
 
-    ObstacleCollection obstacle;
-
+    ObstacleCollection obstacle; // TODO utiliser un constructeur plutôt que des méthodes d'init?
     obstacle.generateObstacles(3);
     obstacle.generateBorders(ctx);
 
@@ -58,7 +57,16 @@ int main(int argc, char* argv[])
 
         ctx.background({0.33, 0.8, 0.98});
         seaweed.draw(ctx);
-        boids.runBoids(p, ctx, obstacle.getObstacles(), meals);
+        const auto for_eachçbstacle = [](ObstacleHandler const& handler) {
+            for (auto const& obstacle : obstacles)
+            {
+                handler(obstacle);
+            }
+            for (auto const& obstacle : obstacles2)
+            {
+                handler(obstacle);
+            }
+        } boids.runBoids(p, ctx, for_eachçbstacle, meals);
         obstacle.runObstacles(ctx);
     };
 
