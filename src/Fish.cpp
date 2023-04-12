@@ -103,9 +103,9 @@ void Fish::applyForces(std::vector<Fish> const& boids, Params& p)
 {
     glm::vec2 speed         = _family._s.getDir() * _family._s.getVel();
     glm::vec2 steeringForce = {};
-    steeringForce += separationForce(boids, p.neighRadius) * p.sepStr;
-    steeringForce += alignmentForce(boids, p.neighRadius) * p.aliStr;
-    steeringForce += cohesionForce(boids, p.neighRadius) * p.steerStr;
+    steeringForce += separationForce(boids, p.neighRadius) * p.separation;
+    steeringForce += alignmentForce(boids, p.neighRadius) * p.alignment;
+    steeringForce += cohesionForce(boids, p.neighRadius) * p.steer;
 
     speed += steeringForce;
     speed *= 0.05;
@@ -146,8 +146,8 @@ glm::vec2 Fish::foodForces(std::vector<Food> const& food, int boidsLength) const
 
     for (const auto& f : food)
     {
-        fForce += glm::normalize(f.getPos() - _pos);
-        fForce *= 0.001f / glm::distance(f.getPos(), _pos);
+        fForce += glm::normalize(f.getPos() - _pos)
+                  * 0.001f / glm::distance(f.getPos(), _pos);
     }
 
     fForce /= boidsLength;
@@ -170,6 +170,12 @@ std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radi
     {
         // if (*this != fish)
         //{
+
+        // if (this->_family._id != fish._family._id)
+        // {
+        //     throw 0;
+        // }
+
         if ((glm::distance(this->_pos, fish._pos) < radius) && (this->_family._id == fish._family._id))
         {
             neighbors.push_back(fish);
