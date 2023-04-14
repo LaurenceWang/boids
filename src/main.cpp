@@ -11,6 +11,8 @@
 #include "doctest/doctest.h"
 #include "imgui.hpp"
 
+using ObstacleHandler = std::function<void(Obstacle const&)>;
+
 int main(int argc, char* argv[])
 {
     { // Run the tests
@@ -26,19 +28,24 @@ int main(int argc, char* argv[])
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
     // ctx.maximize_window();
     int    fishNb = 100;
-    Params p{0.001f, 0.02f, 1.5f, 0.1f, 0.02f};
+    Params p{.separation = 0.001f, .alignment = 0.02f, .steer = 1.5f, .neighRadius = 0.1f, .fishSize = 0.02f};
     bool   nbChanged   = false;
     bool   sizeChanged = false;
-    imguiinit(&ctx, p, fishNb, nbChanged, sizeChanged);
 
     Boids boids;
     boids.generateFish(fishNb, p.fishSize, 0);
     boids.generateFish(20, p.fishSize, 1);
 
+    imGuiInit(&ctx, p, fishNb, boids);
+
     ObstacleCollection obstacle;
 
     obstacle.generateObstacles(3);
     obstacle.generateBorders(ctx);
+
+    ObstacleCollection obstacle2;
+
+    obstacle.generateObstacles(2);
 
     Food              seaweed;
     Food              seaweed2;
@@ -49,20 +56,25 @@ int main(int argc, char* argv[])
     // Declare your infinite update loop.
 
     ctx.update = [&]() {
-        if (nbChanged)
-        {
-            boids.adjustBoids(fishNb, p.fishSize);
-        }
-        if (sizeChanged)
-        {
-            boids.resizeBoids(p.fishSize);
-        }
-
         ctx.background({0.33, 0.8, 0.98});
         seaweed.draw(ctx);
         seaweed2.draw(ctx);
-        boids.runBoids(p, ctx, obstacle.getObstacles(), meals);
+
+        const auto for_each_obstacle = [&](ObstacleHandler const& handler) {
+            for (auto const& obs : obstacle.getObstacles())
+            {
+                handler(obs);
+            }
+
+            for (auto const& obs : obstacle2.getObstacles())
+            {
+                handler(obs);
+            }
+        };
+        ;
+        boids.runBoids(p, ctx, for_each_obstacle, meals);
         obstacle.runObstacles(ctx);
+        obstacle2.runObstacles(ctx);
     };
 
     // Should be done last. It starts the infinite loop.

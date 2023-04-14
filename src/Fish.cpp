@@ -3,6 +3,8 @@
 #include <iostream>
 #include "Speed.hpp"
 
+// using ObstacleHandler = std::function<void(Obstacle const&)>;
+
 Fish::Fish(glm::vec2 position, Family fam)
     : _pos(position), _family(fam)
 {}
@@ -114,26 +116,31 @@ void Fish::applyForces(std::vector<Fish> const& boids, Params& p)
     _family._s.setDir({1, speed.y / _family._s.getVel()});
 }
 
-void Fish::applyObstacleForces(std::vector<Obstacle> const& obstacles)
+void Fish::applyObstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
 {
     glm::vec2 speed = _family._s.getDir() * _family._s.getVel();
-    speed += obstacleForces(obstacles);
+    speed += obstacleForces(for_each_obstacle);
 
-    // speed *= 0.01;
     _family._s.setVel(speed.x);
     _family._s.setDir({1, speed.y / _family._s.getVel()});
 }
 
-glm::vec2 Fish::obstacleForces(std::vector<Obstacle> const& obstacles)
+glm::vec2 Fish::obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
 {
     glm::vec2 oForce(0, 0);
-    for (const auto& obstacle : obstacles)
+    /*for (const auto& obstacle : obstacles)
     {
         if (glm::distance(_pos, obstacle.getPos()) < obstacle.getRadius() * 1.5)
         {
             oForce += glm::normalize(_pos - obstacle.getPos());
         }
-    }
+    }*/
+    for_each_obstacle([&](const auto& obstacle) {
+        if (glm::distance(_pos, obstacle.getPos()) < obstacle.getRadius() * 1.5)
+        {
+            oForce += glm::normalize(_pos - obstacle.getPos());
+        }
+    });
 
     oForce *= 0.01;
 
@@ -168,19 +175,10 @@ std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radi
     std::vector<Fish> neighbors{};
     for (const auto& fish : boids)
     {
-        // if (*this != fish)
-        //{
-
-        // if (this->_family._id != fish._family._id)
-        // {
-        //     throw 0;
-        // }
-
         if ((glm::distance(this->_pos, fish._pos) < radius) && (this->_family._id == fish._family._id))
         {
             neighbors.push_back(fish);
         }
-        //}
     }
 
     return neighbors;

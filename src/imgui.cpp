@@ -1,14 +1,19 @@
-
 #include "imgui.hpp"
 #include <pthread.h>
 
-void imguiinit(p6::Context* ctx, Params& p, int& fishNb, bool& nbChanged, bool& sizeChanged)
+void imGuiInit(p6::Context* ctx, Params& p, int& fishNb, Boids& boids)
 {
     (*ctx).imgui = [&]() {
         // Show a simple window
         ImGui::Begin("Boids sliders");
-        nbChanged   = ImGui::SliderInt("fish number", &fishNb, 1, 250);
-        sizeChanged = ImGui::SliderFloat("fish size", &p.fishSize, 0.02f, 0.08f);
+        if (ImGui::SliderInt("fish number", &fishNb, 1, 250))
+        {
+            boids.adjustBoids(fishNb, p.fishSize);
+        };
+        if (ImGui::SliderFloat("fish size", &p.fishSize, 0.02f, 0.08f))
+        {
+            boids.resizeBoids(p.fishSize);
+        };
         ImGui::SliderFloat("separation strength", &p.separation, 0.001f, 0.01f);
         ImGui::SliderFloat("alignment strength", &p.alignment, 0.005f, 0.05f);
         ImGui::SliderFloat("cohesion strength", &p.steer, 0.1f, 2.5f);

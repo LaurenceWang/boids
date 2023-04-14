@@ -5,6 +5,8 @@
 #include "Fish.hpp"
 #include "p6/p6.h"
 
+using ObstacleHandler = std::function<void(Obstacle const&)>;
+
 class Boids {
 private:
     std::vector<Fish> _fishpack;
@@ -17,7 +19,7 @@ public:
 
     int  sizeFishpack();
     void generateFish(int nbFish, float& fishSize, int fam);
-    void runBoids(Params p, p6::Context& context, const std::vector<Obstacle>& obstacles, std::vector<Food>& food);
+    void runBoids(Params p, p6::Context& context, std::function<void(ObstacleHandler)> const& for_each_obstacle, std::vector<Food>& food);
     void adjustBoids(int nbFish, float fishSize);
     void resizeBoids(float fishSize);
 };
