@@ -29,12 +29,17 @@ int main(int argc, char* argv[])
     // ctx.maximize_window();
     int    fishNb = 100;
     Params p{.separation = 0.001f, .alignment = 0.02f, .steer = 1.5f, .neighRadius = 0.1f, .fishSize = 0.02f};
-    bool   nbChanged   = false;
-    bool   sizeChanged = false;
+    // bool   nbChanged   = false;
+    // bool   sizeChanged = false;
 
     Boids boids;
     boids.generateFish(fishNb, p.fishSize, 0);
-    boids.generateFish(20, p.fishSize, 1);
+
+    int   fishNb2 = 20;
+    Boids boids2;
+    boids.generateFish(fishNb2, p.fishSize, 1);
+
+    imGuiInit(&ctx, p, fishNb, boids);
 
     imGuiInit(&ctx, p, fishNb, boids);
 

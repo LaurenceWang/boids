@@ -35,7 +35,7 @@ void Boids::runBoids(Params p, p6::Context& context, std::function<void(Obstacle
     {
         boid.applyForces(_fishpack, p);
         boid.applyObstacleForces(for_each_obstacle);
-        boid.applyFoodForces(food, _fishpack.size());
+        // boid.applyFoodForces(food, _fishpack.size());
         boid.move();
         // context.fill = {1.f, 0.7f, 0.2f};
         boid.drawFish(context);
