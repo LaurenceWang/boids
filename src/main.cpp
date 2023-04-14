@@ -33,11 +33,11 @@ int main(int argc, char* argv[])
     // bool   sizeChanged = false;
 
     Boids boids;
-    boids.generateFish(fishNb, p.fishSize, 0);
+    boids.generateFish(fishNb, 0);
 
     int   fishNb2 = 20;
     Boids boids2;
-    boids.generateFish(fishNb2, p.fishSize, 1);
+    boids.generateFish(fishNb2, 1);
 
     imGuiInit(&ctx, p, fishNb, boids);
 

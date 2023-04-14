@@ -13,6 +13,7 @@ using ObstacleHandler = std::function<void(Obstacle const&)>;
 class Fish {
 private:
     glm::vec2 _pos;
+    Speed     _s;
     Family    _family;
 
 public:

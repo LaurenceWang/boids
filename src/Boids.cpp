@@ -15,7 +15,7 @@ Boids::Boids()
     _fishpack = f;
 }
 
-void Boids::generateFish(int nbFish, float& fishSize, int fam)
+void Boids::generateFish(int nbFish, int fam)
 {
     for (int i = 0; i < nbFish; ++i)
     {
@@ -47,11 +47,11 @@ int Boids::sizeFishpack()
     return (this->_fishpack.size());
 }
 
-void Boids::adjustBoids(int nbFish, float fishSize)
+void Boids::adjustBoids(int nbFish)
 {
     if (nbFish > this->sizeFishpack())
     {
-        this->generateFish(nbFish - this->sizeFishpack(), fishSize, 1);
+        this->generateFish(nbFish - this->sizeFishpack(), 1);
     }
 
     else
