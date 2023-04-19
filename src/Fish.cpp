@@ -54,7 +54,7 @@ void Fish::drawFish(p6::Context& context) const
     );
 }
 
-glm::vec3 Fish::separationForce(std::vector<Fish> const& boids, float& radius) const
+glm::vec3 Fish::separationForce(std::vector<Fish> const& boids, float& radius) const // réfléchir à prendre en compte la fishSize pour éviter des collisions dues à la taille
 {
     glm::vec3 sForce = {};
 
