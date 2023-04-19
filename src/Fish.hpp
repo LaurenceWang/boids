@@ -19,7 +19,7 @@ private:
 public:
     Fish();
     Fish(const Fish& f) = default;
-    Fish(glm::vec3 position, Family fam);
+    Fish(glm::vec3 position, Speed s, Family fam);
     ~Fish() = default;
 
     void              drawFish(p6::Context& context) const;
