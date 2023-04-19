@@ -43,7 +43,7 @@ void Obstacle::updateBorderY(p6::Context& ctx, int nb)
     {
         if (nb > (border + 1))
         {
-            nb = nb % (border+1));
+            nb = nb % (border + 1);
         }
         _pos.x  = -ctx.aspect_ratio() + nb * (2 * ctx.aspect_ratio() / border);
         _radius = ctx.aspect_ratio() / border;
