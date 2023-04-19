@@ -19,6 +19,8 @@ glm::vec3 Obstacle::getPos() const
     return _pos;
 }
 
+int border = 70;
+
 void Obstacle::updateBorderX(p6::Context& ctx)
 {
     if (_isBorderX)
@@ -31,7 +33,7 @@ void Obstacle::updateBorderX(p6::Context& ctx)
         {
             _pos.x += ctx.aspect_ratio() - _pos.x;
         }
-        _radius = ctx.aspect_ratio() / 70;
+        _radius = ctx.aspect_ratio() / border;
     }
 }
 
@@ -39,12 +41,12 @@ void Obstacle::updateBorderY(p6::Context& ctx, int nb)
 {
     if (_isBorderY)
     {
-        if (nb > 71)
+        if (nb > (border + 1))
         {
-            nb = nb % 71;
+            nb = nb % (border + 1);
         }
-        _pos.x  = -ctx.aspect_ratio() + nb * (2 * ctx.aspect_ratio() / 70);
-        _radius = ctx.aspect_ratio() / 70;
+        _pos.x  = -ctx.aspect_ratio() + nb * (2 * ctx.aspect_ratio() / border);
+        _radius = ctx.aspect_ratio() / border;
     }
 }
 
