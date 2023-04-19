@@ -44,6 +44,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE doctest::doctest)
 #add_subdirectory(lib/p6)
 #target_link_libraries(${PROJECT_NAME} PRIVATE p6::p6)
 include(FetchContent)
+set(P6_RAW_OPENGL_MODE ON CACHE BOOL "")
 FetchContent_Declare(
     p6
     GIT_REPOSITORY https://github.com/JulesFouchy/p6
@@ -51,3 +52,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(p6)
 target_link_libraries(${PROJECT_NAME} PRIVATE p6::p6)
+
+
+Cool__target_copy_folder(${PROJECT_NAME} Shaders)
+Cool__target_copy_folder(${PROJECT_NAME} Assets)

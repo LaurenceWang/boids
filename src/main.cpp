@@ -9,8 +9,13 @@
 #include "ObstacleCollection.hpp"
 #include "Params.hpp"
 #include "doctest/doctest.h"
+#include "glimac/sphere_vertices.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/geometric.hpp"
+#include "glm/gtc/random.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "imgui.hpp"
-
 using ObstacleHandler = std::function<void(Obstacle const&)>;
 
 int main(int argc, char* argv[])
@@ -26,6 +31,50 @@ int main(int argc, char* argv[])
 
     // Actual app
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
+
+    const std::vector<glimac::ShapeVertex> vertices = glimac::sphere_vertices(0.2f, 32, 16);
+    const p6::Shader                       shader   = p6::load_shader(
+        "Shaders/3D.vs.glsl",
+        "Shaders/normals.fs.glsl"
+    );
+
+    GLint uniformMVP    = glGetUniformLocation(shader.id(), "uMVPMatrix");
+    GLint uniformMV     = glGetUniformLocation(shader.id(), "uMVMatrix");
+    GLint uniformNormal = glGetUniformLocation(shader.id(), "uNormalMatrix");
+
+    glEnable(GL_DEPTH_TEST);
+
+    GLuint vbo, vao;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glimac::ShapeVertex), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    const GLuint VERTEX_ATTR_POSITION = 0;
+    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+
+    const GLuint VERTEX_ATTR_NORMAL = 1;
+    glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
+
+    const GLuint VERTEX_ATTR_TEXCOORDS = 2;
+    glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (void*)offsetof(glimac::ShapeVertex, position));
+
+    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (void*)offsetof(glimac::ShapeVertex, normal));
+
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (void*)offsetof(glimac::ShapeVertex, texCoords));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
     // ctx.maximize_window();
     int    fishNb = 100;
     Params p{.separation = 0.001f, .alignment = 0.02f, .steer = 1.5f, .neighRadius = 0.1f, .fishSize = 0.02f};
@@ -61,7 +110,11 @@ int main(int argc, char* argv[])
     // Declare your infinite update loop.
 
     ctx.update = [&]() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ctx.background({0.33, 0.8, 0.98});
+
+        // MVMatrix = glm::translate(glm::mat4(1), {0.1, 0.1, 0.1});
+
         seaweed.draw(ctx);
         seaweed2.draw(ctx);
 
@@ -80,8 +133,45 @@ int main(int argc, char* argv[])
         boids.runBoids(p, ctx, for_each_obstacle, meals);
         obstacle.runObstacles(ctx);
         obstacle2.runObstacles(ctx);
+
+        shader.use();
+
+        glBindVertexArray(vao);
+        glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
+        glm::mat4 MVMatrix   = glm::translate(glm::mat4(1), glm::vec3(0., 0., -5.));
+        MVMatrix             = glm::scale(
+            MVMatrix,
+            glm::vec3(0.5, 0.5, 0.5)
+        );
+        glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+
+        glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+        // glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        // glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+        // glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+        for (int i = 0; i < boids.sizeFishpack(); ++i)
+        {
+            std::vector<Fish> cur      = boids.getFishPack();
+            glm::vec3         pos      = cur[i].getPos();
+            glm::mat4         MVMatrix = glm::translate(glm::mat4(1), glm::vec3(pos.x, pos.y, -5.));
+            // MVMatrix = glm::translate(glm::mat4(1), pos);
+            MVMatrix = glm::scale(
+                MVMatrix,
+                glm::vec3(p.fishSize * 25, p.fishSize * 25, p.fishSize * 25)
+            );
+
+            // glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+            glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+        }
+
+        glBindVertexArray(0);
     };
 
     // Should be done last. It starts the infinite loop.
     ctx.start();
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
 }

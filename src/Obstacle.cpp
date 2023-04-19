@@ -1,12 +1,12 @@
 #include "Obstacle.hpp"
 
 Obstacle::Obstacle()
-    : _pos(p6::random::point()), _radius(p6::random::number(0.03, 0.18f)), _isBorderX(false), _isBorderY(false) {}
+    : _pos(p6::random::point(), 0), _radius(p6::random::number(0.03, 0.18f)), _isBorderX(false), _isBorderY(false) {}
 
-Obstacle::Obstacle(glm::vec2 position, float rad)
+Obstacle::Obstacle(glm::vec3 position, float rad)
     : _pos(position), _radius(rad), _isBorderX(false), _isBorderY(false) {}
 
-Obstacle::Obstacle(glm::vec2 position, float rad, bool borderX, bool borderY)
+Obstacle::Obstacle(glm::vec3 position, float rad, bool borderX, bool borderY)
     : _pos(position), _radius(rad), _isBorderX(borderX), _isBorderY(borderY) {}
 
 float Obstacle::getRadius() const
@@ -14,7 +14,7 @@ float Obstacle::getRadius() const
     return _radius;
 }
 
-glm::vec2 Obstacle::getPos() const
+glm::vec3 Obstacle::getPos() const
 {
     return _pos;
 }

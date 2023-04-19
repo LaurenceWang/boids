@@ -17,9 +17,10 @@ public:
     Boids(const Boids& b) = default;
     explicit Boids(std::vector<Fish>& fish);
 
-    int  sizeFishpack();
-    void generateFish(int nbFish, int fam);
-    void runBoids(Params p, p6::Context& context, std::function<void(ObstacleHandler)> const& for_each_obstacle, std::vector<Food>& food);
-    void adjustBoids(int nbFish);
-    void resizeBoids(float fishSize);
+    int               sizeFishpack();
+    void              generateFish(int nbFish, int fam);
+    void              runBoids(Params p, p6::Context& context, std::function<void(ObstacleHandler)> const& for_each_obstacle, std::vector<Food>& food);
+    void              adjustBoids(int nbFish);
+    void              resizeBoids(float fishSize);
+    std::vector<Fish> getFishPack() { return _fishpack; }
 };

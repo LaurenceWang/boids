@@ -5,27 +5,33 @@
 
 // using ObstacleHandler = std::function<void(Obstacle const&)>;
 
-Fish::Fish(glm::vec2 position, Family fam)
+Fish::Fish(glm::vec3 position, Family fam)
     : _pos(position), _family(fam)
 {}
 
 Fish::Fish()
 {
-    this->_pos = {0, 0};
+    this->_pos = {0, 0, 0};
     Family f{
-        1, Speed(glm::vec2(1.f, 1.f), 0.1f), 0.02f, p6::Color(255., 0., 0.)};
+        1, Speed(glm::vec3(1.f, 1.f, 1.f), 0.1f), 0.02f, p6::Color(255., 0., 0.)};
     this->_family = f;
 }
 
-void Fish::updatePosition(glm::vec2 position)
+glm::vec3 Fish::getPos() const
+{
+    return _pos;
+}
+
+void Fish::updatePosition(glm::vec3 position)
 {
     this->_pos.x += position.x;
     this->_pos.y += position.y;
+    this->_pos.z += position.z;
 }
 
 void Fish::move()
 {
-    glm::vec2 newPos = glm::vec2(this->_family._s.getDir() * this->_family._s.getVel());
+    glm::vec3 newPos = glm::vec3(this->_family._s.getDir() * this->_family._s.getVel());
     updatePosition(newPos);
 }
 
@@ -47,9 +53,9 @@ void Fish::drawFish(p6::Context& context) const
     );
 }
 
-glm::vec2 Fish::separationForce(std::vector<Fish> const& boids, float& radius) const
+glm::vec3 Fish::separationForce(std::vector<Fish> const& boids, float& radius) const
 {
-    glm::vec2 sForce = {};
+    glm::vec3 sForce = {};
 
     std::vector<Fish> const neighbors = getNeighbors(boids, radius);
     for (auto const& neighbor : neighbors)
@@ -64,9 +70,9 @@ glm::vec2 Fish::separationForce(std::vector<Fish> const& boids, float& radius) c
     return sForce;
 }
 
-glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids, float& radius) const
+glm::vec3 Fish::alignmentForce(std::vector<Fish> const& boids, float& radius) const
 {
-    glm::vec2               aForce(0, 0);
+    glm::vec3               aForce(0, 0, 0);
     std::vector<Fish> const neighbors = getNeighbors(boids, radius);
     if (neighbors.empty())
     {
@@ -82,9 +88,9 @@ glm::vec2 Fish::alignmentForce(std::vector<Fish> const& boids, float& radius) co
     return aForce;
 }
 
-glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids, float& radius) const
+glm::vec3 Fish::cohesionForce(std::vector<Fish> const& boids, float& radius) const
 {
-    glm::vec2               cForce(0, 0);
+    glm::vec3               cForce(0, 0, 0);
     std::vector<Fish> const neighbors = getNeighbors(boids, radius);
     if (neighbors.empty())
     {
@@ -103,8 +109,8 @@ glm::vec2 Fish::cohesionForce(std::vector<Fish> const& boids, float& radius) con
 
 void Fish::applyForces(std::vector<Fish> const& boids, Params& p)
 {
-    glm::vec2 speed         = _family._s.getDir() * _family._s.getVel();
-    glm::vec2 steeringForce = {};
+    glm::vec3 speed         = _family._s.getDir() * _family._s.getVel();
+    glm::vec3 steeringForce = {};
     steeringForce += separationForce(boids, p.neighRadius) * p.separation;
     steeringForce += alignmentForce(boids, p.neighRadius) * p.alignment;
     steeringForce += cohesionForce(boids, p.neighRadius) * p.steer;
@@ -113,21 +119,21 @@ void Fish::applyForces(std::vector<Fish> const& boids, Params& p)
     speed *= 0.05;
 
     _family._s.setVel(speed.x);
-    _family._s.setDir({1, speed.y / _family._s.getVel()});
+    _family._s.setDir({1, speed.y / _family._s.getVel(), 0});
 }
 
 void Fish::applyObstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
 {
-    glm::vec2 speed = _family._s.getDir() * _family._s.getVel();
+    glm::vec3 speed = _family._s.getDir() * _family._s.getVel();
     speed += obstacleForces(for_each_obstacle);
 
     _family._s.setVel(speed.x);
-    _family._s.setDir({1, speed.y / _family._s.getVel()});
+    _family._s.setDir({1, speed.y / _family._s.getVel(), 0});
 }
 
-glm::vec2 Fish::obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
+glm::vec3 Fish::obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
 {
-    glm::vec2 oForce(0, 0);
+    glm::vec3 oForce(0, 0, 0);
     /*for (const auto& obstacle : obstacles)
     {
         if (glm::distance(_pos, obstacle.getPos()) < obstacle.getRadius() * 1.5)
@@ -147,9 +153,9 @@ glm::vec2 Fish::obstacleForces(std::function<void(ObstacleHandler)> const& for_e
     return oForce;
 }
 
-glm::vec2 Fish::foodForces(std::vector<Food> const& food, int boidsLength) const
+glm::vec3 Fish::foodForces(std::vector<Food> const& food, int boidsLength) const
 {
-    glm::vec2 fForce(0, 0);
+    glm::vec3 fForce(0, 0, 0);
 
     for (const auto& f : food)
     {
@@ -164,10 +170,10 @@ glm::vec2 Fish::foodForces(std::vector<Food> const& food, int boidsLength) const
 
 void Fish::applyFoodForces(std::vector<Food> const& food, int boidsLength)
 {
-    glm::vec2 speed = _family._s.getDir() * _family._s.getVel();
+    glm::vec3 speed = _family._s.getDir() * _family._s.getVel();
     speed += foodForces(food, boidsLength);
     _family._s.setVel(speed.x);
-    _family._s.setDir({1, speed.y / _family._s.getVel()});
+    _family._s.setDir({1, speed.y / _family._s.getVel(), 0});
 }
 
 std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radius) const

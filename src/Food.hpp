@@ -5,14 +5,14 @@
 
 class Food {
 private:
-    glm::vec2 _pos;
+    glm::vec3 _pos;
     float     _radius;
 
 public:
     Food();
-    Food(glm::vec2 position, float rad);
+    Food(glm::vec3 position, float rad);
     ~Food() = default;
     void      draw(p6::Context& ctx) const;
-    glm::vec2 getPos() const;
+    glm::vec3 getPos() const;
     float     getRadius() const;
 };
