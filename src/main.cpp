@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 
     ObstacleCollection obstacle2;
 
-    obstacle.generateObstacles(2);
+    obstacle2.generateObstacles(2);
 
     Food              seaweed;
     Food              seaweed2;
