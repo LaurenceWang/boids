@@ -35,9 +35,9 @@ int main(int argc, char* argv[])
 
     const std::vector<glimac::ShapeVertex> vertices = glimac::sphere_vertices(0.2f, 32, 16);
     const p6::Shader                       shader   = p6::load_shader(
-        "Shaders/3D.vs.glsl",
-        "Shaders/normals.fs.glsl"
-    );
+                                "Shaders/3D.vs.glsl",
+                                "Shaders/normals.fs.glsl"
+                            );
 
     FreeflyCamera cam;
     cam.moveFront(-5);
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
 
     // ctx.maximize_window();
     int    fishNb = 100;
-    Params p{.separation = 0.001f, .alignment = 0.02f, .steer = 1.5f, .neighRadius = 0.1f, .fishSize = 0.02f};
+    Params p{.separation = 0.001f, .alignment = 0.02f, .steer = 1.5f, .neighRadius = 0.5f, .fishSize = 0.02f};
     // bool   nbChanged   = false;
     // bool   sizeChanged = false;
 
