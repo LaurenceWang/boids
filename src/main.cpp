@@ -10,6 +10,7 @@
 #include "Params.hpp"
 #include "doctest/doctest.h"
 #include "glimac/FreeflyCamera.hpp"
+#include "glimac/cone_vertices.hpp"
 #include "glimac/sphere_vertices.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -33,11 +34,13 @@ int main(int argc, char* argv[])
     // Actual app
     auto ctx = p6::Context{{.title = "Swimming with boids"}};
 
-    const std::vector<glimac::ShapeVertex> vertices = glimac::sphere_vertices(0.2f, 32, 16);
-    const p6::Shader                       shader   = p6::load_shader(
-                                "Shaders/3D.vs.glsl",
-                                "Shaders/normals.fs.glsl"
-                            );
+    const std::vector<glimac::ShapeVertex> vertices  = glimac::sphere_vertices(0.2f, 32, 16);
+    const std::vector<glimac::ShapeVertex> vertices2 = glimac::cone_vertices(0.2f, 0.2f, 32, 16);
+
+    const p6::Shader shader = p6::load_shader(
+        "Shaders/3D.vs.glsl",
+        "Shaders/normals.fs.glsl"
+    );
 
     FreeflyCamera cam;
     cam.moveFront(-5);
@@ -103,10 +106,10 @@ int main(int argc, char* argv[])
 
     ObstacleCollection obstacle2;
 
-    obstacle.generateObstacles(2);
+    obstacle2.generateObstacles(3);
 
-    Food              seaweed;
-    Food              seaweed2;
+    Food              seaweed(glm::vec3(3, 1, 0), 0.5);
+    Food              seaweed2(glm::vec3(-3, 1, 0), 0.5);
     std::vector<Food> meals;
     meals.push_back(seaweed);
     meals.push_back(seaweed2);
@@ -187,8 +190,8 @@ int main(int argc, char* argv[])
 
         // MVMatrix = glm::translate(glm::mat4(1), {0.1, 0.1, 0.1});
 
-        seaweed.draw(ctx);
-        seaweed2.draw(ctx);
+        // seaweed.draw(ctx);
+        // seaweed2.draw(ctx);
 
         const auto for_each_obstacle = [&](ObstacleHandler const& handler) {
             for (auto const& obs : obstacle.getObstacles())
@@ -224,6 +227,29 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
         // glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
+        // food
+
+        MVMatrix = glm::translate(glm::mat4(1), glm::vec3(seaweed.getPos().x, seaweed.getPos().y, -5));
+        MVMatrix = glm::scale(
+            MVMatrix,
+            glm::vec3(2, 2, 2)
+        );
+
+        glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+        MVMatrix = glm::translate(glm::mat4(1), glm::vec3(seaweed2.getPos().x, seaweed2.getPos().y, -5));
+        MVMatrix = glm::scale(
+            MVMatrix,
+            glm::vec3(2, 2, 2)
+        );
+
+        glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+        // boids
         for (int i = 0; i < boids.sizeFishpack(); ++i)
         {
             std::vector<Fish> cur = boids.getFishPack();
@@ -241,6 +267,34 @@ int main(int argc, char* argv[])
             // MVMatrix = cam.getViewMatrix();
 
             // glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+            glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+        }
+
+        // obstacles
+
+        for (int i = 0; i < 3; ++i)
+        {
+            glm::vec3 pos = obstacle.getObstacles()[i].getPos();
+            float     siz = obstacle.getObstacles()[i].getRadius();
+
+            MVMatrix = glm::translate(glm::mat4(1), glm::vec3(pos.x, pos.y, -5));
+            MVMatrix = glm::scale(
+                MVMatrix,
+                glm::vec3(5 * siz, 5 * siz, 5 * siz)
+            );
+            glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+            pos      = obstacle2.getObstacles()[i].getPos();
+            siz      = obstacle2.getObstacles()[i].getRadius();
+            MVMatrix = glm::translate(glm::mat4(1), glm::vec3(pos.x, pos.y, -5));
+            MVMatrix = glm::scale(
+                MVMatrix,
+                glm::vec3(1 + siz, 1 + siz, 1 + siz)
+            );
             glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
             glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
             glDrawArrays(GL_TRIANGLES, 0, vertices.size());

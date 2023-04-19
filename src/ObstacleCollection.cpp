@@ -59,6 +59,6 @@ void ObstacleCollection::runObstacles(p6::Context& ctx)
     {
         obs.updateBorderPosition(ctx, i);
         ++i;
-        obs.draw(ctx);
+        // obs.draw(ctx);
     }
 }

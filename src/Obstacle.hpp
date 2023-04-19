@@ -21,4 +21,5 @@ public:
     void      updateBorderX(p6::Context& ctx);
     void      updateBorderPosition(p6::Context& ctx, int i);
     glm::vec3 getPos() const;
+    float     getRadius() { return _radius; };
 };

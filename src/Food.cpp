@@ -1,7 +1,7 @@
 #include "Food.hpp"
 
 Food::Food()
-    : _pos(p6::random::point(), 0), _radius(p6::random::number(0.03, 0.1f)) {}
+    : _pos(p6::random::number(-5, 5.f), p6::random::number(-3, 3.f), 0), _radius(p6::random::number(0.03, 0.1f)) {}
 
 Food::Food(glm::vec3 position, float rad)
     : _pos(position), _radius(rad) {}
