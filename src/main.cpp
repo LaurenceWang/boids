@@ -9,6 +9,7 @@
 #include "ObstacleCollection.hpp"
 #include "Params.hpp"
 #include "doctest/doctest.h"
+#include "glimac/FreeflyCamera.hpp"
 #include "glimac/sphere_vertices.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -37,6 +38,9 @@ int main(int argc, char* argv[])
         "Shaders/3D.vs.glsl",
         "Shaders/normals.fs.glsl"
     );
+
+    FreeflyCamera cam;
+    cam.moveFront(-5);
 
     GLint uniformMVP    = glGetUniformLocation(shader.id(), "uMVPMatrix");
     GLint uniformMV     = glGetUniformLocation(shader.id(), "uMVMatrix");
@@ -107,11 +111,79 @@ int main(int argc, char* argv[])
     meals.push_back(seaweed);
     meals.push_back(seaweed2);
 
+    bool Z = false;
+    bool Q = false;
+    bool S = false;
+    bool D = false;
     // Declare your infinite update loop.
 
     ctx.update = [&]() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ctx.background({0.33, 0.8, 0.98});
+
+        if (Z)
+        {
+            cam.moveFront(0.1);
+            // cam.moveFront(0.1);
+        }
+        if (Q)
+        {
+            // cam.moveLeft(0.1);
+            cam.rotateLeft(0.1);
+        }
+        if (S)
+        {
+            cam.moveFront(-0.1);
+        }
+        if (D)
+        {
+            cam.rotateLeft(-0.1);
+
+            // cam.moveLeft(-0.1);
+        }
+
+        ctx.key_pressed = [&Z, &Q, &S, &D](const p6::Key& key) {
+            if (key.physical == GLFW_KEY_W)
+            {
+                Z = true;
+            }
+            if (key.physical == GLFW_KEY_A)
+            {
+                Q = true;
+            }
+            if (key.physical == GLFW_KEY_S)
+            {
+                S = true;
+            }
+            if (key.physical == GLFW_KEY_D)
+            {
+                D = true;
+            }
+        };
+
+        ctx.key_released = [&Z, &Q, &S, &D](const p6::Key& key) {
+            if (key.physical == GLFW_KEY_W)
+            {
+                Z = false;
+            }
+            if (key.physical == GLFW_KEY_A)
+            {
+                Q = false;
+            }
+            if (key.physical == GLFW_KEY_S)
+            {
+                S = false;
+            }
+            if (key.physical == GLFW_KEY_D)
+            {
+                D = false;
+            }
+        };
+
+        /*ctx.mouse_dragged = [&cam](const p6::MouseDrag& button) {
+            cam.rotateLeft(-button.delta.x * 50);
+            cam.rotateUp(button.delta.y * 50);
+        };*/
 
         // MVMatrix = glm::translate(glm::mat4(1), {0.1, 0.1, 0.1});
 
@@ -139,27 +211,34 @@ int main(int argc, char* argv[])
         glBindVertexArray(vao);
         glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
         glm::mat4 MVMatrix   = glm::translate(glm::mat4(1), glm::vec3(0., 0., -5.));
-        MVMatrix             = glm::scale(
+        /*MVMatrix             = glm::scale(
             MVMatrix,
             glm::vec3(0.5, 0.5, 0.5)
-        );
+        );*/
+        // glm::mat4 MVMatrix = cam.getViewMatrix();
+        //  MVMatrix               = glm::scale(MVMatrix, glm::vec3(p.fishSize * 25, p.fishSize * 25, p.fishSize * 25));
         glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
         glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-        // glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        // glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+        glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
         // glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
         for (int i = 0; i < boids.sizeFishpack(); ++i)
         {
-            std::vector<Fish> cur      = boids.getFishPack();
-            glm::vec3         pos      = cur[i].getPos();
-            glm::mat4         MVMatrix = glm::translate(glm::mat4(1), glm::vec3(pos.x, pos.y, -5.));
-            // MVMatrix = glm::translate(glm::mat4(1), pos);
+            std::vector<Fish> cur = boids.getFishPack();
+            glm::vec3         pos = cur[i].getPos();
+
+            // MVMatrix = glm::translate(MVMatrix, glm::vec3(pos.x, pos.y, pos.z));
+
+            MVMatrix = glm::translate(glm::mat4(1), glm::vec3(pos.x, pos.y, -5));
+            //  MVMatrix = glm::translate(glm::mat4(1), pos);
             MVMatrix = glm::scale(
                 MVMatrix,
                 glm::vec3(p.fishSize * 25, p.fishSize * 25, p.fishSize * 25)
             );
+
+            // MVMatrix = cam.getViewMatrix();
 
             // glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
             glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
