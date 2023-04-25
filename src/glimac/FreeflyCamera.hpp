@@ -14,9 +14,10 @@ private:
     void computeDirectionVectors()
     {
         m_FrontVector = glm::vec3(glm::cos(m_fTheta) * glm::sin(m_fPhi), glm::sin(m_fTheta), glm::cos(m_fTheta) * glm::cos(m_fPhi));
-        m_LeftVector  = glm::vec3(glm::sin(m_fPhi + glm::pi<float>() / 2.0f), 0., glm::cos(m_fPhi + glm::pi<float>() / 2.0f));
-        m_UpVector    = glm::cross(m_LeftVector, m_FrontVector);
-        ;
+
+        m_LeftVector = glm::vec3(glm::sin(m_fPhi + (glm::pi<float>() / 2.f)), 0, glm::cos(m_fPhi + (glm::pi<float>() / 2.f)));
+
+        m_UpVector = glm::cross(m_FrontVector, m_LeftVector);
     }
 
 public:
@@ -41,15 +42,13 @@ public:
 
     void rotateLeft(float degrees)
     {
-        float radians = glm::radians(degrees);
-        m_fPhi += radians;
+        m_fPhi += glm::radians(degrees);
         computeDirectionVectors();
     }
 
     void rotateUp(float degrees)
     {
-        float radians = glm::radians(degrees);
-        m_fTheta += radians;
+        m_fTheta += glm::radians(degrees);
         computeDirectionVectors();
     }
 

@@ -160,6 +160,7 @@ glm::vec3 Fish::foodForces(std::vector<Food> const& food, int boidsLength) const
 
     for (const auto& f : food)
     {
+        // * 0.01f to pull more fish towards food
         fForce += glm::normalize(f.getPos() - _pos)
                   * 0.001f / glm::distance(f.getPos(), _pos);
     }

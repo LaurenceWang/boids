@@ -12,9 +12,16 @@ using ObstacleHandler = std::function<void(Obstacle const&)>;
 
 class Fish {
 private:
-    glm::vec3 _pos;
-    Speed     _s;
-    Family    _family;
+    glm::vec3         _pos;
+    Speed             _s;
+    Family            _family;
+    void              updatePosition(glm::vec3 position);
+    glm::vec3         separationForce(std::vector<Fish> const& boids, float& radius) const;
+    glm::vec3         alignmentForce(std::vector<Fish> const& boids, float& radius) const;
+    glm::vec3         cohesionForce(std::vector<Fish> const& boids, float& radius) const;
+    glm::vec3         obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle);
+    glm::vec3         foodForces(std::vector<Food> const& food, int boidsLength) const;
+    std::vector<Fish> getNeighbors(const std::vector<Fish>& boids, float& radius) const;
 
 public:
     Fish();
@@ -22,20 +29,12 @@ public:
     Fish(glm::vec3 position, Speed s, Family fam);
     ~Fish() = default;
 
-    void              drawFish(p6::Context& context) const;
-    void              updatePosition(glm::vec3 position);
-    void              move();
-    void              resize(float newSize);
-    std::vector<Fish> getNeighbors(const std::vector<Fish>& boids, float& radius) const;
-    glm::vec3         getPos() const;
-    glm::vec3         separationForce(std::vector<Fish> const& boids, float& radius) const;
-    glm::vec3         alignmentForce(std::vector<Fish> const& boids, float& radius) const;
-    glm::vec3         cohesionForce(std::vector<Fish> const& boids, float& radius) const;
-    void              applyForces(std::vector<Fish> const& boids, Params& p);
-    void              applyObstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle);
-    glm::vec3         obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle);
-
-    glm::vec3 foodForces(std::vector<Food> const& food, int boidsLength) const;
+    void      drawFish(p6::Context& context) const;
+    void      move();
+    void      resize(float newSize);
+    glm::vec3 getPos() const;
+    void      applyForces(std::vector<Fish> const& boids, Params& p);
+    void      applyObstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle);
 
     void applyFoodForces(std::vector<Food> const& food, int boidsLength);
 };
