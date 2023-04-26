@@ -39,17 +39,161 @@ int main(int argc, char* argv[])
 
     const p6::Shader shader = p6::load_shader(
         "Shaders/3D.vs.glsl",
-        "Shaders/normals.fs.glsl"
+        "Shaders/multiTex3D.fs.glsl"
     );
 
-    // FreeflyCamera cam;
-    // cam.moveFront(-5);
+    GLuint shaderID = shader.id();
 
-    GLint uniformMVP    = glGetUniformLocation(shader.id(), "uMVPMatrix");
-    GLint uniformMV     = glGetUniformLocation(shader.id(), "uMVMatrix");
-    GLint uniformNormal = glGetUniformLocation(shader.id(), "uNormalMatrix");
+    GLint uniformMVP    = glGetUniformLocation(shaderID, "uMVPMatrix");
+    GLint uniformMV     = glGetUniformLocation(shaderID, "uMVMatrix");
+    GLint uniformNormal = glGetUniformLocation(shaderID, "uNormalMatrix");
+    // GLint uFishTexture  = glGetUniformLocation(shaderID, "uFishTexture");
+    // GLint uMoonTexture  = glGetUniformLocation(shaderID, "uMoonTexture");
+
+    // glUniform1i(uFishTexture, 0);
+    //  glUniform1i(uMoonTexture, 1);
+
+    /********************TEXTURE LOADING***********************/
+
+    ///////////////fish
+    GLuint     fishTextureID = 0;
+    const auto textureFish   = p6::load_image_buffer("Assets/textures/fish.jpg");
+
+    glGenTextures(1, &fishTextureID);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, fishTextureID);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureFish.width(), textureFish.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureFish.data());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Unbind the texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     glEnable(GL_DEPTH_TEST);
+
+    ///////////////////moon
+    GLuint moonTextureID = 0;
+
+    const auto textureMoon = p6::load_image_buffer("Assets/textures/MoonMap.jpg");
+
+    glGenTextures(1, &moonTextureID);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, moonTextureID);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureMoon.width(), textureMoon.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureMoon.data());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Unbind the texture
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    //////////////////earth
+
+    GLuint earthTextureID = 0;
+
+    const auto textureEarth = p6::load_image_buffer("Assets/textures/EarthMap.jpg");
+
+    glGenTextures(1, &earthTextureID);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, earthTextureID);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureEarth.width(), textureEarth.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureEarth.data());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Unbind the texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /*****************************MODEL LOADING****************************/
+    std::vector<glimac::ShapeVertex> fishVertices;
+
+    std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
+    std::vector<glm::vec3>    temp_vertices;
+    std::vector<glm::vec2>    temp_uvs;
+    std::vector<glm::vec3>    temp_normals;
+
+    FILE* file = fopen("Assets/models/fish/model_371254902470.obj", "r");
+    if (file == NULL)
+    {
+        printf("Impossible to open the file !\n");
+        return false;
+    }
+
+    while (1)
+    {
+        char lineHeader[128];
+        // read the first word of the line
+        int res = fscanf(file, "%s", lineHeader);
+        if (res == EOF)
+        {
+            break;
+        }
+
+        if (strcmp(lineHeader, "v") == 0)
+        {
+            glm::vec3 vertex;
+            fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+            temp_vertices.push_back(vertex);
+        }
+        else if (strcmp(lineHeader, "vt") == 0)
+        {
+            glm::vec2 uv;
+            fscanf(file, "%f %f\n", &uv.x, &uv.y);
+            temp_uvs.push_back(uv);
+        }
+        else if (strcmp(lineHeader, "vn") == 0)
+        {
+            glm::vec3 normal;
+            fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+            temp_normals.push_back(normal);
+        }
+        else if (strcmp(lineHeader, "f") == 0)
+        {
+            std::string  vertex1, vertex2, vertex3;
+            unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+            int          matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+            if (matches != 9)
+            {
+                printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+                return false;
+            }
+            vertexIndices.push_back(vertexIndex[0]);
+            vertexIndices.push_back(vertexIndex[1]);
+            vertexIndices.push_back(vertexIndex[2]);
+            uvIndices.push_back(uvIndex[0]);
+            uvIndices.push_back(uvIndex[1]);
+            uvIndices.push_back(uvIndex[2]);
+            normalIndices.push_back(normalIndex[0]);
+            normalIndices.push_back(normalIndex[1]);
+            normalIndices.push_back(normalIndex[2]);
+        }
+    };
+
+    for (unsigned int i = 0; i < vertexIndices.size(); i++)
+    {
+        unsigned int vertexIndex = vertexIndices[i];
+        glm::vec3    vertex      = temp_vertices[vertexIndex - 1];
+
+        unsigned int normalsIndex = normalIndices[i];
+        glm::vec3    normal       = temp_normals[normalsIndex - 1];
+
+        unsigned int uvIndex   = uvIndices[i];
+        glm::vec2    texCoords = temp_uvs[uvIndex - 1];
+
+        fishVertices.push_back({vertex, normal, texCoords});
+    }
+
+    /***********************************VBO & VAOS*************************************/
 
     GLuint vbos[2];
     glGenBuffers(2, vbos);
@@ -60,8 +204,8 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbos[1]);
-    glBufferData(GL_ARRAY_BUFFER, vertices2.size() * sizeof(glimac::ShapeVertex), vertices2.data(), GL_STATIC_DRAW);
-
+    // glBufferData(GL_ARRAY_BUFFER, vertices2.size() * sizeof(glimac::ShapeVertex), vertices2.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, fishVertices.size() * sizeof(glimac::ShapeVertex), fishVertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     GLuint vaos[2];
@@ -98,6 +242,8 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
+
+    /********************BOIDS & CO INIT********************/
 
     // ctx.maximize_window();
     int    fishNb = 100;
@@ -141,19 +287,19 @@ int main(int argc, char* argv[])
 
     ctx.update = [&]() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        /*CAMERA MOUSE***/
+
         ctx.background({0.33, 0.8, 0.98});
 
         if (Z)
         {
             ViewMatrixCamera.moveFront(0.1);
-
-            // cam.moveFront(0.1);
         }
         if (Q)
         {
-            // cam.moveLeft(0.1);
-            ViewMatrixCamera.rotateLeft(0.1);
-            // std::cout << "lol" << std::endl;
+            ViewMatrixCamera.moveLeft(0.1);
+            // ViewMatrixCamera.rotateLeft(0.1);
         }
         if (S)
         {
@@ -161,9 +307,8 @@ int main(int argc, char* argv[])
         }
         if (D)
         {
-            ViewMatrixCamera.rotateLeft(-0.1);
-
-            // cam.moveLeft(-0.1);
+            // ViewMatrixCamera.rotateLeft(-0.1);
+            ViewMatrixCamera.moveLeft(-0.1);
         }
 
         ctx.key_pressed = [&Z, &Q, &S, &D](const p6::Key& key) {
@@ -204,12 +349,12 @@ int main(int argc, char* argv[])
             }
         };
 
-        /*ctx.mouse_dragged = [&cam](const p6::MouseDrag& button) {
-            cam.rotateLeft(-button.delta.x * 50);
-            cam.rotateUp(button.delta.y * 50);
-        };*/
+        ctx.mouse_dragged = [&ViewMatrixCamera](const p6::MouseDrag& button) {
+            ViewMatrixCamera.rotateLeft(-button.delta.x * 50);
+            ViewMatrixCamera.rotateUp(button.delta.y * 50);
+        };
 
-        // MVMatrix = glm::translate(glm::mat4(1), {0.1, 0.1, 0.1});
+        /*********************BOIDS & CO MATRIX*********************/
 
         // seaweed.draw(ctx);
         // seaweed2.draw(ctx);
@@ -233,24 +378,13 @@ int main(int argc, char* argv[])
         shader.use();
 
         glBindVertexArray(vaos[0]);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, earthTextureID);
 
         glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
-        // glm::mat4 MVMatrix   = ViewMatrixCamera.getViewMatrix();
-        //  glm::mat4 MVMatrix   = glm::translate(glm::mat4(1), glm::vec3(0., 0., -5.));
-        /*MVMatrix             = glm::scale(
-            MVMatrix,
-            glm::vec3(0.5, 0.5, 0.5)
-        );*/
-        // glm::mat4 MVMatrix = cam.getViewMatrix();
-        //  MVMatrix               = glm::scale(MVMatrix, glm::vec3(p.fishSize * 25, p.fishSize * 25, p.fishSize * 25));
-        /*glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
-        glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-        glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));*/
-        // glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+        /******* FOOD *******/
 
-        // food
         glm::mat4 Food1MVMatrix = ViewMatrixCamera.getViewMatrix();
         Food1MVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(seaweed.getPos().x, seaweed.getPos().y, -5));
         Food1MVMatrix           = glm::scale(
@@ -276,19 +410,22 @@ int main(int argc, char* argv[])
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         glBindVertexArray(0);
 
-        // boids
+        /******* BOIDS *******/
 
         glBindVertexArray(vaos[1]);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, fishTextureID);
+
         glm::mat4 boidMVMatrix = ViewMatrixCamera.getViewMatrix();
         for (int i = 0; i < boids.sizeFishpack(); ++i)
         {
             std::vector<Fish> cur = boids.getFishPack();
             glm::vec3         pos = cur[i].getPos();
 
-            // MVMatrix = glm::translate(MVMatrix, glm::vec3(pos.x, pos.y, pos.z));
-
             boidMVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(pos.x, pos.y, -5));
-            //  MVMatrix = glm::translate(glm::mat4(1), pos);
             boidMVMatrix = glm::scale(
                 boidMVMatrix,
                 glm::vec3(p.fishSize * 25, p.fishSize * 25, p.fishSize * 25)
@@ -296,17 +433,21 @@ int main(int argc, char* argv[])
 
             glm::mat4 boidNormalMatrix = glm::transpose(glm::inverse(boidMVMatrix));
 
-            // glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
             glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(boidMVMatrix));
             glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * boidMVMatrix));
             glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(boidNormalMatrix));
-            glDrawArrays(GL_TRIANGLES, 0, vertices2.size());
+            glDrawArrays(GL_TRIANGLES, 0, fishVertices.size());
         }
         glBindVertexArray(0);
 
-        // obstacles
+        /******* OBSTACLES *******/
 
         glBindVertexArray(vaos[0]);
+
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, moonTextureID);
 
         glm::mat4 obs1MVMatrix = ViewMatrixCamera.getViewMatrix();
         glm::mat4 obs2MVMatrix = ViewMatrixCamera.getViewMatrix();
@@ -344,4 +485,7 @@ int main(int argc, char* argv[])
     ctx.start();
     glDeleteVertexArrays(1, vaos);
     glDeleteBuffers(1, vbos);
+    glDeleteTextures(1, &earthTextureID);
+    glDeleteTextures(1, &moonTextureID);
+    glDeleteTextures(1, &fishTextureID);
 }
