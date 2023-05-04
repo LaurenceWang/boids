@@ -43,11 +43,32 @@ int main(int argc, char* argv[])
         "Shaders/multiTex3D.fs.glsl"
     );
 
-    GLuint shaderID = shader.id();
+    const p6::Shader lightShader = p6::load_shader(
+        "Shaders/3D.vs.glsl",
+        "Shaders/directionalLight.fs.glsl"
+    );
 
-    GLint uniformMVP    = glGetUniformLocation(shaderID, "uMVPMatrix");
-    GLint uniformMV     = glGetUniformLocation(shaderID, "uMVMatrix");
-    GLint uniformNormal = glGetUniformLocation(shaderID, "uNormalMatrix");
+    GLuint shaderID  = shader.id();
+    GLuint shaderID2 = lightShader.id();
+
+    GLint uniformMVP      = glGetUniformLocation(shaderID, "uMVPMatrix");
+    GLint uniformMV       = glGetUniformLocation(shaderID, "uMVMatrix");
+    GLint uniformNormal   = glGetUniformLocation(shaderID, "uNormalMatrix");
+    GLint uniformKd       = glGetUniformLocation(shaderID, "uKd");
+    GLint uniformKs       = glGetUniformLocation(shaderID, "uKs");
+    GLint uniformShine    = glGetUniformLocation(shaderID, "uShininess");
+    GLint uniformLightDir = glGetUniformLocation(shaderID, "uLightDir_vs");
+    GLint uniformLightInt = glGetUniformLocation(shaderID, "uLightIntensity");
+
+    GLint uniformMVP2      = glGetUniformLocation(shaderID2, "uMVPMatrix");
+    GLint uniformMV2       = glGetUniformLocation(shaderID2, "uMVMatrix");
+    GLint uniformNormal2   = glGetUniformLocation(shaderID2, "uNormalMatrix");
+    GLint uniformKd2       = glGetUniformLocation(shaderID2, "uKd");
+    GLint uniformKs2       = glGetUniformLocation(shaderID2, "uKs");
+    GLint uniformShine2    = glGetUniformLocation(shaderID2, "uShininess");
+    GLint uniformLightDir2 = glGetUniformLocation(shaderID2, "uLightDir_vs");
+    GLint uniformLightInt2 = glGetUniformLocation(shaderID2, "uLightIntensity");
+
     // GLint uFishTexture  = glGetUniformLocation(shaderID, "uFishTexture");
     // GLint uMoonTexture  = glGetUniformLocation(shaderID, "uMoonTexture");
 
@@ -170,6 +191,34 @@ int main(int argc, char* argv[])
 
     glBindVertexArray(0);
 
+    //////////
+
+    GLuint vbo2;
+    glGenBuffers(1, &vbo2);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+    glBufferData(GL_ARRAY_BUFFER, vertices2.size() * sizeof(glimac::ShapeVertex), vertices2.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint vao2;
+    glGenVertexArrays(1, &vao2);
+
+    glBindVertexArray(vao2);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, position)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, normal)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, texCoords)));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
     /********************BOIDS & CO INIT********************/
 
     // ctx.maximize_window();
@@ -210,7 +259,10 @@ int main(int argc, char* argv[])
     bool Q = false;
     bool S = false;
     bool D = false;
-    // Declare your infinite update loop.
+
+    glm::vec3 Kd = glm::vec3(glm::linearRand(0.f, 0.5f), glm::linearRand(0.f, 0.5f), glm::linearRand(0.f, 0.5f));
+    glm::vec3 Ks = glm::vec3(glm::linearRand(0.f, 1.f), glm::linearRand(0.f, 1.f), glm::linearRand(0.f, 1.f));
+    // Declare your infinite update loop
 
     ctx.update = [&]() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -407,11 +459,48 @@ int main(int argc, char* argv[])
             glUniformMatrix4fv(uniformNormal, 1, GL_FALSE, glm::value_ptr(obsNormalMatrix));
             glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         }
+        // glBindVertexArray(0);
+        /*************LIGHT*****************/
+
+        glBindVertexArray(vaos[0]);
+
+        lightShader.use();
+
+        glm::mat4 lightMVMatrix = ViewMatrixCamera.getViewMatrix();
+        lightMVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(0, 0, -5));
+        lightMVMatrix           = glm::scale(
+            lightMVMatrix,
+            glm::vec3(3, 3, 3)
+        );
+
+        glm::mat4 lightNormalMatrix = glm::transpose(glm::inverse(lightMVMatrix));
+
+        glUniformMatrix4fv(uniformMV2, 1, GL_FALSE, glm::value_ptr(lightMVMatrix));
+        glUniformMatrix4fv(uniformMVP2, 1, GL_FALSE, glm::value_ptr(ProjMatrix * lightMVMatrix));
+        glUniformMatrix4fv(uniformNormal2, 1, GL_FALSE, glm::value_ptr(lightNormalMatrix));
+
+        // glm::vec3 Kd       = glm::vec3(1, 1, 1);
+        // glm::vec3 Ks       = glm::vec3(1, 1, 1);
+        glm::vec4 lightDir = ViewMatrixCamera.getViewMatrix() * glm::vec4(1, 1, 1, 1);
+
+        glUniform3fv(uniformKd2, 1, glm::value_ptr(Kd));
+        glUniform3fv(uniformKs2, 1, glm::value_ptr(Ks));
+        glUniform1f(uniformShine2, 4.);
+
+        glUniform3fv(uniformLightDir2, 1, glm::value_ptr(lightDir));
+
+        // glUniform3fv(uniformLightDir2, 1, glm::value_ptr(glm::vec3(glm::rotate(ViewMatrixCamera.getViewMatrix(), ctx.time(), glm::vec3(0, 1, 0)) * glm::vec4(1, 1, 0, 1))));
+        glUniform3fv(uniformLightInt2, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+        glBindVertexArray(0);
     };
 
     // Should be done last. It starts the infinite loop.
     ctx.start();
     glDeleteVertexArrays(1, vaos);
+    glDeleteVertexArrays(1, &vao2);
+    glDeleteVertexArrays(1, &vbo2);
     glDeleteBuffers(1, vbos);
     glDeleteTextures(1, &earthTextureID);
     glDeleteTextures(1, &moonTextureID);
