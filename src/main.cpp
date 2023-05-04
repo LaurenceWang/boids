@@ -45,20 +45,15 @@ int main(int argc, char* argv[])
 
     const p6::Shader lightShader = p6::load_shader(
         "Shaders/3D.vs.glsl",
-        "Shaders/directionalLight.fs.glsl"
+        "Shaders/pointLight.fs.glsl"
     );
 
     GLuint shaderID  = shader.id();
     GLuint shaderID2 = lightShader.id();
 
-    GLint uniformMVP      = glGetUniformLocation(shaderID, "uMVPMatrix");
-    GLint uniformMV       = glGetUniformLocation(shaderID, "uMVMatrix");
-    GLint uniformNormal   = glGetUniformLocation(shaderID, "uNormalMatrix");
-    GLint uniformKd       = glGetUniformLocation(shaderID, "uKd");
-    GLint uniformKs       = glGetUniformLocation(shaderID, "uKs");
-    GLint uniformShine    = glGetUniformLocation(shaderID, "uShininess");
-    GLint uniformLightDir = glGetUniformLocation(shaderID, "uLightDir_vs");
-    GLint uniformLightInt = glGetUniformLocation(shaderID, "uLightIntensity");
+    GLint uniformMVP    = glGetUniformLocation(shaderID, "uMVPMatrix");
+    GLint uniformMV     = glGetUniformLocation(shaderID, "uMVMatrix");
+    GLint uniformNormal = glGetUniformLocation(shaderID, "uNormalMatrix");
 
     GLint uniformMVP2      = glGetUniformLocation(shaderID2, "uMVPMatrix");
     GLint uniformMV2       = glGetUniformLocation(shaderID2, "uMVMatrix");
@@ -67,6 +62,7 @@ int main(int argc, char* argv[])
     GLint uniformKs2       = glGetUniformLocation(shaderID2, "uKs");
     GLint uniformShine2    = glGetUniformLocation(shaderID2, "uShininess");
     GLint uniformLightDir2 = glGetUniformLocation(shaderID2, "uLightDir_vs");
+    GLint uniformLightPos2 = glGetUniformLocation(shaderID2, "uLightPos_vs");
     GLint uniformLightInt2 = glGetUniformLocation(shaderID2, "uLightIntensity");
 
     // GLint uFishTexture  = glGetUniformLocation(shaderID, "uFishTexture");
@@ -260,9 +256,9 @@ int main(int argc, char* argv[])
     bool S = false;
     bool D = false;
 
-    glm::vec3 Kd = glm::vec3(glm::linearRand(0.f, 0.5f), glm::linearRand(0.f, 0.5f), glm::linearRand(0.f, 0.5f));
-    glm::vec3 Ks = glm::vec3(glm::linearRand(0.f, 1.f), glm::linearRand(0.f, 1.f), glm::linearRand(0.f, 1.f));
-    // Declare your infinite update loop
+    // glm::vec3 Kd = glm::vec3(glm::linearRand(0.f, 0.5f), glm::linearRand(0.f, 0.5f), glm::linearRand(0.f, 0.5f));
+    // glm::vec3 Ks = glm::vec3(glm::linearRand(0.f, 1.f), glm::linearRand(0.f, 1.f), glm::linearRand(0.f, 1.f));
+    //  Declare your infinite update loop
 
     ctx.update = [&]() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -470,7 +466,7 @@ int main(int argc, char* argv[])
         lightMVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(0, 0, -5));
         lightMVMatrix           = glm::scale(
             lightMVMatrix,
-            glm::vec3(3, 3, 3)
+            glm::vec3(2, 2, 2)
         );
 
         glm::mat4 lightNormalMatrix = glm::transpose(glm::inverse(lightMVMatrix));
@@ -479,18 +475,20 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(uniformMVP2, 1, GL_FALSE, glm::value_ptr(ProjMatrix * lightMVMatrix));
         glUniformMatrix4fv(uniformNormal2, 1, GL_FALSE, glm::value_ptr(lightNormalMatrix));
 
-        // glm::vec3 Kd       = glm::vec3(1, 1, 1);
-        // glm::vec3 Ks       = glm::vec3(1, 1, 1);
-        glm::vec4 lightDir = ViewMatrixCamera.getViewMatrix() * glm::vec4(1, 1, 1, 1);
+        glm::vec3 Kd = glm::vec3(1, 1, 1);
+        glm::vec3 Ks = glm::vec3(1, 1, 1);
+        //  glm::vec4 lightDir = ViewMatrixCamera.getViewMatrix() * glm::vec4(1, 1, -5, 1);
+        glm::vec4 lightDir = lightMVMatrix * glm::vec4(1, 0, 1, 1);
 
         glUniform3fv(uniformKd2, 1, glm::value_ptr(Kd));
         glUniform3fv(uniformKs2, 1, glm::value_ptr(Ks));
-        glUniform1f(uniformShine2, 4.);
+        glUniform1f(uniformShine2, 0.5);
+        glUniform3fv(uniformLightPos2, 1, glm::value_ptr(lightDir));
 
-        glUniform3fv(uniformLightDir2, 1, glm::value_ptr(lightDir));
-
-        // glUniform3fv(uniformLightDir2, 1, glm::value_ptr(glm::vec3(glm::rotate(ViewMatrixCamera.getViewMatrix(), ctx.time(), glm::vec3(0, 1, 0)) * glm::vec4(1, 1, 0, 1))));
-        glUniform3fv(uniformLightInt2, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+        // glUniform3fv(uniformLightDir2, 1, glm::value_ptr(lightDir));
+        // glUniform3fv(uniformLightPos2, 1, glm::value_ptr(ViewMatrixCamera.getViewMatrix() * glm::vec4(1, 1, 0, 1)));
+        //  glUniform3fv(uniformLightDir2, 1, glm::value_ptr(glm::vec3(glm::rotate(ViewMatrixCamera.getViewMatrix(), ctx.time(), glm::vec3(0, 1, 0)) * glm::vec4(1, 1, 0, 1))));
+        glUniform3fv(uniformLightInt2, 1, glm::value_ptr(glm::vec3(8, 8, 8)));
 
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         glBindVertexArray(0);
