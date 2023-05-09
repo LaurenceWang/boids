@@ -181,12 +181,12 @@ int main(int argc, char* argv[])
     // bool   nbChanged   = false;
     // bool   sizeChanged = false;
 
-    Boids boids;
-    boids.generateFish(fishNb, 0);
+    Boids boids(fishNb, 0);
+    // boids.generateFish(fishNb, 0);
 
     int   fishNb2 = 20;
-    Boids boids2;
-    boids.generateFish(fishNb2, 1);
+    Boids boids2(fishNb2, 1);
+    // boids.generateFish(fishNb2, 1);
 
     imGuiInit(&ctx, p, fishNb, boids);
 

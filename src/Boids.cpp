@@ -9,6 +9,13 @@ Boids::Boids(std::vector<Fish>& fish)
     : _fishpack(fish)
 {}
 
+Boids::Boids(int nbFish, int fam)
+{
+    std::vector<Fish> f;
+    _fishpack = f;
+    generateFish(nbFish, fam);
+}
+
 Boids::Boids()
 {
     std::vector<Fish> f;
