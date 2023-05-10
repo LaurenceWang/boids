@@ -175,7 +175,7 @@ void Fish::applyFoodForces(std::vector<Food> const& food, int boidsLength)
     glm::vec3 speed = _s.getDir() * _s.getVel();
     speed += foodForces(food, boidsLength);
     _s.setVel(speed.x);
-    _s.setDir({1, speed.y / _s.getVel(), 0});
+    _s.setDir({1, speed.y / _s.getVel(), 1});
 }
 
 std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radius) const
