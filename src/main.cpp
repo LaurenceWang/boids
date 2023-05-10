@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
     FILE* file = fopen("Assets/models/fish/model_371254902470.obj", "r");
     if (file == NULL)
     {
-        printf("Impossible to open the file !\n");
+        printf("Impossible to open twee file !\n");
         return false;
     }
 
@@ -388,9 +388,9 @@ int main(int argc, char* argv[])
         glm::mat4 Food1MVMatrix = ViewMatrixCamera.getViewMatrix();
         Food1MVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(seaweed.getPos().x, seaweed.getPos().y, -5));
         Food1MVMatrix           = glm::scale(
-            Food1MVMatrix,
-            glm::vec3(2, 2, 2)
-        );
+                      Food1MVMatrix,
+                      glm::vec3(2, 2, 2)
+                  );
         glm::mat4 Food1NormalMatrix = glm::transpose(glm::inverse(Food1MVMatrix));
         glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(Food1MVMatrix));
         glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * Food1MVMatrix));
@@ -400,9 +400,9 @@ int main(int argc, char* argv[])
         glm::mat4 Food2MVMatrix = ViewMatrixCamera.getViewMatrix();
         Food2MVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(seaweed2.getPos().x, seaweed2.getPos().y, -5));
         Food2MVMatrix           = glm::scale(
-            Food2MVMatrix,
-            glm::vec3(2, 2, 2)
-        );
+                      Food2MVMatrix,
+                      glm::vec3(2, 2, 2)
+                  );
         glm::mat4 Food2NormalMatrix = glm::transpose(glm::inverse(Food2MVMatrix));
         glUniformMatrix4fv(uniformMV, 1, GL_FALSE, glm::value_ptr(Food2MVMatrix));
         glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(ProjMatrix * Food2MVMatrix));
