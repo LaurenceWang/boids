@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
 
     // ctx.maximize_window();
     int    fishNb = 100;
-    Params p{.separation = 0.043f, .alignment = 0.048f, .steer = 2.5f, .neighRadius = 0.5f, .fishSize = 0.02f};
+    Params p{.separation = 0.070f, .alignment = 0.040f, .steer = 1.6f, .neighRadius = 0.5f, .fishSize = 0.02f};
     // bool   nbChanged   = false;
     // bool   sizeChanged = false;
 
