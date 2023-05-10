@@ -19,7 +19,8 @@ struct Program {
     GLint uLightDir_vs;
     GLint uLightIntensity;
 
-    // ObstaclesProgram() : m_Program(p6::load_shader("shaders/3D.vs.glsl", "shaders/pointlight.fs.glsl"))
+    // Program(Program& prog) = default;
+
     Program()
         : _Program(p6::load_shader("Shaders/3D.vs.glsl", "Shaders/directionalLight.fs.glsl"))
     {

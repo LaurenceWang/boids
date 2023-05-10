@@ -7,6 +7,7 @@
 #include "Boids.hpp"
 #include "Food.hpp"
 #include "Model.hpp"
+#include "Object.hpp"
 #include "ObstacleCollection.hpp"
 #include "Params.hpp"
 #include "Program.hpp"
@@ -110,6 +111,10 @@ int main(int argc, char* argv[])
     /*****************************MODEL LOADING****************************/
 
     Model fishV("Assets/models/fish/model_371254902470.obj");
+
+    /*****OBJECT CREATION******/
+
+    Object test(Objects, fishV);
 
     /***********************************VBO & VAOS*************************************/
 
@@ -358,11 +363,11 @@ int main(int argc, char* argv[])
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, fishTextureID);
 
-        glm::mat4 boidMVMatrix = ViewMatrixCamera.getViewMatrix();
-        for (int i = 0; i < boids.sizeFishpack(); ++i)
+        glm::mat4         boidMVMatrix = ViewMatrixCamera.getViewMatrix();
+        std::vector<Fish> cur          = boids.getFishPack();
+        for (int i = 0; i < cur.size(); ++i)
         {
-            std::vector<Fish> cur = boids.getFishPack();
-            glm::vec3         pos = cur[i].getPos();
+            glm::vec3 pos = cur[i].getPos();
 
             boidMVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(pos.x, pos.y, -5));
             boidMVMatrix = glm::scale(
@@ -379,6 +384,8 @@ int main(int argc, char* argv[])
             glDrawArrays(GL_TRIANGLES, 0, fishV.getVertextSize());
         }
         glBindVertexArray(0);
+
+        // test.draw(ViewMatrixCamera, fishTextureID, ctx, glm::vec3 position, p.fishSize * 25, boids.sizeFishpack())
 
         /*************************** OBSTACLES *************************/
 
@@ -481,10 +488,13 @@ int main(int argc, char* argv[])
 
         glDrawArrays(GL_TRIANGLES, 0, vertices2.size());
         glBindVertexArray(0);
+
+        test.draw(ViewMatrixCamera, fishTextureID, ctx, glm::vec3(2, 2, -5), p.fishSize * 25, 1);
     };
 
     // Should be done last. It starts the infinite loop.
     ctx.start();
+    test.deleteVBO_VAO();
     glDeleteVertexArrays(1, vaos);
     glDeleteBuffers(1, vbos);
     glDeleteTextures(1, &earthTextureID);

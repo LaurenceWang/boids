@@ -93,3 +93,8 @@ int Model::getVertextSize() const
 {
     return _vertices.size();
 }
+
+std::vector<glimac::ShapeVertex> Model::getVertices()
+{
+    return _vertices;
+}
