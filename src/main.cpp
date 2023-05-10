@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
 
     // ctx.maximize_window();
     int    fishNb = 100;
-    Params p{.separation = 0.070f, .alignment = 0.040f, .steer = 1.6f, .neighRadius = 0.5f, .fishSize = 0.02f};
+    Params p{.separation = 0.070f, .alignment = 0.040f, .steer = 6.f, .neighRadius = 0.5f, .fishSize = 0.02f};
     // bool   nbChanged   = false;
     // bool   sizeChanged = false;
 
@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
 
     obstacle2.generateObstacles(3);
 
-    Food              seaweed(glm::vec3(3, 1, 0), 0.5);
+    Food              seaweed(glm::vec3(3, 1, 4), 0.5);
     Food              seaweed2(glm::vec3(-3, 1, 0), 0.5);
     std::vector<Food> meals;
     meals.push_back(seaweed);
