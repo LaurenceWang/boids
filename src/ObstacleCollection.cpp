@@ -10,6 +10,11 @@ ObstacleCollection::ObstacleCollection()
     _obstacles = o;
 }
 
+ObstacleCollection::ObstacleCollection(int nbObstacles)
+{
+    generateObstacles(nbObstacles);
+}
+
 void ObstacleCollection::generateObstacles(int nbObstacles)
 {
     for (int i = 0; i < nbObstacles; ++i)

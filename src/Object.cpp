@@ -1,9 +1,25 @@
 #include "Object.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+Object::Object(Program& program, std::vector<glimac::ShapeVertex> vertices, Texture texture)
+    : _program(program), _vertices(vertices), _texture(texture)
+{
+    createVBO();
+    createVAO();
+}
+
+Object::Object(Program& program, Model vertices, Texture texture)
+    : _program(program), _vertices(vertices.getVertices()), _texture(texture)
+{
+    createVBO();
+    createVAO();
+}
+
 Object::Object(Program& program, std::vector<glimac::ShapeVertex> vertices)
     : _program(program), _vertices(vertices)
 {
+    Texture defTex("Assets/textures/default_tex.png", 0);
+    _texture = defTex;
     createVBO();
     createVAO();
 }
@@ -45,25 +61,18 @@ void Object::createVAO()
     glBindVertexArray(0);
 }
 
-void Object::createDrawEnvironment(GLuint texture, p6::Context& ctx) // TODO if needed vector of Texture
+void Object::createDrawEnvironment(p6::Context& ctx) // TODO if needed vector of Texture, passing entire texture of just GLuint bc might need to
 {
     _program._Program.use(); // TODO change confusing names
     glBindVertexArray(_vao);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, _texture.getTextureID());
     _ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
 }
 
-void Object::draw(const FreeflyCamera& ViewMatrixCamera, p6::Context& ctx, glm::vec3 position, float scaleSize)
+void Object::draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, float scaleSize)
 {
-    /*_program._Program.use(); // TODO change confusing names
-    glBindVertexArray(_vao);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);*/
-
-    // glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
     glm::mat4 MVMatrix = ViewMatrixCamera.getViewMatrix();
 
     MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(position.x, position.y, position.z));

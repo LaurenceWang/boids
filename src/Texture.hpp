@@ -4,12 +4,14 @@
 
 class Texture {
 private:
-public:
     GLuint _textureID;
     int    _textureOrder;
+
+public:
     explicit Texture(const std::filesystem::path& texturePath, GLuint textureID);
-    void Bind() const;
-    void UnBind() const;
+    Texture() = default;
+    void bind() const;
+    void unBind() const;
     void deleteTex() const;
 
     GLuint getTextureID()

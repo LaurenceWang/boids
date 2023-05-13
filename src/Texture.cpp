@@ -16,13 +16,13 @@ Texture::Texture(const std::filesystem::path& texturePath, GLuint textureID)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::Bind() const
+void Texture::bind() const
 {
     glActiveTexture(GL_TEXTURE0 + _textureOrder);
     glBindTexture(GL_TEXTURE_2D, _textureID);
 }
 
-void Texture::UnBind() const
+void Texture::unBind() const
 {
     glActiveTexture(GL_TEXTURE0 + _textureOrder);
     glBindTexture(GL_TEXTURE_2D, 0);
