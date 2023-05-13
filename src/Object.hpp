@@ -12,6 +12,7 @@ private:
     GLuint                           _vao;
     Program&                         _program;
     std::vector<glimac::ShapeVertex> _vertices;
+    glm::mat4                        _ProjMatrix;
 
     void createVBO();
     void createVAO();
@@ -21,6 +22,8 @@ public:
     Object(Program& program, Model vertices);
     ~Object() = default;
 
-    void draw(const FreeflyCamera& ViewMatrixCamera, GLuint& texture, p6::Context& ctx, glm::vec3 position, float scaleSize, int nb);
+    void createDrawEnvironment(GLuint& texture, p6::Context& ctx);
+    void draw(const FreeflyCamera& ViewMatrixCamera, p6::Context& ctx, glm::vec3 position, float scaleSize);
+    void debindVAO();
     void deleteVBO_VAO();
 };

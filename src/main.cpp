@@ -115,6 +115,8 @@ int main(int argc, char* argv[])
     /*****OBJECT CREATION******/
 
     Object test(Objects, fishV);
+    Object obsta(Objects, vertices);
+    Object food(Objects, vertices);
 
     /***********************************VBO & VAOS*************************************/
 
@@ -229,7 +231,8 @@ int main(int argc, char* argv[])
 
         /***********************CAMERA MOUSE************************/
 
-        ctx.background({0.33, 0.8, 0.98});
+        // ctx.background({0.33, 0.8, 0.98});
+        ctx.background({0, 0, 0});
 
         if (Z)
         {
@@ -319,116 +322,47 @@ int main(int argc, char* argv[])
         glUniform1i(uFishTexture, 0);
         glUniform1i(uMoonTexture, 1);
 
-        glBindVertexArray(vaos[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, earthTextureID);
-
         glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
 
         /*************************** FOOD *******************/
 
-        glm::mat4 Food1MVMatrix = ViewMatrixCamera.getViewMatrix();
-        Food1MVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(seaweed.getPos().x, seaweed.getPos().y, -5));
-        Food1MVMatrix           = glm::scale(
-            Food1MVMatrix,
-            glm::vec3(2, 2, 2)
-        );
-        glm::mat4 Food1NormalMatrix = glm::transpose(glm::inverse(Food1MVMatrix));
-        glUniformMatrix4fv(Objects.uMVMatrix, 1, GL_FALSE, glm::value_ptr(Food1MVMatrix));
-        glUniformMatrix4fv(Objects.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * Food1MVMatrix));
-        glUniformMatrix4fv(Objects.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(Food1NormalMatrix));
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-        glm::mat4 Food2MVMatrix = ViewMatrixCamera.getViewMatrix();
-        Food2MVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(seaweed2.getPos().x, seaweed2.getPos().y, -5));
-        Food2MVMatrix           = glm::scale(
-            Food2MVMatrix,
-            glm::vec3(2, 2, 2)
-        );
-        glm::mat4 Food2NormalMatrix = glm::transpose(glm::inverse(Food2MVMatrix));
-        glUniformMatrix4fv(Objects.uMVMatrix, 1, GL_FALSE, glm::value_ptr(Food2MVMatrix));
-        glUniformMatrix4fv(Objects.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * Food2MVMatrix));
-        glUniformMatrix4fv(Objects.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(Food2NormalMatrix));
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-        glBindVertexArray(0);
+        food.createDrawEnvironment(earthTextureID, ctx);
+        food.draw(ViewMatrixCamera, ctx, glm::vec3(seaweed.getPos().x, seaweed.getPos().y, -5), 2);
+        food.draw(ViewMatrixCamera, ctx, glm::vec3(seaweed2.getPos().x, seaweed2.getPos().y, -5), 2);
+        food.debindVAO();
 
         /*********************** BOIDS **************************/
 
-        glBindVertexArray(vaos[1]);
+        test.createDrawEnvironment(fishTextureID, ctx);
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, fishTextureID);
-
-        glm::mat4         boidMVMatrix = ViewMatrixCamera.getViewMatrix();
-        std::vector<Fish> cur          = boids.getFishPack();
+        std::vector<Fish> cur = boids.getFishPack();
         for (int i = 0; i < cur.size(); ++i)
         {
             glm::vec3 pos = cur[i].getPos();
 
-            boidMVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(pos.x, pos.y, -5));
-            boidMVMatrix = glm::scale(
-                boidMVMatrix,
-                glm::vec3(p.fishSize * 25, p.fishSize * 25, p.fishSize * 25)
-            );
-
-            glm::mat4 boidNormalMatrix = glm::transpose(glm::inverse(boidMVMatrix));
-
-            glUniformMatrix4fv(Objects.uMVMatrix, 1, GL_FALSE, glm::value_ptr(boidMVMatrix));
-            glUniformMatrix4fv(Objects.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * boidMVMatrix));
-            glUniformMatrix4fv(Objects.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(boidNormalMatrix));
-            // glDrawArrays(GL_TRIANGLES, 0, fishVertices.size());
-            glDrawArrays(GL_TRIANGLES, 0, fishV.getVertextSize());
+            test.draw(ViewMatrixCamera, ctx, glm::vec3(pos.x, pos.y, -5), p.fishSize * 25);
         }
-        glBindVertexArray(0);
-
-        // test.draw(ViewMatrixCamera, fishTextureID, ctx, glm::vec3 position, p.fishSize * 25, boids.sizeFishpack())
+        test.debindVAO();
 
         /*************************** OBSTACLES *************************/
 
-        glBindVertexArray(vaos[0]);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, moonTextureID);
-
-        glm::mat4 obs1MVMatrix = ViewMatrixCamera.getViewMatrix();
-        glm::mat4 obs2MVMatrix = ViewMatrixCamera.getViewMatrix();
+        obsta.createDrawEnvironment(moonTextureID, ctx);
 
         for (int i = 0; i < 3; ++i)
         {
-            glm::vec3 pos = obstacle.getObstacles()[i].getPos();
-            float     siz = obstacle.getObstacles()[i].getRadius();
+            glm::vec3 pos  = obstacle.getObstacles()[i].getPos();
+            float     siz  = obstacle.getObstacles()[i].getRadius();
+            glm::vec3 pos2 = obstacle2.getObstacles()[i].getPos();
+            float     siz2 = obstacle2.getObstacles()[i].getRadius();
 
-            obs1MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(pos.x, pos.y, -5));
-            obs1MVMatrix = glm::scale(
-                obs1MVMatrix,
-                glm::vec3(5 * siz, 5 * siz, 5 * siz)
-            );
-            glUniformMatrix4fv(Objects.uMVMatrix, 1, GL_FALSE, glm::value_ptr(obs1MVMatrix));
-            glUniformMatrix4fv(Objects.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * obs1MVMatrix));
-            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-            pos          = obstacle2.getObstacles()[i].getPos();
-            siz          = obstacle2.getObstacles()[i].getRadius();
-            obs2MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(pos.x, pos.y, -5));
-            obs2MVMatrix = glm::scale(
-                obs2MVMatrix,
-                glm::vec3(1 + siz, 1 + siz, 1 + siz)
-            );
-            glm::mat4 obsNormalMatrix = glm::transpose(glm::inverse(obs2MVMatrix));
-            glUniformMatrix4fv(Objects.uMVMatrix, 1, GL_FALSE, glm::value_ptr(obs2MVMatrix));
-            glUniformMatrix4fv(Objects.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * obs2MVMatrix));
-            glUniformMatrix4fv(Objects.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(obsNormalMatrix));
-            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+            obsta.draw(ViewMatrixCamera, ctx, glm::vec3(pos.x, pos.y, -5), 5 * siz);
+            obsta.draw(ViewMatrixCamera, ctx, glm::vec3(pos2.x, pos2.y, -5), 5 * siz2);
         };
 
-        /*************LIGHT*****************/
+        obsta.debindVAO();
 
+        /*************LIGHT*****************/
+        glBindVertexArray(vaos[0]);
         light._Program.use();
 
         glm::mat4 lightMVMatrix = ViewMatrixCamera.getViewMatrix();
@@ -488,13 +422,13 @@ int main(int argc, char* argv[])
 
         glDrawArrays(GL_TRIANGLES, 0, vertices2.size());
         glBindVertexArray(0);
-
-        test.draw(ViewMatrixCamera, fishTextureID, ctx, glm::vec3(2, 2, -5), p.fishSize * 25, 1);
     };
 
     // Should be done last. It starts the infinite loop.
     ctx.start();
     test.deleteVBO_VAO();
+    food.deleteVBO_VAO();
+    obsta.deleteVBO_VAO();
     glDeleteVertexArrays(1, vaos);
     glDeleteBuffers(1, vbos);
     glDeleteTextures(1, &earthTextureID);
