@@ -32,6 +32,7 @@ void Fish::updatePosition(glm::vec3 position)
 
 void Fish::move()
 {
+    // std::cout << "ancienne pos = " << this->getPos().z;
     glm::vec3 newPos = glm::vec3(this->_s.getDir() * this->_s.getVel());
     updatePosition(newPos);
 }
@@ -119,8 +120,8 @@ void Fish::applyForces(std::vector<Fish> const& boids, Params& p)
     speed += steeringForce;
     speed *= 0.05;
 
-    _s.setVel(speed.x);
-    _s.setDir({1, speed.y / _s.getVel(), 0});
+    _s.setVel((speed.z + speed.x + speed.y) / 3.);
+    _s.setDir({speed.x / _s.getVel(), speed.y / _s.getVel(), speed.z / _s.getVel()});
 }
 
 void Fish::applyObstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
@@ -128,8 +129,8 @@ void Fish::applyObstacleForces(std::function<void(ObstacleHandler)> const& for_e
     glm::vec3 speed = _s.getDir() * _s.getVel();
     speed += obstacleForces(for_each_obstacle);
 
-    _s.setVel(speed.x);
-    _s.setDir({1, speed.y / _s.getVel(), 0});
+    _s.setVel((speed.z + speed.x + speed.y) / 3.);
+    _s.setDir({speed.x / _s.getVel(), speed.y / _s.getVel(), speed.z / _s.getVel()});
 }
 
 glm::vec3 Fish::obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
@@ -174,8 +175,8 @@ void Fish::applyFoodForces(std::vector<Food> const& food, int boidsLength)
 {
     glm::vec3 speed = _s.getDir() * _s.getVel();
     speed += foodForces(food, boidsLength);
-    _s.setVel(speed.x);
-    _s.setDir({1, speed.y / _s.getVel(), 0});
+    _s.setVel((speed.z + speed.x + speed.y) / 3.);
+    _s.setDir({speed.x / _s.getVel(), speed.y / _s.getVel(), speed.z / _s.getVel()});
 }
 
 std::vector<Fish> Fish::getNeighbors(const std::vector<Fish>& boids, float& radius) const

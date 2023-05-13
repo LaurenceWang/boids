@@ -1,7 +1,7 @@
 #include "Obstacle.hpp"
 
 Obstacle::Obstacle()
-    : _pos(p6::random::number(-5, 5.f), p6::random::number(-3, 3.f), 0), _radius(p6::random::number(0.3, 0.8f)), _isBorderX(false), _isBorderY(false) {}
+    : _pos(p6::random::number(-5, 5.f), p6::random::number(-3, 3.f), p6::random::number(-3, 3.f)), _radius(p6::random::number(0.3, 0.3f)), _isBorderX(false), _isBorderY(false) {}
 
 Obstacle::Obstacle(glm::vec3 position, float rad)
     : _pos(position), _radius(rad), _isBorderX(false), _isBorderY(false) {}

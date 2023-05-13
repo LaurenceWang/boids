@@ -17,7 +17,7 @@ void imGuiInit(p6::Context* ctx, Params& p, int& fishNb, Boids& boids)
         ImGui::SliderFloat("separation strength", &p.separation, 0.001f, 0.1f);
         ImGui::SliderFloat("alignment strength", &p.alignment, 0.005f, 0.05f);
         ImGui::SliderFloat("cohesion strength", &p.steer, 0.1f, 2.5f);
-        ImGui::SliderFloat("neighbour radius", &p.neighRadius, 0.07f, 0.5f);
+        ImGui::SliderFloat("neighbour radius", &p.neighRadius, 1.f, 6.f);
         ImGui::End();
     };
 }

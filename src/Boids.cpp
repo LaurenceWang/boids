@@ -26,8 +26,8 @@ void Boids::generateFish(int nbFish, int fam)
 {
     for (int i = 0; i < nbFish; ++i)
     {
-        glm::vec3 coord = {p6::random::number(-5, 5.f), p6::random::number(-3, 3.f), 0};
-        glm::vec3 direc = {p6::random::direction(), 0};
+        glm::vec3 coord = {p6::random::number(-5, 5.f), p6::random::number(-3, 3.f), p6::random::number(-4, 4.f)};
+        glm::vec3 direc = {p6::random::direction(), p6::random::number(-3, 3.f)};
         float     velo  = 0.1f;
         // float velo  = p6::random::number(0, 0.1f);
         Speed speed = Speed(direc, velo);

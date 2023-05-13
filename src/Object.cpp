@@ -45,7 +45,7 @@ void Object::createVAO()
     glBindVertexArray(0);
 }
 
-void Object::createDrawEnvironment(GLuint& texture, p6::Context& ctx)
+void Object::createDrawEnvironment(GLuint texture, p6::Context& ctx) // TODO if needed vector of Texture
 {
     _program._Program.use(); // TODO change confusing names
     glBindVertexArray(_vao);
@@ -66,7 +66,7 @@ void Object::draw(const FreeflyCamera& ViewMatrixCamera, p6::Context& ctx, glm::
     // glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
     glm::mat4 MVMatrix = ViewMatrixCamera.getViewMatrix();
 
-    MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(position.x, position.y, -5));
+    MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(position.x, position.y, position.z));
     MVMatrix = glm::scale(
         MVMatrix,
         glm::vec3(scaleSize, scaleSize, scaleSize)

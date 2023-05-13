@@ -22,7 +22,7 @@ public:
     Object(Program& program, Model vertices);
     ~Object() = default;
 
-    void createDrawEnvironment(GLuint& texture, p6::Context& ctx);
+    void createDrawEnvironment(GLuint texture, p6::Context& ctx);
     void draw(const FreeflyCamera& ViewMatrixCamera, p6::Context& ctx, glm::vec3 position, float scaleSize);
     void debindVAO();
     void deleteVBO_VAO();
