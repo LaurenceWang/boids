@@ -46,12 +46,18 @@ int main()
     Texture tunaTex("Assets/textures/tuna-can.jpg", 1);
     Texture porkTex("Assets/textures/pork.jpg", 2);
     Texture moonTexture("Assets/textures/MoonMap.jpg", 3);
+    // Texture arpTex("Assets/textures/arp.png", 4);
+    // Texture arpTex("Assets/textures/arpd.png", 4);
+    Texture arpTex("Assets/textures/Robot.png", 4);
 
     /*****************************MODEL LOADING****************************/
 
     Model fishV("Assets/models/fish/model_371254902470.obj");
     Model tunaCan("Assets/models/tuna-can/remeshed_pPhwHX.obj");
     Model pork("Assets/models/pork/model_582071681139.obj");
+    // Model arpenteur("Assets/models/arpenteur/arp.obj");
+    // Model arpenteur("Assets/models/mantabu/Montabu02.obj");
+    Model arpenteur("Assets/models/robot/Robot.obj");
 
     /*****OBJECT CREATION******/
 
@@ -59,6 +65,7 @@ int main()
     Object obsta(Objects, tunaCan, tunaTex);
     Object food(Objects, pork, porkTex);
     Object lightTest(light, vertices, moonTexture);
+    Object arpObj(Objects, arpenteur, arpTex);
 
     /***********************************VBO & VAOS*************************************/
 
@@ -186,11 +193,18 @@ int main()
 
         glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
 
+        /************************ ARPENTEUR ******************/
+
+        arpObj.createDrawEnvironment(ctx);
+        glm::vec3 posArp = ViewMatrixCamera.getPos() - 2.f * ViewMatrixCamera.getDir();
+        arpObj.draw(ViewMatrixCamera, glm::vec3(posArp.x, posArp.y - 1, posArp.z + 0.5), -90.f, 0.05);
+        arpObj.debindVAO();
+
         /*************************** FOOD *******************/
 
         food.createDrawEnvironment(ctx);
         for (auto& meal : meals)
-            food.draw(ViewMatrixCamera, glm::vec3(meal.getPos().x, meal.getPos().y, -5), 1);
+            food.draw(ViewMatrixCamera, glm::vec3(meal.getPos().x, meal.getPos().y, -5), 0.f, 1);
 
         food.debindVAO();
 
@@ -198,7 +212,7 @@ int main()
 
         clownFish.createDrawEnvironment(ctx);
         for (auto& fish : boids.getFishPack())
-            clownFish.draw(ViewMatrixCamera, glm::vec3(fish.getPos().x, fish.getPos().y, fish.getPos().z), p.fishSize * 25);
+            clownFish.draw(ViewMatrixCamera, glm::vec3(fish.getPos().x, fish.getPos().y, fish.getPos().z), 0.f, p.fishSize * 25);
 
         clownFish.debindVAO();
 
@@ -206,10 +220,10 @@ int main()
 
         obsta.createDrawEnvironment(ctx);
         for (auto& obs : obstacle.getObstacles())
-            clownFish.draw(ViewMatrixCamera, glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.02 * obs.getRadius());
+            obsta.draw(ViewMatrixCamera, glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, 0.02 * obs.getRadius());
 
         for (auto& obs : obstacle2.getObstacles())
-            clownFish.draw(ViewMatrixCamera, glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.02 * obs.getRadius());
+            obsta.draw(ViewMatrixCamera, glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, 0.02 * obs.getRadius());
 
         // PLUS PROPRE MAIS PLUS LENT? => DEMANDER A JULES
         /*for_each_obstacle([&](const auto& obstacle) {
@@ -281,8 +295,10 @@ int main()
     clownFish.deleteVBO_VAO();
     food.deleteVBO_VAO();
     obsta.deleteVBO_VAO();
+    arpObj.deleteVBO_VAO();
     glDeleteVertexArrays(1, vaos);
     glDeleteBuffers(1, vbos);
+    arpTex.deleteTex();
     fishTex.deleteTex();
     tunaTex.deleteTex();
     porkTex.deleteTex();

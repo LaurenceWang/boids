@@ -71,15 +71,21 @@ void Object::createDrawEnvironment(p6::Context& ctx) // TODO if needed vector of
     _ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
 }
 
-void Object::draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, float scaleSize)
+void Object::draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize)
 {
     glm::mat4 MVMatrix = ViewMatrixCamera.getViewMatrix();
-
-    MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(position.x, position.y, position.z));
-    MVMatrix = glm::scale(
+    MVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), position);
+    MVMatrix           = glm::rotate(MVMatrix, glm::radians(degRotate), glm::vec3(0.0f, 1.0f, 0.0f));
+    MVMatrix           = glm::scale(
         MVMatrix,
         glm::vec3(scaleSize, scaleSize, scaleSize)
     );
+
+    /*MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), position);
+    MVMatrix = glm::scale(
+        MVMatrix,
+        glm::vec3(scaleSize, scaleSize, scaleSize)
+    );*/
 
     glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 

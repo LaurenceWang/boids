@@ -56,4 +56,21 @@ public:
     {
         return glm::lookAt(m_Position, m_Position + m_FrontVector, m_UpVector);
     }
+
+    glm::vec3 getPos() const
+    {
+        return m_Position;
+    }
+
+    glm::vec3 getDir() const
+    {
+        /*float     sinPhi   = sin(m_fPhi);
+        float     cosPhi   = cos(m_fPhi);
+        float     sinTheta = sin(m_fTheta);
+        float     cosTheta = cos(m_fTheta);
+        glm::vec3 dir(cosTheta * sinPhi, sinTheta, cosTheta * cosPhi);
+        return glm::normalize(dir);*/
+
+        return -m_FrontVector;
+    }
 };

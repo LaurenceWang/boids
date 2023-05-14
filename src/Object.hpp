@@ -27,7 +27,7 @@ public:
     ~Object() = default;
 
     void createDrawEnvironment(p6::Context& ctx);
-    void draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, float scaleSize);
+    void draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize);
     void debindVAO();
     void deleteVBO_VAO();
 };
