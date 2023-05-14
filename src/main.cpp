@@ -35,7 +35,6 @@ int main()
     Program lightAndText{};
     Program Objects("Shaders/multiTex3D.fs.glsl");
     Program light("Shaders/pointLight.fs.glsl");
-
     // GLint uFishTexture = glGetUniformLocation(Objects._Program.id(), "uFishTexture");
     // GLint uMoonTexture = glGetUniformLocation(Objects._Program.id(), "uMoonTexture");
 
@@ -46,8 +45,6 @@ int main()
     Texture tunaTex("Assets/textures/tuna-can.jpg", 1);
     Texture porkTex("Assets/textures/pork.jpg", 2);
     Texture moonTexture("Assets/textures/MoonMap.jpg", 3);
-    // Texture arpTex("Assets/textures/arp.png", 4);
-    // Texture arpTex("Assets/textures/arpd.png", 4);
     Texture arpTex("Assets/textures/Robot.png", 4);
 
     /*****************************MODEL LOADING****************************/
@@ -55,8 +52,6 @@ int main()
     Model fishV("Assets/models/fish/model_371254902470.obj");
     Model tunaCan("Assets/models/tuna-can/remeshed_pPhwHX.obj");
     Model pork("Assets/models/pork/model_582071681139.obj");
-    // Model arpenteur("Assets/models/arpenteur/arp.obj");
-    // Model arpenteur("Assets/models/mantabu/Montabu02.obj");
     Model arpenteur("Assets/models/robot/Robot.obj");
 
     /*****OBJECT CREATION******/
@@ -66,33 +61,8 @@ int main()
     Object food(Objects, pork, porkTex);
     Object lightTest(light, vertices, moonTexture);
     Object arpObj(Objects, arpenteur, arpTex);
-
-    /***********************************VBO & VAOS*************************************/
-
-    //////////////VBO
-    GLuint vbos[2];
-    glGenBuffers(2, vbos);
-
-    // sphere
-    glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glimac::ShapeVertex), vertices.data(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    ///////////////VAO
-    GLuint vaos[2];
-    glGenVertexArrays(2, vaos);
-
-    // sphere
-    glBindVertexArray(vaos[0]);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, position)));
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, normal)));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, texCoords)));
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    Object lightSphere(light, vertices);
+    Object lightAndTex(lightAndText, vertices, moonTexture);
 
     /********************BOIDS & CO INIT********************/
 
@@ -187,11 +157,8 @@ int main()
         obstacle2.runObstacles(ctx);
 
         // Objects._Program.use();
-
         // glUniform1i(uFishTexture, 0);
         // glUniform1i(uMoonTexture, 1);
-
-        glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
 
         /************************ ARPENTEUR ******************/
 
@@ -219,75 +186,27 @@ int main()
         /*************************** OBSTACLES *************************/
 
         obsta.createDrawEnvironment(ctx);
-        for (auto& obs : obstacle.getObstacles())
+        /*for (auto& obs : obstacle.getObstacles())
             obsta.draw(ViewMatrixCamera, glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, 0.02 * obs.getRadius());
 
         for (auto& obs : obstacle2.getObstacles())
-            obsta.draw(ViewMatrixCamera, glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, 0.02 * obs.getRadius());
+            obsta.draw(ViewMatrixCamera, glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, 0.02 * obs.getRadius());*/
 
-        // PLUS PROPRE MAIS PLUS LENT? => DEMANDER A JULES
-        /*for_each_obstacle([&](const auto& obstacle) {
-            obsta.draw(ViewMatrixCamera, glm::vec3(obstacle.getPos().x, obstacle.getPos().y, obstacle.getPos().z), 0.02 * obstacle.getRadius());
-        });*/
+        for_each_obstacle([&](const auto& obstacle) {
+            obsta.draw(ViewMatrixCamera, glm::vec3(obstacle.getPos().x, obstacle.getPos().y, obstacle.getPos().z), 0.f, 0.02 * obstacle.getRadius());
+        });
 
         obsta.debindVAO();
 
         /*************LIGHT*****************/
 
-        glBindVertexArray(vaos[0]);
-        light._Program.use();
+        lightSphere.createDrawEnvironment(ctx);
+        lightSphere.draw(ViewMatrixCamera, glm::vec3(0, 0, -5), 0.f, 2);
+        lightSphere.debindVAO();
 
-        glm::mat4 lightMVMatrix = ViewMatrixCamera.getViewMatrix();
-        lightMVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(0, 0, -5));
-        lightMVMatrix           = glm::scale(
-            lightMVMatrix,
-            glm::vec3(2, 2, 2)
-        );
-
-        glm::mat4 lightNormalMatrix = glm::transpose(glm::inverse(lightMVMatrix));
-
-        glUniformMatrix4fv(light.uMVMatrix, 1, GL_FALSE, glm::value_ptr(lightMVMatrix));
-        glUniformMatrix4fv(light.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * lightMVMatrix));
-        glUniformMatrix4fv(light.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(lightNormalMatrix));
-
-        glm::vec3 Kd = glm::vec3(1, 1, 1);
-        glm::vec3 Ks = glm::vec3(1, 1, 1);
-        //  glm::vec4 lightDir = ViewMatrixCamera.getViewMatrix() * glm::vec4(1, 1, -5, 1);
-        glm::vec4 lightDir = lightMVMatrix * glm::vec4(1, 0, 1, 1);
-
-        glUniform3fv(light.uKd, 1, glm::value_ptr(Kd));
-        glUniform3fv(light.uKs, 1, glm::value_ptr(Ks));
-        glUniform1f(light.uShininess, 0.5);
-        glUniform3fv(light.uLightPos_vs, 1, glm::value_ptr(lightDir));
-        glUniform3fv(light.uLightIntensity, 1, glm::value_ptr(glm::vec3(8, 8, 8)));
-
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-        /*******TEST TEXTURE + LIGHT *****/
-
-        lightAndText._Program.use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, moonTexture.getTextureID());
-        glm::mat4 testMVMatrix = ViewMatrixCamera.getViewMatrix();
-        testMVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), glm::vec3(-4, -2, -5));
-        testMVMatrix           = glm::scale(
-            testMVMatrix,
-            glm::vec3(2, 2, 2)
-        );
-
-        glm::mat4 testNormalMatrix = glm::transpose(glm::inverse(testMVMatrix));
-        glUniformMatrix4fv(lightAndText.uMVMatrix, 1, GL_FALSE, glm::value_ptr(testMVMatrix));
-        glUniformMatrix4fv(lightAndText.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * testMVMatrix));
-        glUniformMatrix4fv(lightAndText.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(testNormalMatrix));
-
-        glUniform3fv(lightAndText.uKd, 1, glm::value_ptr(Kd));
-        glUniform3fv(lightAndText.uKs, 1, glm::value_ptr(Ks));
-        glUniform1f(lightAndText.uShininess, 1);
-        glUniform3fv(lightAndText.uLightDir_vs, 1, glm::value_ptr(glm::vec3(glm::rotate(ViewMatrixCamera.getViewMatrix(), ctx.time(), glm::vec3(0, 1, 0)) * glm::vec4(1, 1, 0, 1))));
-        glUniform3fv(lightAndText.uLightIntensity, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
-
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-        glBindVertexArray(0);
+        lightAndTex.createDrawEnvironment(ctx);
+        lightAndTex.draw(ViewMatrixCamera, glm::vec3(-4, -2, -5), 0.f, 2);
+        lightAndTex.debindVAO();
     };
 
     // Should be done last. It starts the infinite loop.
@@ -296,8 +215,8 @@ int main()
     food.deleteVBO_VAO();
     obsta.deleteVBO_VAO();
     arpObj.deleteVBO_VAO();
-    glDeleteVertexArrays(1, vaos);
-    glDeleteBuffers(1, vbos);
+    lightSphere.deleteVBO_VAO();
+    lightAndTex.deleteVBO_VAO();
     arpTex.deleteTex();
     fishTex.deleteTex();
     tunaTex.deleteTex();

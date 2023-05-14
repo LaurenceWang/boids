@@ -81,17 +81,19 @@ void Object::draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, flo
         glm::vec3(scaleSize, scaleSize, scaleSize)
     );
 
-    /*MVMatrix = glm::translate(ViewMatrixCamera.getViewMatrix(), position);
-    MVMatrix = glm::scale(
-        MVMatrix,
-        glm::vec3(scaleSize, scaleSize, scaleSize)
-    );*/
-
     glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
     glUniformMatrix4fv(_program.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv(_program.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(_ProjMatrix * MVMatrix));
     glUniformMatrix4fv(_program.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    glUniform3fv(_program.uKd, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+    glUniform3fv(_program.uKs, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+    glUniform1f(_program.uShininess, 0.5);
+    glUniform3fv(_program.uLightPos_vs, 1, glm::value_ptr(MVMatrix * glm::vec4(1, 0, 1, 1)));
+    glUniform3fv(_program.uLightDir_vs, 1, glm::value_ptr(glm::vec4(1, 1, 0, 1)));
+    glUniform3fv(_program.uLightIntensity, 1, glm::value_ptr(glm::vec3(8, 8, 8))); // change to 1 to see effects on light & tex object
+
     glDrawArrays(GL_TRIANGLES, 0, _vertices.size());
 
     // glBindVertexArray(0);
