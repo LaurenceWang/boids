@@ -14,7 +14,6 @@
 #include "Texture.hpp"
 #include "doctest/doctest.h"
 #include "glimac/FreeflyCamera.hpp"
-#include "glimac/cone_vertices.hpp"
 #include "glimac/sphere_vertices.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -46,10 +45,12 @@ int main()
     Texture porkTex("Assets/textures/pork.jpg", 2);
     Texture moonTexture("Assets/textures/MoonMap.jpg", 3);
     Texture arpTex("Assets/textures/Robot.png", 4);
+    Texture fish2Tex("Assets/textures/fish2.jpg", 5);
 
     /*****************************MODEL LOADING****************************/
 
     Model fishV("Assets/models/fish/model_371254902470.obj");
+    Model fishV2("Assets/models/fish2/model_572635439544.obj");
     Model tunaCan("Assets/models/tuna-can/remeshed_pPhwHX.obj");
     Model pork("Assets/models/pork/model_582071681139.obj");
     Model arpenteur("Assets/models/robot/Robot.obj");
@@ -57,6 +58,7 @@ int main()
     /*****OBJECT CREATION******/
 
     Object clownFish(Objects, fishV, fishTex);
+    Object purpleFish(Objects, fishV2, fish2Tex);
     Object obsta(Objects, tunaCan, tunaTex);
     Object food(Objects, pork, porkTex);
     Object lightTest(light, vertices, moonTexture);
@@ -75,7 +77,7 @@ int main()
 
     imGuiInit(&ctx, p, fishNb, boids);
 
-    imGuiInit(&ctx, p, fishNb, boids);
+    imGuiInit(&ctx, p, fishNb2, boids2);
 
     ObstacleCollection obstacle(3);
     obstacle.generateBorders(ctx);
@@ -153,6 +155,7 @@ int main()
         };
 
         boids.runBoids(p, ctx, for_each_obstacle, meals);
+        boids2.runBoids(p, ctx, for_each_obstacle, meals);
         obstacle.runObstacles(ctx);
         obstacle2.runObstacles(ctx);
 
@@ -182,6 +185,11 @@ int main()
             clownFish.draw(ViewMatrixCamera, glm::vec3(fish.getPos().x, fish.getPos().y, fish.getPos().z), 0.f, p.fishSize * 25);
 
         clownFish.debindVAO();
+
+        purpleFish.createDrawEnvironment(ctx);
+        for (auto& fish : boids2.getFishPack())
+            purpleFish.draw(ViewMatrixCamera, glm::vec3(fish.getPos().x, fish.getPos().y, fish.getPos().z), 0.f, p.fishSize * 25);
+        purpleFish.debindVAO();
 
         /*************************** OBSTACLES *************************/
 

@@ -1,6 +1,9 @@
 #include "Object.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+Object::Object(Object& obj)
+    : _program(obj._program) {}
+
 Object::Object(Program& program, std::vector<glimac::ShapeVertex> vertices, Texture texture)
     : _program(program), _vertices(vertices), _texture(texture)
 {

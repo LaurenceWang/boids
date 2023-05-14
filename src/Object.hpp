@@ -24,6 +24,7 @@ public:
     Object(Program& program, Model vertices, Texture texture);
     Object(Program& program, std::vector<glimac::ShapeVertex> vertices);
     Object(Program& program, Model vertices);
+    Object(Object& obj);
     ~Object() = default;
 
     void createDrawEnvironment(p6::Context& ctx);
