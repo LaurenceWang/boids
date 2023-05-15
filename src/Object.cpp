@@ -90,6 +90,7 @@ void Object::draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, flo
     glUniformMatrix4fv(_program.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(_ProjMatrix * MVMatrix));
     glUniformMatrix4fv(_program.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
+    // only for lights
     glUniform3fv(_program.uKd, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
     glUniform3fv(_program.uKs, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
     glUniform1f(_program.uShininess, 0.5);
@@ -111,4 +112,5 @@ void Object::deleteVBO_VAO()
 {
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
+    _texture.deleteTex();
 }

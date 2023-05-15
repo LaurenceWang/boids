@@ -6,12 +6,15 @@
 #include "ObstacleCollection.hpp"
 #include "Params.hpp"
 #include "glimac/FreeflyCamera.hpp"
+#include "imgui.hpp"
 #include "p6/p6.h"
 
+using ObstacleHandler = std::function<void(Obstacle const&)>;
 class App {
 private:
+    Program       _ObjectProgram;
     FreeflyCamera _ViewMatrixCamera;
-    Params        _parametres{.separation = 0.070f, .alignment = 0.040f, .steer = 6.f, .neighRadius = 0.5f, .fishSize = 0.02f};
+    Params        _parametres{.separation = 0.70f, .alignment = 0.40f, .steer = 15.f, .neighRadius = 0.5f, .fishSize = 0.02f};
     int           _fishNb  = 100;
     int           _fishNb2 = 20;
 
@@ -36,14 +39,12 @@ private:
     void generateBoids();
     void generateObstacles(p6::Context& ctx);
     void generateFood();
-
-    void createObjets();
-
-    void drawAll();
+    void run(p6::Context& ctx);
+    void for_each_obstacle(ObstacleHandler const& handler);
 
 public:
+    App(p6::Context& ctx);
     void cameraMovement(p6::Context& ctx);
-    void sceneInit();
     void sceneRender(p6::Context& ctx);
     void sceneClean();
 
