@@ -70,7 +70,7 @@ int main()
 
     // ctx.maximize_window();
     int    fishNb = 100;
-    Params p{.separation = 0.070f, .alignment = 0.040f, .steer = 6.f, .neighRadius = 0.5f, .fishSize = 0.02f};
+    Params p{.separation = 0.70f, .alignment = 0.40f, .steer = 15.f, .neighRadius = 0.5f, .fishSize = 0.02f};
     Boids  boids(fishNb, 0);
     int    fishNb2 = 20;
     Boids  boids2(fishNb2, 1);

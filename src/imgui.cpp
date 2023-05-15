@@ -14,10 +14,10 @@ void imGuiInit(p6::Context* ctx, Params& p, int& fishNb, Boids& boids)
         {
             boids.resizeBoids(p.fishSize);
         };
-        ImGui::SliderFloat("separation strength", &p.separation, 0.001f, 0.1f);
-        ImGui::SliderFloat("alignment strength", &p.alignment, 0.005f, 0.05f);
-        ImGui::SliderFloat("cohesion strength", &p.steer, 0.1f, 2.5f);
-        ImGui::SliderFloat("neighbour radius", &p.neighRadius, 1.f, 6.f);
+        ImGui::SliderFloat("separation strength", &p.separation, 0.1f, 1.f);
+        ImGui::SliderFloat("alignment strength", &p.alignment, 0.3f, 0.6f);
+        ImGui::SliderFloat("cohesion strength", &p.steer, 1.f, 30.f);
+        ImGui::SliderFloat("neighbour radius", &p.neighRadius, 0.5f, 6.f);
         ImGui::End();
     };
 }
