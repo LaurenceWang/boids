@@ -16,7 +16,7 @@ using ObstacleHandler = std::function<void(Obstacle const&)>;
 
 int main()
 {
-    auto                                   ctx      = p6::Context{{.title = "Swimming with boids"}};
+    auto                                   ctx      = p6::Context{{.title = "Swimming with Nemo"}};
     const std::vector<glimac::ShapeVertex> vertices = glimac::sphere_vertices(0.2f, 32, 16);
 
     Program lightAndText{};

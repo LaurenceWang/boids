@@ -1,7 +1,7 @@
 #include "App.hpp"
 
 App::App(p6::Context& ctx)
-    : _ObjectProgram{"Shaders/multiTex3D.fs.glsl"}, _arpenteur{_ObjectProgram, Model("Assets/models/robot/Robot.obj"), Texture("Assets/textures/Robot.png", 4)}, _boid1Render{_ObjectProgram, Model("Assets/models/fish/bluefish.obj"), Texture("Assets/textures/bluefish1.jpg", 0)}, _boid2Render{_ObjectProgram, Model("Assets/models/fish2/model_572635439544.obj"), Texture("Assets/textures/fish2.jpg", 5)}, _obstacleRender{_ObjectProgram, Model("Assets/models/tuna-can/remeshed_pPhwHX.obj"), Texture("Assets/textures/tuna-can.jpg", 1)}, _foodRender{_ObjectProgram, Model("Assets/models/pork/model_582071681139.obj"), Texture("Assets/textures/pork.jpg", 4)}
+    : _ObjectProgram{"Shaders/multiTex3D.fs.glsl"}, _arpenteur{_ObjectProgram, Model("Assets/models/clownfish/clownfish.obj"), Texture("Assets/textures/nemo.jpg", 4)}, _boid1Render{_ObjectProgram, Model("Assets/models/fish/bluefish.obj"), Texture("Assets/textures/bluefish1.jpg", 0)}, _boid2Render{_ObjectProgram, Model("Assets/models/fish2/bluefish2.obj"), Texture("Assets/textures/bluefish2.jpg", 5)}, _obstacleRender{_ObjectProgram, Model("Assets/models/tuna-can/remeshed_pPhwHX.obj"), Texture("Assets/textures/tuna-can.jpg", 1)}, _foodRender{_ObjectProgram, Model("Assets/models/pork/model_582071681139.obj"), Texture("Assets/textures/pork.jpg", 4)}
 {
     imGuiInit(&ctx, _parametres, _fishNb, _boids1);
     generateBoids();
@@ -104,7 +104,7 @@ void App::sceneRender(p6::Context& ctx)
 
     _arpenteur.createDrawEnvironment(ctx);
     glm::vec3 posArp = _ViewMatrixCamera.getPos() - 2.f * _ViewMatrixCamera.getDir();
-    _arpenteur.draw(_ViewMatrixCamera, glm::vec3(posArp.x, posArp.y - 1, posArp.z + 0.5), -90.f, 0.05);
+    _arpenteur.draw(_ViewMatrixCamera, glm::vec3(posArp.x, posArp.y - 0.5, posArp.z + 1), 0.f, 1);
     _arpenteur.debindVAO();
 
     _foodRender.createDrawEnvironment(ctx);
