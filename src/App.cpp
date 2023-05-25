@@ -1,50 +1,6 @@
 #include "App.hpp"
 #include "glimac/sphere_vertices.hpp"
 
-float skyboxVertices[] = {
-    // positions
-    -1.0f, 1.0f, -1.0f,
-    -1.0f, -1.0f, -1.0f,
-    1.0f, -1.0f, -1.0f,
-    1.0f, -1.0f, -1.0f,
-    1.0f, 1.0f, -1.0f,
-    -1.0f, 1.0f, -1.0f,
-
-    -1.0f, -1.0f, 1.0f,
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, 1.0f, -1.0f,
-    -1.0f, 1.0f, -1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f, -1.0f, 1.0f,
-
-    1.0f, -1.0f, -1.0f,
-    1.0f, -1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, -1.0f,
-    1.0f, -1.0f, -1.0f,
-
-    -1.0f, -1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, -1.0f, 1.0f,
-    -1.0f, -1.0f, 1.0f,
-
-    -1.0f, 1.0f, -1.0f,
-    1.0f, 1.0f, -1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, -1.0f,
-
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f, 1.0f,
-    1.0f, -1.0f, -1.0f,
-    1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f, 1.0f,
-    1.0f, -1.0f, 1.0f};
-
 App::App(p6::Context& ctx)
     : _ObjectProgram{"Shaders/multiTex3D.fs.glsl"}, _arpenteur{_ObjectProgram, Model("Assets/models/clownfish/clownfishmid.obj"), Texture("Assets/textures/nemo.jpg", 4)}, _boid1Render{_ObjectProgram, Model("Assets/models/fish/bluefishmid.obj"), Texture("Assets/textures/bluefish1.jpg", 0)}, _boid2Render{_ObjectProgram, Model("Assets/models/fish2/bluefish2mid.obj"), Texture("Assets/textures/bluefish2.jpg", 5)}, _obstacleRender{_ObjectProgram, glimac::sphere_vertices(1.f, 32, 16)}, _foodRender{_ObjectProgram, Model("Assets/models/pork/model_582071681139.obj"), Texture("Assets/textures/pork.jpg", 4)}, _skybox(returnVertices())
 {
@@ -52,7 +8,7 @@ App::App(p6::Context& ctx)
     generateBoids();
     generateObstacles(ctx);
     generateFood();
-    //_ViewMatrixCamera.moveFront(-5.f);
+    _ViewMatrixCamera.moveFront(-5.f);
     //_ViewMatrixCamera.moveLeft(-5.f);
     //_boidsRender.push_back(_boid1Render);
     //_boidsRender.push_back(_boid2Render);
@@ -174,7 +130,7 @@ void App::sceneRender(p6::Context& ctx)
 
     _arpenteur.createDrawEnvironment(ctx);
     glm::vec3 posArp = _ViewMatrixCamera.getPos() - 2.f * _ViewMatrixCamera.getDir();
-    _arpenteur.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(posArp.x, posArp.y - 0.5, posArp.z + 1), 0.f, 1);
+    _arpenteur.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(posArp.x, posArp.y - 0.5, posArp.z + 0.5), 0.f, 1);
     _arpenteur.debindVAO();
 
     _foodRender.createDrawEnvironment(ctx);
@@ -216,4 +172,5 @@ void App::sceneClean()
     _boid2Render.deleteVBO_VAO();
     _foodRender.deleteVBO_VAO();
     _arpenteur.deleteVBO_VAO();
+    _skybox.deleteVBO_VAO();
 }

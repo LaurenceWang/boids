@@ -19,6 +19,7 @@ struct Skybox {
     void createVBO_VAO(const float* skyboxVertices, size_t numVertices);
     void getTextureID();
     void renderSkybox(glm::mat4 ViewMatrix, p6::Context& ctx);
+    void deleteVBO_VAO();
 };
 
 std::vector<float> returnVertices();

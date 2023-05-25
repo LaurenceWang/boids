@@ -46,6 +46,13 @@ void Skybox::renderSkybox(glm::mat4 ViewMatrix, p6::Context& ctx)
     glDepthFunc(GL_LESS);
 }
 
+void Skybox::deleteVBO_VAO()
+{
+    glDeleteVertexArrays(1, &_vao);
+    glDeleteBuffers(1, &_vbo);
+    glDeleteTextures(1, &_textureID);
+}
+
 std::vector<float> returnVertices()
 {
     std::vector<float> skyboxVertices = {
