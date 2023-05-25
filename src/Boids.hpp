@@ -23,5 +23,5 @@ public:
     void              runBoids(Params p, p6::Context& context, std::function<void(ObstacleHandler)> const& for_each_obstacle, std::vector<Food>& food);
     void              adjustBoids(int nbFish);
     void              resizeBoids(float fishSize);
-    std::vector<Fish> getFishPack() { return _fishpack; }
+    std::vector<Fish> getFishPack() const { return _fishpack; }
 };

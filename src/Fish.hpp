@@ -35,6 +35,5 @@ public:
     glm::vec3 getPos() const;
     void      applyForces(std::vector<Fish> const& boids, Params& p);
     void      applyObstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle);
-
-    void applyFoodForces(std::vector<Food> const& food, int boidsLength);
+    void      applyFoodForces(std::vector<Food> const& food, int boidsLength);
 };

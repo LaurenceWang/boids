@@ -9,9 +9,10 @@
 
 class Object {
 private:
+protected:
+    Program&                         _program;
     GLuint                           _vbo;
     GLuint                           _vao;
-    Program&                         _program;
     std::vector<glimac::ShapeVertex> _vertices;
     glm::mat4                        _ProjMatrix;
     Texture                          _texture;
@@ -20,15 +21,17 @@ private:
     void createVAO();
 
 public:
-    Object(Program& program, std::vector<glimac::ShapeVertex> vertices, Texture texture);
+    Object(Object& obj);
+    Object(Program& program, Model vertices);
     Object(Program& program, Model vertices, Texture texture);
     Object(Program& program, std::vector<glimac::ShapeVertex> vertices);
-    Object(Program& program, Model vertices);
-    Object(Object& obj);
+    Object(Program& program, std::vector<glimac::ShapeVertex> vertices, Texture texture);
+
     ~Object() = default;
 
     void createDrawEnvironment(p6::Context& ctx);
-    void draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize);
+    void draw(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize);
+    void draw2(const glm::mat4& ViewMatrixCamera, glm::mat4 ProjMatrix, glm::vec3 position, float degRotate, float scaleSize);
     void debindVAO();
     void deleteVBO_VAO();
 };

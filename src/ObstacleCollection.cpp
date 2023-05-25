@@ -26,51 +26,27 @@ void ObstacleCollection::generateObstacles(int nbObstacles)
 
 void ObstacleCollection::generateBorders(p6::Context& ctx)
 {
-    const int borderLength = 70;
-    const int border       = 20;
+    const int borderLength = 8;
+    const int border       = 4;
 
-    // not working, need to be fixed
-
-    for (int i = 0; i < borderLength + 1; ++i)
+    for (int i = 0; i < borderLength; ++i)
     {
-        Obstacle bor(glm::vec3(border, border, border), ctx.aspect_ratio() / borderLength, true, false);
+        for (int j = 0; j < borderLength; ++j)
+        {
+            for (int k = 0; k < borderLength; ++k)
+            {
+                // Vérifier si le point est à l'extérieur du cube
+                if (i == 0 || i == borderLength - 1 || j == 0 || j == borderLength - 1 || k == 0 || k == borderLength - 1)
+                {
+                    float x = -borderLength + i * border; // Coordonnée x
+                    float y = -borderLength + j * border; // Coordonnée y
+                    float z = -borderLength + k * border; // Coordonnée z
 
-        _obstacles.push_back(bor);
-    }
-
-    for (int i = 0; i < borderLength + 1; ++i)
-    {
-        Obstacle bor(glm::vec3(-border, border, border), ctx.aspect_ratio() / borderLength, true, false);
-
-        _obstacles.push_back(bor);
-    }
-
-    for (int i = 0; i < borderLength + 1; ++i)
-    {
-        Obstacle bor(glm::vec3(-border, border, -border), ctx.aspect_ratio() / borderLength, false, true);
-
-        _obstacles.push_back(bor);
-    }
-
-    for (int i = 0; i < borderLength + 1; ++i)
-    {
-        Obstacle bor(glm::vec3(-border, -border, -border), ctx.aspect_ratio() / borderLength, false, true);
-
-        _obstacles.push_back(bor);
-    }
-
-    for (int i = 0; i < borderLength + 1; ++i)
-    {
-        Obstacle bor(glm::vec3(-border, -border, border), ctx.aspect_ratio() / borderLength, false, true);
-
-        _obstacles.push_back(bor);
-    }
-
-    for (int i = 0; i < borderLength + 1; ++i)
-    {
-        Obstacle bor(glm::vec3(border, border, -border), ctx.aspect_ratio() / borderLength, false, true);
-
-        _obstacles.push_back(bor);
+                    Obstacle cubePoint(glm::vec3(x - border, y, z), 4, false, false);
+                    _obstacles.push_back(cubePoint);
+                }
+            }
+        }
     }
 }
 

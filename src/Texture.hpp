@@ -9,6 +9,9 @@ private:
 
 public:
     explicit Texture(const std::filesystem::path& texturePath, GLuint textureID);
+
+    Texture(std::vector<std::filesystem::path>& faces, GLuint textureID);
+
     Texture() = default;
     void bind() const;
     void unBind() const;

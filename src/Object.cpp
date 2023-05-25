@@ -4,34 +4,30 @@
 Object::Object(Object& obj)
     : _program(obj._program) {}
 
-Object::Object(Program& program, std::vector<glimac::ShapeVertex> vertices, Texture texture)
-    : _program(program), _vertices(vertices), _texture(texture)
+Object::Object(Program& program, Model vertices)
+    : _program(program), _vertices(vertices.getVertices())
 {
     createVBO();
     createVAO();
 }
 
 Object::Object(Program& program, Model vertices, Texture texture)
-    : _program(program), _vertices(vertices.getVertices()), _texture(texture)
+    : Object(program, vertices)
 {
-    createVBO();
-    createVAO();
+    _texture = texture;
 }
 
 Object::Object(Program& program, std::vector<glimac::ShapeVertex> vertices)
-    : _program(program), _vertices(vertices)
+    : _program(program), _vertices(vertices), _texture(Texture("Assets/textures/default_tex.png", 0))
 {
-    Texture defTex("Assets/textures/default_tex.png", 0);
-    _texture = defTex;
     createVBO();
     createVAO();
 }
 
-Object::Object(Program& program, Model vertices)
-    : _program(program), _vertices(vertices.getVertices())
+Object::Object(Program& program, std::vector<glimac::ShapeVertex> vertices, Texture texture)
+    : Object(program, vertices)
 {
-    createVBO();
-    createVAO();
+    _texture = texture;
 }
 
 void Object::createVBO()
@@ -74,10 +70,10 @@ void Object::createDrawEnvironment(p6::Context& ctx) // TODO if needed vector of
     _ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
 }
 
-void Object::draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize)
+void Object::draw(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize)
 {
-    glm::mat4 MVMatrix = ViewMatrixCamera.getViewMatrix();
-    MVMatrix           = glm::translate(ViewMatrixCamera.getViewMatrix(), position);
+    glm::mat4 MVMatrix = ViewMatrixCamera;
+    MVMatrix           = glm::translate(MVMatrix, position);
     MVMatrix           = glm::rotate(MVMatrix, glm::radians(degRotate), glm::vec3(0.0f, 1.0f, 0.0f));
     MVMatrix           = glm::scale(
         MVMatrix,
@@ -88,6 +84,35 @@ void Object::draw(const FreeflyCamera& ViewMatrixCamera, glm::vec3 position, flo
 
     glUniformMatrix4fv(_program.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv(_program.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(_ProjMatrix * MVMatrix));
+    glUniformMatrix4fv(_program.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    // only for lights
+    glUniform3fv(_program.uKd, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+    glUniform3fv(_program.uKs, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+    glUniform1f(_program.uShininess, 0.5);
+    glUniform3fv(_program.uLightPos_vs, 1, glm::value_ptr(MVMatrix * glm::vec4(1, 0, 1, 1)));
+    glUniform3fv(_program.uLightDir_vs, 1, glm::value_ptr(glm::vec4(1, 1, 0, 1)));
+    glUniform3fv(_program.uLightIntensity, 1, glm::value_ptr(glm::vec3(18, 18, 18))); // change to 1 to see effects on light & tex object
+
+    glDrawArrays(GL_TRIANGLES, 0, _vertices.size());
+
+    // glBindVertexArray(0);
+}
+
+void Object::draw2(const glm::mat4& ViewMatrixCamera, glm::mat4 ProjMatrix, glm::vec3 position, float degRotate, float scaleSize)
+{
+    glm::mat4 MVMatrix = ViewMatrixCamera;
+    MVMatrix           = glm::translate(MVMatrix, position);
+    MVMatrix           = glm::rotate(MVMatrix, glm::radians(degRotate), glm::vec3(0.0f, 1.0f, 0.0f));
+    MVMatrix           = glm::scale(
+        MVMatrix,
+        glm::vec3(scaleSize, scaleSize, scaleSize)
+    );
+
+    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+
+    glUniformMatrix4fv(_program.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+    glUniformMatrix4fv(_program.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
     glUniformMatrix4fv(_program.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
     // only for lights

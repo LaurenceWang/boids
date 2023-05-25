@@ -48,7 +48,7 @@ set(P6_RAW_OPENGL_MODE ON CACHE BOOL "")
 FetchContent_Declare(
     p6
     GIT_REPOSITORY https://github.com/JulesFouchy/p6
-    GIT_TAG b9e6366e1198abdd7bc835e6125f9ff5b89a75b8
+    GIT_TAG f96a287c0874fffb9fa6e3794c4a5c151069dc0c
 )
 FetchContent_MakeAvailable(p6)
 target_link_libraries(${PROJECT_NAME} PRIVATE p6::p6)

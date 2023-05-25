@@ -8,6 +8,7 @@
 #include "glimac/FreeflyCamera.hpp"
 #include "imgui.hpp"
 #include "p6/p6.h"
+#include "skybox/skybox.hpp"
 
 using ObstacleHandler = std::function<void(Obstacle const&)>;
 class App {
@@ -23,24 +24,28 @@ private:
     bool _Q = false;
     bool _D = false;
 
-    // std::vector<Boids>              _boids;
-    // std::vector<ObstacleCollection> _obstacles;
-    Boids              _boids1;
-    Boids              _boids2;
-    ObstacleCollection _obstacles1;
-    ObstacleCollection _obstacles2;
-    std::vector<Food>  _food;
-    Object             _arpenteur;
-    Object             _boid1Render;
-    Object             _boid2Render;
-    Object             _obstacleRender;
-    Object             _foodRender;
+    // std::vector<Boids> _boids;
+    //  std::vector<ObstacleCollection> _obstacles;
+    Boids               _boids1;
+    Boids               _boids2;
+    ObstacleCollection  _obstacles1;
+    ObstacleCollection  _obstacles2;
+    std::vector<Food>   _food;
+    Object              _arpenteur;
+    Object              _boid1Render;
+    Object              _boid2Render;
+    Object              _obstacleRender;
+    Object              _foodRender;
+    std::vector<Object> _boidsRender;
+    Skybox              _skybox;
 
     void generateBoids();
     void generateObstacles(p6::Context& ctx);
     void generateFood();
     void run(p6::Context& ctx);
     void for_each_obstacle(ObstacleHandler const& handler);
+    // void for_each_boid(std::function<void(Fish const&)> const& handler);
+    // void for_each_boid_renderer(std::function<void(Object const&)> const& handler);
 
 public:
     App(p6::Context& ctx);
