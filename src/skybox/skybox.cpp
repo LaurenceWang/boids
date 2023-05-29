@@ -35,8 +35,13 @@ void Skybox::renderSkybox(glm::mat4 ViewMatrix, p6::Context& ctx)
 
     _shader.use();
 
-    _shader.set("uMVPMatrix", ViewMatrix);
+    _shader.set("uMVMatrix", ViewMatrix);
     _shader.set("uProjection", ProjMatrix);
+    _shader.set("uKd", glm::vec3(1, 1, 1));
+    _shader.set("uKs", glm::vec3(1, 1, 1));
+    _shader.set("uShininess", 1);
+    _shader.set("uLightPos_vs", ViewMatrix * glm::vec4(1.2f, 1.0f, 2.0f, 1));
+    _shader.set("uLightIntensity", glm::vec3(1, 1, 1));
 
     glBindVertexArray(_vao);
     glActiveTexture(GL_TEXTURE0);

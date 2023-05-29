@@ -7,6 +7,12 @@
 #include "glimac/common.hpp"
 #include "p6/p6.h"
 
+struct objectParameters {
+    glm::vec3 position;
+    float     degRotate;
+    float     scaleSize;
+};
+
 class Object {
 private:
 protected:
@@ -21,7 +27,7 @@ protected:
     void createVAO();
 
 public:
-    Object(Object& obj);
+    Object(Object&& obj);
     Object(Program& program, Model vertices);
     Object(Program& program, Model vertices, Texture texture);
     Object(Program& program, std::vector<glimac::ShapeVertex> vertices);
@@ -30,8 +36,8 @@ public:
     ~Object() = default;
 
     void createDrawEnvironment(p6::Context& ctx);
-    void draw(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize);
-    void draw2(const glm::mat4& ViewMatrixCamera, glm::mat4 ProjMatrix, glm::vec3 position, float degRotate, float scaleSize);
+    void draw(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize, glm::vec3 arpPos);
+    void draw(const glm::mat4& ViewMatrixCamera, objectParameters parameters);
     void debindVAO();
     void deleteVBO_VAO();
 };

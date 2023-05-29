@@ -16,6 +16,7 @@ struct Program {
     GLint uShininess;
 
     GLint uLightPos_vs;
+    GLint uLightPosArp_vs;
     GLint uLightDir_vs;
     GLint uLightIntensity;
 
@@ -52,6 +53,7 @@ struct Program {
         uShininess = glGetUniformLocation(_Program.id(), "uShininess");
 
         uLightPos_vs    = glGetUniformLocation(_Program.id(), "uLightPos_vs");
+        uLightPosArp_vs = glGetUniformLocation(_Program.id(), "uLightPosArp_vs");
         uLightDir_vs    = glGetUniformLocation(_Program.id(), "uLightDir_vs");
         uLightIntensity = glGetUniformLocation(_Program.id(), "uLightIntensity");
     }
