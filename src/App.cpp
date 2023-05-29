@@ -194,7 +194,7 @@ void App::sceneRender(p6::Context& ctx)
     for (auto& fish : _boids1.getFishPack())
     {
         _boid1Render.adjustLOD(_arpenteur.getPos(), fish.getPos(), _lodChoice);
-        _boid1Render.draw3(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize * 25, posArp);
+        _boid1Render.draw3(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize, posArp);
     }
     _boid1Render.debindVAO();
 
@@ -202,10 +202,14 @@ void App::sceneRender(p6::Context& ctx)
     for (auto& fish : _boids2.getFishPack())
     {
         _boid1Render.adjustLOD(_arpenteur.getPos(), fish.getPos(), _lodChoice);
-        _boid2Render.draw3(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize * 25, posArp);
+        _boid2Render.draw3(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize, posArp);
     }
+
     _boid2Render.debindVAO();
 
+    _boid3Render.createDrawEnvironment(ctx);
+    _boid3Render.draw3(_ViewMatrixCamera.getViewMatrix(), _boids2.getFishPack().at(0).getPos(), 0.f, _parametres.fishSize * 1.3, posArp);
+    _boid3Render.debindVAO();
     _obstacleRender.createDrawEnvironment(ctx);
 
     /*for (auto& obs : _obstacles1.getObstacles())

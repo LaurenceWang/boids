@@ -77,88 +77,6 @@ int main()
 
     App scene(ctx);
 
-    /// objs
-
-    /*Model   modPortal2("Assets/models/archPortal/portal1.obj");
-    Texture texPortal2("Assets/models/archPortal/portal1.png", 0);
-    Object  portal2(Objects, modPortal2, texPortal2);*/
-
-    Model   modPortal("Assets/models/portal/portal.obj");
-    Texture texPortal("Assets/models/portal/portal1.png", 0);
-    Object  portal(Objects, modPortal, texPortal);
-
-    /*Model   modIsl("Assets/models/island_1/island-1-mid.obj");
-    Texture texIsl("Assets/models/island_1/textures/material_0_diffuse.png", 0);
-    Object  isl(Objects, modIsl, texIsl);*/
-
-    Model   modIsl("Assets/models/island/island.obj");
-    Texture texIsl("Assets/models/island/island.png", 0);
-    Object  isl(Objects, modIsl, texIsl);
-
-    /*Model   modChest("Assets/models/pink-chest/chest-low.obj");
-    Texture texChest("Assets/models/pink-chest/textures/lambert6_Base_Color.png", 0);
-    Object  chest(Objects, modChest, texChest);*/
-
-    /*Model   modChest("Assets/models/pink-chest/chest-low.obj");
-    Texture texChest("Assets/models/pink-chest/textures/lambert6_Base_Color.png", 0);
-    Object  chest(Objects, modChest, texChest);*/
-
-    Model   modChest("Assets/models/chest/chest-test.obj");
-    Texture texChest("Assets/models/chest/chest.png", 0);
-    Object  chest(Objects, modChest, texChest);
-
-    /*Model   modCloud("Assets/models/stylized_clouds/cloud-low.obj");
-    Texture texCloud("Assets/models/stylized_clouds/textures/base1_baseColor_3.jpg", 0);
-    Object  cloud(Objects, modCloud, texCloud);*/
-
-    Model   modCloud("Assets/models/cloud/cloud-low.obj");
-    Texture texCloud("Assets/models/cloud/cloud.jpg", 0);
-    Object  cloud(Objects, modCloud, texCloud);
-
-    /*Model   modRock("Assets/models/stylized_rocks/rocks.obj");
-    Texture texRock("Assets/models/stylized_rocks/textures/TCE_Rocks_v02_Jungle_Mat_baseColor.jpeg", 0);
-    Object  rock(Objects, modRock, texRock);*/
-
-    /*Model   modPinkTr("Assets/models/organics_small_tree/tree.obj");
-    Texture texPinkTr("Assets/models/organics_small_tree/textures/pinkTree.jpg", 0);
-    Object  pinkTr(Objects, modPinkTr, texPinkTr);*/
-
-    Model   modPinkTr("Assets/models/tree/tree.obj");
-    Texture texPinkTr("Assets/models/tree/tree.jpg", 0);
-    Object  pinkTr(Objects, modPinkTr, texPinkTr);
-
-    /*Model   modCastle("Assets/models/demonologists-castle/castle-cry.obj");
-    Texture texCastle("Assets/models/demonologists-castle/textures/castle-main-1024.png", 0);
-    Object  castle(Objects, modCastle, texCastle);*/
-
-    Model   modCastle("Assets/models/castle/castle.obj");
-    Texture texCastle("Assets/models/castle/castle.png", 0);
-    Object  castle(Objects, modCastle, texCastle);
-
-    /*Model   modFishIsl("Assets/models/fish-isl/island-fish.obj");
-    Texture texFishIsl("Assets/models/fish-isl/textures/Image_13.png", 0);
-    Object  fishIsl(Objects, modFishIsl, texFishIsl);*/
-
-    Model   modHorPlant("Assets/models/horrorific_plant/horrific-plant-low.obj");
-    Texture texHorPlant("Assets/models/horrorific_plant/textures/lambert3SG1_baseColor.png", 0);
-    Object  horPlant(Objects, modHorPlant, texHorPlant);
-
-    /*Model   modPlant("Assets/models/set-plant-exotic-fantasy/exotic-plant-low.obj");
-    Texture texPlant("Assets/models/set-plant-exotic-fantasy/textures/Plant-5_Plant-5_BaseColor.png", 0);
-    Object  plant(Objects, modPlant, texPlant);*/
-
-    /*Model   modR("Assets/models/stylized-rock/floating-rock.obj");
-    Texture texR("Assets/models/stylized-rock/textures/Default_2D_View.png", 0);
-    Object  floatinRock(Objects, modR, texR);*/
-
-    Model   modR("Assets/models/rock/rock.obj");
-    Texture texR("Assets/models/rock/rock.png", 0);
-    Object  floatinRock(Objects, modR, texR);
-
-    /*Model   modTr("Assets/models/tree-speed-sculpt/tree-1.obj");
-    Texture texTr("Assets/models/tree-speed-sculpt/textures/Leaves.png", 0);
-    Object  tr(Objects, modTr, texTr);*/
-
     //////////////
 
     GLuint FramebufferName = 0;
@@ -210,86 +128,10 @@ int main()
         scene.cameraMovement(ctx);
         scene.sceneRender(ctx);
 
-        ////////////////////
-        /*objectParameters portalParameters{glm::vec3(0, -1.5, 0), 0.f, 1};
-        portal.createDrawEnvironment(ctx);
-        portal.draw(scene.getCamera().getViewMatrix(), glm::vec3(0, -1.5, 0), 0.f, 1);
-        portal.debindVAO();*/
-
-        /*isl.createDrawEnvironment(ctx);
-        isl.draw(scene.getCamera().getViewMatrix(), glm::vec3(0, -1.5, 0), 45.f, 1);
-        isl.draw(scene.getCamera().getViewMatrix(), glm::vec3(-9, 3, -9), 45.f, 1);
-        isl.debindVAO();
-
-        pinkTr.createDrawEnvironment(ctx);
-        pinkTr.draw(scene.getCamera().getViewMatrix(), glm::vec3(-8.3, 3.3, -9), 0.f, 1);
-        pinkTr.draw(scene.getCamera().getViewMatrix(), glm::vec3(-10, 3.3, -10), 0.f, 0.7);
-        pinkTr.debindVAO();
-
-        chest.createDrawEnvironment(ctx);
-        chest.draw(scene.getCamera().getViewMatrix(), glm::vec3(-9.2, 3.3, -8.7), 180.f, 1);
-        chest.debindVAO();*/
-
-        /*cloud.createDrawEnvironment(ctx);
-        cloud.draw(scene.getCamera().getViewMatrix(), glm::vec3(5, 0, 0), 0.f, 1);
-        cloud.debindVAO();*/
-
-        /*rock.createDrawEnvironment(ctx);
-        rock.draw(scene.getCamera().getViewMatrix(), glm::vec3(-3, 0, 0), 0.f, 1);
-        rock.debindVAO();*/
-
-        /*castle.createDrawEnvironment(ctx);
-        castle.draw(scene.getCamera().getViewMatrix(), glm::vec3(12, 2, -13), 90.f, 0.6);
-        castle.debindVAO();*/
-
-        /*fishIsl.createDrawEnvironment(ctx);
-        fishIsl.draw(scene.getCamera().getViewMatrix(), glm::vec3(-5, 0, 0), 0.f, 1);
-        fishIsl.debindVAO();*/
-
-        /*horPlant.createDrawEnvironment(ctx);
-        horPlant.draw(scene.getCamera().getViewMatrix(), glm::vec3(-5, 0, 0), 0.f, 0.05);
-        horPlant.debindVAO();*/
-
-        /*plant.createDrawEnvironment(ctx);
-        plant.draw(scene.getCamera().getViewMatrix(), glm::vec3(-5, 0, 0), 0.f, 0.05);
-        plant.debindVAO();*/
-
-        /*floatinRock.createDrawEnvironment(ctx);
-        floatinRock.draw(scene.getCamera().getViewMatrix(), glm::vec3(-1.7, -7, 2.5), 0.f, 0.7);
-        floatinRock.draw(scene.getCamera().getViewMatrix(), glm::vec3(3.2, -7, -2), 0.f, 0.7);
-
-        floatinRock.draw(scene.getCamera().getViewMatrix(), glm::vec3(-2, -3, -5), 0.f, 1);
-        floatinRock.draw(scene.getCamera().getViewMatrix(), glm::vec3(-4, -5.5, -0.5), 0.f, 0.8);
-        floatinRock.draw(scene.getCamera().getViewMatrix(), glm::vec3(2, -4.7, -8), 0.f, 0.8);
-        floatinRock.debindVAO();*/
-
-        /*tr.createDrawEnvironment(ctx);
-        tr.draw(scene.getCamera().getViewMatrix(), glm::vec3(-5, 0, 0), 0.f, 10);
-        tr.debindVAO();*/
-
-        ////////lumiere
-        /*roomT.createDrawEnvironment(ctx);
-        roomT.draw(scene.getCamera().getViewMatrix(), glm::vec3(0, 0, 0), 0.f, 1);
-        roomT.debindVAO();*/
-
         lumiere.createDrawEnvironment(ctx);
         lumiere.draw(scene.getCamera().getViewMatrix(), lightparameters);
         lumiere.debindVAO();
         //////////////
-
-        /*lightSphere.createDrawEnvironment(ctx);
-        lightSphere.draw(scene.getCamera().getViewMatrix(), glm::vec3(4, 0, -5), 20, 3);
-        lightSphere.debindVAO();*/
-
-        /*crys.createDrawEnvironment(ctx);
-        crys.draw(scene.getCamera().getViewMatrix(), glm::vec3(1.5, -1.15, 0), 0, 1);
-        crys.draw(scene.getCamera().getViewMatrix(), glm::vec3(-1.5, -1.15, 0), 0, 1);
-        crys.draw(scene.getCamera().getViewMatrix(), glm::vec3(0, -1.15, -1), 0, 0.9);
-        crys.draw(scene.getCamera().getViewMatrix(), glm::vec3(0.7, -1.15, 0.5), 0, 0.9);
-        crys.draw(scene.getCamera().getViewMatrix(), glm::vec3(-0.2, -1.15, 0.6), 45, 0.8);
-        crys.debindVAO();
-        // ctx.maximize_window()*/
-        ;
 
         ////////////////////////
         /*glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
@@ -367,5 +209,4 @@ int main()
     lightSphere.deleteVBO_VAO();
     lightAndTex.deleteVBO_VAO();
     cube.deleteVBO_VAO();
-    isl.deleteVBO_VAO();
 }

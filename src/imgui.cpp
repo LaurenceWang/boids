@@ -10,7 +10,7 @@ void imGuiInit(p6::Context* ctx, Params& p, int& fishNb, Boids& boids, int& lodC
         {
             boids.adjustBoids(fishNb);
         };
-        if (ImGui::SliderFloat("fish size", &p.fishSize, 0.02f, 0.08f))
+        if (ImGui::SliderFloat("fish size", &p.fishSize, 0.5f, 2.f))
         {
             boids.resizeBoids(p.fishSize);
         };
