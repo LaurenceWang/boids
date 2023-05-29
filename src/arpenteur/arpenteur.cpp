@@ -17,7 +17,10 @@ void Arpenteur::updatePosition(FreeflyCamera ViewMatrixCamera, glm::vec3 mapDime
     {
         _position = ViewMatrixCamera.getPos() - 2.f * ViewMatrixCamera.getDir();
     }*/
+    glm::vec3 offset{0, -0.5, -4};
     _position = ViewMatrixCamera.getPos() + 2.f * ViewMatrixCamera.getDir();
+    _position += offset;
+
     /*glm::vec3 cameraPosition  = ViewMatrixCamera.getPos();
     glm::vec3 cameraDirection = ViewMatrixCamera.getDir();
 

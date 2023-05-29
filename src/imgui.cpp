@@ -1,7 +1,7 @@
 #include "imgui.hpp"
 #include <pthread.h>
 
-void imGuiInit(p6::Context* ctx, Params& p, int& fishNb, Boids& boids)
+void imGuiInit(p6::Context* ctx, Params& p, int& fishNb, Boids& boids, int& lodChoice)
 {
     (*ctx).imgui = [&]() {
         // Show a simple window
@@ -18,6 +18,19 @@ void imGuiInit(p6::Context* ctx, Params& p, int& fishNb, Boids& boids)
         ImGui::SliderFloat("alignment strength", &p.alignment, 0.3f, 0.6f);
         ImGui::SliderFloat("cohesion strength", &p.steer, 1.f, 30.f);
         ImGui::SliderFloat("neighbour radius", &p.neighRadius, 0.5f, 6.f);
+        if (ImGui::Button("Low"))
+        {
+            lodChoice = 1;
+        };
+        if (ImGui::Button("High"))
+        {
+            lodChoice = 0;
+        };
+        if (ImGui::Button("Adaptative"))
+        {
+            lodChoice = 2;
+        };
+
         ImGui::End();
     };
 }

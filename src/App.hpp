@@ -17,8 +17,9 @@ private:
     Program       _ObjectProgram;
     FreeflyCamera _ViewMatrixCamera;
     Params        _parametres{.separation = 0.70f, .alignment = 0.40f, .steer = 15.f, .neighRadius = 0.5f, .fishSize = 0.02f};
-    int           _fishNb  = 100;
-    int           _fishNb2 = 20;
+    int           _fishNb    = 100;
+    int           _fishNb2   = 20;
+    int           _lodChoice = 2;
 
     bool _Z    = false;
     bool _S    = false;
@@ -34,25 +35,29 @@ private:
     ObstacleCollection  _obstacles1;
     ObstacleCollection  _obstacles2;
     std::vector<Food>   _food;
-    Object              _arpenteurRender;
-    Object              _boid1Render;
-    Object              _boid2Render;
-    Object              _obstacleRender;
-    Object              _foodRender;
     std::vector<Object> _boidsRender;
     Skybox              _skybox;
     Arpenteur           _arpenteur;
 
     // environment
+    Object _arpenteurRender{_ObjectProgram, Model("Assets/models/clownfish/clownfishmid.obj"), Texture("Assets/textures/nemo.jpg", 4)};
+    Object _boid1Render{_ObjectProgram, Model("Assets/models/fish/bluefishmid.obj"), Model("Assets/models/fish/bluefishlow.obj"), Texture("Assets/textures/bluefish1.jpg", 0)};
 
-    Object _portal{_ObjectProgram, Model("Assets/models/portal/portal.obj"), Texture("Assets/models/portal/portal1.png", 0)};
-    Object _island{_ObjectProgram, Model("Assets/models/island/island.obj"), Texture("Assets/models/island/island.png", 0)};
-    Object _tree{_ObjectProgram, Model("Assets/models/tree/tree.obj"), Texture("Assets/models/tree/tree.jpg", 0)};
-    Object _chest{_ObjectProgram, Model("Assets/models/chest/chest-test.obj"), Texture("Assets/models/chest/chest.png", 0)};
+    Object _boid2Render{_ObjectProgram, Model("Assets/models/fish2/bluefish2mid.obj"), Model("Assets/models/fish2/bluefish2low.obj"), Texture("Assets/textures/bluefish2.jpg", 5)};
+
+    Object _obstacleRender{_ObjectProgram, Model("Assets/models/rock/rock.obj"), Model("Assets/models/rock/rock-low.obj"), Texture("Assets/models/rock/rock.png", 0)};
+
+    Object _foodRender{_ObjectProgram, Model("Assets/models/plant/plant.obj"), Model("Assets/models/plant/plant-low.obj"), Texture("Assets/models/plant/plant.png", 4)};
+
+    Object _portal{_ObjectProgram, Model("Assets/models/portal/portal.obj"), Model("Assets/models/portal/portal-low.obj"), Texture("Assets/models/portal/portal1.png", 0)};
+    // Object _island{_ObjectProgram, Model("Assets/models/island/island.obj"), Texture("Assets/models/island/island.png", 0)};
+    Object _tree{_ObjectProgram, Model("Assets/models/tree/tree.obj"), Model("Assets/models/tree/tree-low.obj"), Texture("Assets/models/tree/tree.jpg", 0)};
+    Object _chest{_ObjectProgram, Model("Assets/models/chest/chest-test.obj"), Model("Assets/models/chest/chest-low.obj"), Texture("Assets/models/chest/chest.png", 0)};
     Object _crystal{_ObjectProgram, Model("Assets/models/crystals/crystals.obj"), Texture("Assets/models/crystals/crystals.png", 0)};
-    Object _castle{_ObjectProgram, Model("Assets/models/castle/castle.obj"), Texture("Assets/models/castle/castle.png", 0)};
+    Object _castle{_ObjectProgram, Model("Assets/models/castle/castle.obj"), Model("Assets/models/castle/castle-low.obj"), Texture("Assets/models/castle/castle.png", 0)};
 
-    // std::vector<std::pair<Object, objectParameters>> _environment;
+    Object _island{_ObjectProgram, Model("Assets/models/island/island.obj"), Model("Assets/models/island/island-low.obj"), Texture("Assets/models/island/island.png", 0)};
+
     std::vector<std::pair<std::unique_ptr<Object>, objectParameters>> _environment;
 
     void generateBoids();
