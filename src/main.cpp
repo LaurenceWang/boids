@@ -21,7 +21,7 @@ using ObstacleHandler = std::function<void(Obstacle const&)>;
 
 int main()
 {
-    auto                                   ctx      = p6::Context{{.title = "Swimming with Nemo"}};
+    auto                                   ctx      = p6::Context{{.title = "Finding Dory"}};
     const std::vector<glimac::ShapeVertex> vertices = glimac::sphere_vertices(0.2f, 32, 16);
 
     const p6::Shader objshader = p6::load_shader(
@@ -47,8 +47,8 @@ int main()
     glEnable(GL_CULL_FACE);
     Texture defaulTex("Assets/textures/default_tex.png", 5);
     Texture moonTexture("Assets/textures/MoonMap.jpg", 3);
-    Texture cubeTexture("Assets/models/portal-companion-cube/textures/Portal_Companion_Cube.png", 7);
-    Texture crysTex("Assets/models/crystal/Crystal_Albedo.png", 0);
+    // Texture cubeTexture("Assets/models/portal-companion-cube/textures/Portal_Companion_Cube.png", 7);
+    // Texture crysTex("Assets/models/crystal/Crystal_Albedo.png", 0);
 
     //  Model cubeMod("Assets/models/portal-companion-cube/Portal_Companion_Cube.obj");
     Model cubeMod("Assets/models/cube-test.obj");
@@ -57,14 +57,14 @@ int main()
 
     Object lumiere(lum, vertices);
 
-    Object crys(Objects, crystal, crysTex);
+    // Object crys(Objects, crystal, crysTex);
 
     Object lightSphere(light, vertices);
     Object lightAndTex(lightAndText, vertices, moonTexture);
 
     //  Object cube(Objects, cubeMod, cubeTexture);
 
-    Object cube2(Objects, cubeMod, cubeTexture);
+    // Object cube2(Objects, cubeMod, cubeTexture);
 
     Light test(shadow, vertices);
     Light test2(debugSh, vertices, moonTexture);

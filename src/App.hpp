@@ -42,11 +42,11 @@ private:
     // environment
     Object _arpenteurRender{_ObjectProgram, Model("Assets/models/clownfish/clownfishmid.obj"), Texture("Assets/textures/nemo.jpg", 4)};
 
-    Object _boid1Render{_ObjectProgram, Model("Assets/models/fish/bluefishmid.obj"), Model("Assets/models/fish/bluefishmid.obj"), Texture("Assets/textures/bluefish1.jpg", 0)};
+    Object _boid1Render{_ObjectProgram, Model("Assets/models/fish/bluefishmid.obj"), Model("Assets/models/fish/bluefishlow.obj"), Texture("Assets/textures/bluefish1.jpg", 0)};
 
     Object _boid2Render{_ObjectProgram, Model("Assets/models/fish2/bluefish2mid.obj"), Model("Assets/models/fish2/bluefish2low.obj"), Texture("Assets/textures/bluefish2.jpg", 5)};
 
-    Object _boid3Render{_ObjectProgram, Model("Assets/models/fish2/bluefish2mid.obj"), Model("Assets/models/fish2/bluefish2low.obj"), Texture("Assets/textures/dory.jpg", 5)};
+    Object _boid3Render{_ObjectProgram, Model("Assets/models/dory/dorymid.obj"), Model("Assets/models/dory/dorylow.obj"), Texture("Assets/textures/dory.png", 5)};
 
     Object _obstacleRender{_ObjectProgram, Model("Assets/models/rock/rock.obj"), Model("Assets/models/rock/rock-low.obj"), Texture("Assets/models/rock/rock.png", 0)};
 
