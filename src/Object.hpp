@@ -33,6 +33,9 @@ protected:
 
     void createVBO();
     void createVAO();
+    void createDrawEnvironment(p6::Context& ctx);
+    void draw(const glm::mat4& ViewMatrixCamera, objectParameters parameters);
+    void debindVAO();
 
 public:
     Object(Object& obj);
@@ -44,12 +47,9 @@ public:
 
     ~Object() = default;
 
-    void createDrawEnvironment(p6::Context& ctx);
-    void draw(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize, glm::vec3 arpPos);
-    void draw(const glm::mat4& ViewMatrixCamera, objectParameters parameters);
-    void finalDraw(p6::Context& ctx, const glm::mat4& ViewMatrixCamera, objectParameters parameters);
+    void finalDraw(p6::Context& ctx, const glm::mat4& ViewMatrixCamera, objectParameters parameters, glm::vec3 arpPos, int lodChoice);
     void adjustLOD(glm::vec3 arpenteurPos, glm::vec3 objPos, int choice);
     void distanceLOD(glm::vec3 arpenteurPos, glm::vec3 objPos);
-    void debindVAO();
+
     void deleteRessources();
 };

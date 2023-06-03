@@ -81,35 +81,6 @@ void Object::createDrawEnvironment(p6::Context& ctx)
     _ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
 }
 
-void Object::draw(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize, glm::vec3 arpPos)
-{
-    glm::mat4 MVMatrix = ViewMatrixCamera;
-    MVMatrix           = glm::translate(MVMatrix, position);
-    MVMatrix           = glm::rotate(MVMatrix, glm::radians(degRotate), glm::vec3(0.0f, 1.0f, 0.0f));
-    MVMatrix           = glm::scale(
-        MVMatrix,
-        glm::vec3(scaleSize, scaleSize, scaleSize)
-    );
-
-    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
-
-    glUniformMatrix4fv(_program.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-    glUniformMatrix4fv(_program.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(_ProjMatrix * MVMatrix));
-    glUniformMatrix4fv(_program.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-
-    /*glUniform3fv(_program.uKd, 1, glm::value_ptr(glm::vec3(1, 0, 1)));
-    glUniform3fv(_program.uKs, 1, glm::value_ptr(glm::vec3(1, 0, 1)));
-    glUniform1f(_program.uShininess, 1);
-
-    glUniform3fv(_program.uLightPos_vs, 1, glm::value_ptr(ViewMatrixCamera * glm::vec4(0.f, 0.f, 0.f, 1)));
-
-    glUniform3fv(_program.uLightPosArp_vs, 1, glm::value_ptr(ViewMatrixCamera * glm::vec4(arpPos, 1)));
-    glUniform3fv(_program.uLightDir_vs, 1, glm::value_ptr(ViewMatrixCamera * glm::vec4(1, 1, 1, 0)));
-    glUniform3fv(_program.uLightIntensity, 1, glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));*/
-
-    glDrawArrays(GL_TRIANGLES, 0, (_lodVertices[_lod]).size());
-}
-
 void Object::draw(const glm::mat4& ViewMatrixCamera, objectParameters parameters)
 {
     glm::mat4 MVMatrix = ViewMatrixCamera;
@@ -126,6 +97,14 @@ void Object::draw(const glm::mat4& ViewMatrixCamera, objectParameters parameters
     glUniformMatrix4fv(_program.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
     glDrawArrays(GL_TRIANGLES, 0, (_lodVertices[_lod]).size());
+}
+
+void Object::finalDraw(p6::Context& ctx, const glm::mat4& ViewMatrixCamera, objectParameters parameters, glm::vec3 arpPos, int lodChoice)
+{
+    createDrawEnvironment(ctx);
+    adjustLOD(arpPos, parameters.position, lodChoice);
+    draw(ViewMatrixCamera, parameters);
+    debindVAO();
 }
 
 void Object::distanceLOD(glm::vec3 arpenteurPos, glm::vec3 objPos)

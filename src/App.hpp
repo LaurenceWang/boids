@@ -46,27 +46,25 @@ private:
 
     // environment
     Object _arpenteurRender{_ObjectProgram, Model("Assets/models/clownfish/clownfishmid.obj"), Texture("Assets/textures/nemo.jpg", 4)};
-
     Object _boid1Render{_ObjectProgram, Model("Assets/models/fish/bluefishmid.obj"), Model("Assets/models/fish/bluefishlow.obj"), Texture("Assets/textures/bluefish1.jpg", 0)};
-
     Object _boid2Render{_ObjectProgram, Model("Assets/models/fish2/bluefish2mid.obj"), Model("Assets/models/fish2/bluefish2low.obj"), Texture("Assets/textures/bluefish2.jpg", 5)};
-
     Object _boid3Render{_ObjectProgram, Model("Assets/models/dory/dorymid.obj"), Model("Assets/models/dory/dorylow.obj"), Texture("Assets/textures/dory.png", 5)};
-
     Object _obstacleRender{_ObjectProgram, Model("Assets/models/rock/rock.obj"), Model("Assets/models/rock/rock-low.obj"), Texture("Assets/models/rock/rock.png", 0)};
-
     Object _foodRender{_ObjectProgram, Model("Assets/models/plant/plant.obj"), Model("Assets/models/plant/plant-low.obj"), Texture("Assets/models/plant/plant.png", 4)};
-
     Object _portal{_ObjectProgram, Model("Assets/models/portal/portal.obj"), Model("Assets/models/portal/portal-low.obj"), Texture("Assets/models/portal/portal1.png", 0)};
-    // Object _island{_ObjectProgram, Model("Assets/models/island/island.obj"), Texture("Assets/models/island/island.png", 0)};
     Object _tree{_ObjectProgram, Model("Assets/models/tree/tree.obj"), Model("Assets/models/tree/tree-low.obj"), Texture("Assets/models/tree/tree.jpg", 0)};
     Object _chest{_ObjectProgram, Model("Assets/models/chest/chest-test.obj"), Model("Assets/models/chest/chest-low.obj"), Texture("Assets/models/chest/chest.png", 0)};
     Object _crystal{_ObjectProgram, Model("Assets/models/crystals/crystals.obj"), Texture("Assets/models/crystals/crystals.png", 0)};
     Object _castle{_ObjectProgram, Model("Assets/models/castle/castle.obj"), Model("Assets/models/castle/castle-low.obj"), Texture("Assets/models/castle/castle.png", 0)};
-
     Object _island{_ObjectProgram, Model("Assets/models/island/island.obj"), Model("Assets/models/island/island-low.obj"), Texture("Assets/models/island/island.png", 0)};
 
-    std::vector<std::pair<Model, objectParameters>> _environment;
+    // objectParameters
+    std::vector<objectParameters> _crys;
+    std::vector<objectParameters> _isl;
+    std::vector<objectParameters> _tr;
+    objectParameters              _port{glm::vec3(0, -1.5, 0), 0.f, 1};
+    objectParameters              _ches{glm::vec3(-9.2, 3.3, -8.7), 180.f, 1};
+    objectParameters              _cas{glm::vec3(12, 2, -13), 90.f, 0.6};
 
     void generateBoids();
     void generateObstacles(p6::Context& ctx);
@@ -74,8 +72,6 @@ private:
     void generateEnvironment();
     void run(p6::Context& ctx);
     void for_each_obstacle(ObstacleHandler const& handler);
-    // void for_each_boid(std::function<void(Fish const&)> const& handler);
-    // void for_each_boid_renderer(std::function<void(Object const&)> const& handler);
 
 public:
     App(p6::Context& ctx);
