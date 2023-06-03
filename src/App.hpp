@@ -1,13 +1,16 @@
 #pragma once
+#include <cstdlib>
 #include <vector>
-#include "Boids.hpp"
 #include "Food.hpp"
 #include "Object.hpp"
-#include "ObstacleCollection.hpp"
 #include "Params.hpp"
 #include "arpenteur/arpenteur.hpp"
+#include "boids/Boids.hpp"
+#include "camera_test/TrackballCamera.hpp"
 #include "glimac/FreeflyCamera.hpp"
 #include "imgui.hpp"
+#include "light/Light.hpp"
+#include "obstacles/ObstacleCollection.hpp"
 #include "p6/p6.h"
 #include "skybox/skybox.hpp"
 
@@ -16,10 +19,10 @@ class App {
 private:
     Program       _ObjectProgram;
     FreeflyCamera _ViewMatrixCamera;
-    Params        _parametres{.separation = 0.70f, .alignment = 0.40f, .steer = 15.f, .neighRadius = 0.5f, .fishSize = 0.5f};
+    Params        _parametres{.separation = 1.0f, .alignment = 0.40f, .steer = 15.f, .neighRadius = 0.5f, .fishSize = 0.68f};
     int           _fishNb    = 100;
     int           _fishNb2   = 20;
-    int           _lodChoice = 2;
+    int           _lodChoice = 0;
 
     bool _Z    = false;
     bool _S    = false;
@@ -38,6 +41,8 @@ private:
     std::vector<Object> _boidsRender;
     Skybox              _skybox;
     Arpenteur           _arpenteur;
+
+    Light lights{_ObjectProgram, glm::vec4(0.f, 0.f, 0.f, 1), glm::vec4(1, 1, 1, 0), glm::vec3(0.5, 0.5, 0.5)};
 
     // environment
     Object _arpenteurRender{_ObjectProgram, Model("Assets/models/clownfish/clownfishmid.obj"), Texture("Assets/textures/nemo.jpg", 4)};
@@ -61,7 +66,7 @@ private:
 
     Object _island{_ObjectProgram, Model("Assets/models/island/island.obj"), Model("Assets/models/island/island-low.obj"), Texture("Assets/models/island/island.png", 0)};
 
-    std::vector<std::pair<std::unique_ptr<Object>, objectParameters>> _environment;
+    std::vector<std::pair<Model, objectParameters>> _environment;
 
     void generateBoids();
     void generateObstacles(p6::Context& ctx);
@@ -74,10 +79,9 @@ private:
 
 public:
     App(p6::Context& ctx);
-    void cameraMovement(p6::Context& ctx);
-    void sceneRender(p6::Context& ctx);
-    void sceneClean();
-
+    void          cameraMovement(p6::Context& ctx);
+    void          sceneRender(p6::Context& ctx);
+    void          sceneClean();
     FreeflyCamera getCamera()
     {
         return _ViewMatrixCamera;

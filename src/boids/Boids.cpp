@@ -29,9 +29,8 @@ void Boids::generateFish(int nbFish, int fam)
         glm::vec3 coord = {p6::random::number(-5, 5.f), p6::random::number(-3, 3.f), p6::random::number(-4, 4.f)};
         glm::vec3 direc = {p6::random::direction(), p6::random::number(-3, 3.f)};
         float     velo  = 0.1f;
-        // float velo  = p6::random::number(0, 0.1f);
-        Speed speed = Speed(direc, velo);
-        Fish  b(coord, speed, species[fam]);
+        Speed     speed = Speed(direc, velo);
+        Fish      b(coord, speed, species[fam]);
         _fishpack.push_back(b);
     }
 }
@@ -44,26 +43,24 @@ void Boids::runBoids(Params p, p6::Context& context, std::function<void(Obstacle
         boid.applyObstacleForces(for_each_obstacle);
         boid.applyFoodForces(food, _fishpack.size());
         boid.move();
-        // context.fill = {1.f, 0.7f, 0.2f};
-        // boid.drawFish(context);
     }
 }
 
-int Boids::sizeFishpack()
+int Boids::getSizeFishpack()
 {
     return (this->_fishpack.size());
 }
 
-void Boids::adjustBoids(int nbFish)
+void Boids::adjustBoidsNb(int nbFish)
 {
-    if (nbFish > this->sizeFishpack())
+    if (nbFish > this->getSizeFishpack())
     {
-        this->generateFish(nbFish - this->sizeFishpack(), 1);
+        this->generateFish(nbFish - this->getSizeFishpack(), 1);
     }
 
     else
     {
-        for (int i; this->sizeFishpack() - nbFish; i++)
+        for (int i; this->getSizeFishpack() - nbFish; i++)
             this->_fishpack.pop_back();
     }
 }
@@ -74,4 +71,9 @@ void Boids::resizeBoids(float fishSize)
     {
         boid.resize(fishSize);
     }
+}
+
+std::vector<Fish> Boids::getFishPack() const
+{
+    return _fishpack;
 }

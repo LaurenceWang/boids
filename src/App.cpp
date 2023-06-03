@@ -2,7 +2,7 @@
 #include "glimac/sphere_vertices.hpp"
 
 App::App(p6::Context& ctx)
-    : _ObjectProgram{"Shaders/multiTex3D.fs.glsl"}, _skybox(returnVertices())
+    : _ObjectProgram{}, _skybox(returnVertices())
 {
     imGuiInit(&ctx, _parametres, _fishNb, _boids1, _lodChoice);
     generateBoids();
@@ -102,13 +102,12 @@ void App::generateFood()
 
 void App::generateEnvironment()
 {
-    Model                   modPortal("Assets/models/portal/portal.obj");
-    Texture                 texPortal("Assets/models/portal/portal1.png", 0);
-    std::unique_ptr<Object> portal = std::make_unique<Object>(_ObjectProgram, modPortal, texPortal);
-    objectParameters        portalParameters{glm::vec3(0, -1.5, 0), 0.f, 1};
+    Model modPortal("Assets/models/portal/portal.obj");
+
+    objectParameters portalParameters{glm::vec3(0, -1.5, 0), 0.f, 1};
 
     // Stocker un pointeur vers l'objet dans _environment
-    _environment.emplace_back(std::make_pair(std::move(portal), portalParameters));
+    _environment.emplace_back(std::make_pair(modPortal, portalParameters));
 
     /*Model   modPortal("Assets/models/portal/portal.obj");
     Texture texPortal("Assets/models/portal/portal1.png", 0);
@@ -165,27 +164,27 @@ void App::run(p6::Context& ctx)
     );
     _obstacles1.runObstacles(ctx);
     _obstacles2.runObstacles(ctx);
-    _arpenteur.updatePosition(_ViewMatrixCamera, glm::vec3(8, 8, 8));
+    _arpenteur.updatePosition(_ViewMatrixCamera);
 }
 
 void App::sceneRender(p6::Context& ctx)
 {
     run(ctx);
-
     glm::vec3 posArp{_arpenteur.getPos().x, _arpenteur.getPos().y - 0.5, _arpenteur.getPos().z - 4};
+
+    _ObjectProgram._shader.use();
+    lights.sendUniform(_ViewMatrixCamera.getViewMatrix(), posArp);
+
     _arpenteurRender.createDrawEnvironment(ctx);
 
-    //_arpenteurRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(posArp.x, posArp.y - 0.5, posArp.z + 0.5), 0.f, 1);
-    _arpenteurRender.draw(_ViewMatrixCamera.getViewMatrix(), _arpenteur.getPos(), 0.f, 0.8, posArp);
-
-    /*_arpenteurRender.draw2(_ViewMatrixCamera.getViewMatrix(), glm::vec3(_arpenteur.getPos().x, _arpenteur.getPos().y - 0.5, _arpenteur.getPos().z - 4), 0.f, 0.8, _ViewMatrixCamera.getFront());*/
+    _arpenteurRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(posArp.x, posArp.y, posArp.z + 1.5), -_arpenteur.getDir(), 1, posArp);
     _arpenteurRender.debindVAO();
 
     _foodRender.createDrawEnvironment(ctx);
     for (auto& meal : _food)
     {
         _boid1Render.adjustLOD(_arpenteur.getPos(), meal.getPos(), _lodChoice);
-        _foodRender.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(meal.getPos()), 0.f, 1, posArp);
+        _foodRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(meal.getPos()), 0.f, 1, posArp);
     }
 
     _foodRender.debindVAO();
@@ -194,7 +193,7 @@ void App::sceneRender(p6::Context& ctx)
     for (auto& fish : _boids1.getFishPack())
     {
         _boid1Render.adjustLOD(_arpenteur.getPos(), fish.getPos(), _lodChoice);
-        _boid1Render.draw3(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize, posArp);
+        _boid1Render.draw(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize, posArp);
     }
     _boid1Render.debindVAO();
 
@@ -202,52 +201,52 @@ void App::sceneRender(p6::Context& ctx)
     for (auto& fish : _boids2.getFishPack())
     {
         _boid1Render.adjustLOD(_arpenteur.getPos(), fish.getPos(), _lodChoice);
-        _boid2Render.draw3(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize, posArp);
+        _boid2Render.draw(_ViewMatrixCamera.getViewMatrix(), fish.getPos(), 0.f, _parametres.fishSize, posArp);
     }
 
     _boid2Render.debindVAO();
 
     _boid3Render.createDrawEnvironment(ctx);
-    _boid3Render.draw3(_ViewMatrixCamera.getViewMatrix(), _boids2.getFishPack().at(0).getPos(), 0.f, _parametres.fishSize * 1.3, posArp);
+    _boid3Render.draw(_ViewMatrixCamera.getViewMatrix(), _boids2.getFishPack().at(0).getPos(), 0.f, _parametres.fishSize * 1.3, posArp);
     _boid3Render.debindVAO();
     _obstacleRender.createDrawEnvironment(ctx);
 
-    /*for (auto& obs : _obstacles1.getObstacles())
-        _obstacleRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, 0.02 * obs.getRadius());*/
+    // for (auto& obs : _obstacles1.getObstacles())
+    //_obstacleRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, 0.02 * obs.getRadius());
 
-    /*for (auto& obs : _obstacles1.getObstacles())
-        _obstacleRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z + 1), 0.f, 1);*/
+    // for (auto& obs : _obstacles1.getObstacles())
+    //_obstacleRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z + 1), 0.f, 1);
 
-    for (auto& obs : _obstacles2.getObstacles())
+    /*for (auto& obs : _obstacles2.getObstacles())
     {
         _obstacleRender.adjustLOD(_arpenteur.getPos(), obs.getPos(), _lodChoice);
-        _obstacleRender.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, obs.getRadius(), posArp);
+        _obstacleRender.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(obs.getPos().x, obs.getPos().y, obs.getPos().z), 0.f, obs.getRadius(), posArp);
     }
 
-    _obstacleRender.debindVAO();
+    _obstacleRender.debindVAO();*/
 
     _portal.createDrawEnvironment(ctx);
     _portal.adjustLOD(_arpenteur.getPos(), glm::vec3(0, -1.5, 0), _lodChoice);
-    _portal.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(0, -1.5, 0), 0.f, 1, posArp);
+    _portal.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(0, -1.5, 0), 0.f, 1, posArp);
     _portal.debindVAO();
 
     _island.createDrawEnvironment(ctx);
     _island.adjustLOD(_arpenteur.getPos(), glm::vec3(0, -1.5, 0), _lodChoice);
-    _island.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(0, -1.5, 0), 45.f, 1, posArp);
+    _island.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(0, -1.5, 0), 45.f, 1, posArp);
     _island.adjustLOD(_arpenteur.getPos(), glm::vec3(-9, 3, -9), _lodChoice);
-    _island.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-9, 3, -9), 45.f, 1, posArp);
+    _island.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-9, 3, -9), 45.f, 1, posArp);
     _island.debindVAO();
 
     _tree.createDrawEnvironment(ctx);
     _tree.adjustLOD(_arpenteur.getPos(), glm::vec3(-8.3, 3.3, -9), _lodChoice);
-    _tree.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-8.3, 3.3, -9), 0.f, 1, posArp);
+    _tree.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-8.3, 3.3, -9), 0.f, 1, posArp);
     _tree.adjustLOD(_arpenteur.getPos(), glm::vec3(-10, 3.3, -10), _lodChoice);
-    _tree.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-10, 3.3, -10), 0.f, 0.7, posArp);
+    _tree.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-10, 3.3, -10), 0.f, 0.7, posArp);
     _tree.debindVAO();
 
     _chest.createDrawEnvironment(ctx);
     _chest.adjustLOD(_arpenteur.getPos(), glm::vec3(-9.2, 3.3, -8.7), _lodChoice);
-    _chest.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-9.2, 3.3, -8.7), 180.f, 1, posArp);
+    _chest.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(-9.2, 3.3, -8.7), 180.f, 1, posArp);
     _chest.debindVAO();
 
     _crystal.createDrawEnvironment(ctx);
@@ -260,7 +259,7 @@ void App::sceneRender(p6::Context& ctx)
 
     _castle.createDrawEnvironment(ctx);
     _chest.adjustLOD(_arpenteur.getPos(), glm::vec3(12, 2, -13), _lodChoice);
-    _castle.draw3(_ViewMatrixCamera.getViewMatrix(), glm::vec3(12, 2, -13), 90.f, 0.6, posArp);
+    _castle.draw(_ViewMatrixCamera.getViewMatrix(), glm::vec3(12, 2, -13), 90.f, 0.6, posArp);
     _castle.debindVAO();
 
     /*for (auto& env : _environment)
@@ -273,15 +272,16 @@ void App::sceneRender(p6::Context& ctx)
 
 void App::sceneClean()
 {
-    _boid1Render.deleteVBO_VAO();
-    _boid2Render.deleteVBO_VAO();
-    _foodRender.deleteVBO_VAO();
-    _arpenteurRender.deleteVBO_VAO();
-    _portal.deleteVBO_VAO();
-    _island.deleteVBO_VAO();
-    _tree.deleteVBO_VAO();
-    _chest.deleteVBO_VAO();
-    _crystal.deleteVBO_VAO();
-    _castle.deleteVBO_VAO();
-    _skybox.deleteVBO_VAO();
+    _portal.deleteRessources();
+    _boid1Render.deleteRessources();
+    _boid2Render.deleteRessources();
+    _foodRender.deleteRessources();
+    _arpenteurRender.deleteRessources();
+    _portal.deleteRessources();
+    _island.deleteRessources();
+    _tree.deleteRessources();
+    _chest.deleteRessources();
+    _crystal.deleteRessources();
+    _castle.deleteRessources();
+    _skybox.deleteRessources();
 }

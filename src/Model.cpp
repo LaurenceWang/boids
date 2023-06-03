@@ -84,17 +84,7 @@ void Model::pushIndice(std::vector<glm::vec3>& vertex, std::vector<glm::vec3>& n
     _vertices.push_back({vrtx, nrml, texCoords});
 }
 
-glimac::ShapeVertex* Model::getVertextData()
-{
-    return _vertices.data();
-}
-
-int Model::getVertextSize() const
-{
-    return _vertices.size();
-}
-
-std::vector<glimac::ShapeVertex> Model::getVertices()
+std::vector<glimac::ShapeVertex> Model::getVertices() const
 {
     return _vertices;
 }

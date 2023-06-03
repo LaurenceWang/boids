@@ -17,13 +17,6 @@ public:
     void unBind() const;
     void deleteTex() const;
 
-    GLuint getTextureID()
-    {
-        return _textureID;
-    }
-
-    GLuint getTextureOrder() const
-    {
-        return _textureOrder;
-    }
+    GLuint getTextureID() const;
+    GLuint getTextureOrder() const;
 };

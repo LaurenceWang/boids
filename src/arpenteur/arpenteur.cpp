@@ -3,7 +3,7 @@
 /*Arpenteur::Arpenteur(glm::vec3 position)
     : _position(position) {}*/
 
-void Arpenteur::updatePosition(FreeflyCamera ViewMatrixCamera, glm::vec3 mapDimension)
+void Arpenteur::updatePosition(FreeflyCamera ViewMatrixCamera)
 {
     glm::vec3 cameraPos = ViewMatrixCamera.getPos() - 2.f * ViewMatrixCamera.getDir();
     /*if (_position.x > mapDimension.x || _position.x < -mapDimension.x || _position.y > mapDimension.y || _position.y < -mapDimension.y || _position.z > mapDimension.z || _position.z < -mapDimension.z)
@@ -29,4 +29,10 @@ void Arpenteur::updatePosition(FreeflyCamera ViewMatrixCamera, glm::vec3 mapDime
 
     _position = newCharacterPosition;*/
     //_position = ViewMatrixCamera.getPos() - 2.f * (ViewMatrixCamera.getDir() - glm::cross(ViewMatrixCamera.getUp(), ViewMatrixCamera.getLeft()));
+}
+
+void Arpenteur::updatePosition2(TrackballCamera ViewMatrixCamera)
+{
+    _direction      = ViewMatrixCamera.getAngleY();
+    this->_position = glm::vec3(ViewMatrixCamera.getPosition().x, ViewMatrixCamera.getPosition().y, ViewMatrixCamera.getPosition().z);
 }

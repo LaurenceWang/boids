@@ -1,6 +1,14 @@
 #include "skybox.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+Skybox::Skybox(const std::vector<float>& vertices)
+    : _shader(p6::load_shader("Shaders/skybox.vs.glsl", "Shaders/skybox.fs.glsl"))
+    , _vertices(vertices)
+{
+    createVBO_VAO(_vertices.data(), _vertices.size());
+    getTextureID();
+}
+
 void Skybox::createVBO_VAO(const float* skyboxVertices, size_t numVertices)
 {
     glGenVertexArrays(1, &_vao);
@@ -51,7 +59,7 @@ void Skybox::renderSkybox(glm::mat4 ViewMatrix, p6::Context& ctx)
     glDepthFunc(GL_LESS);
 }
 
-void Skybox::deleteVBO_VAO()
+void Skybox::deleteRessources()
 {
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);

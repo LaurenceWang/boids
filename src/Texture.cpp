@@ -51,3 +51,13 @@ void Texture::deleteTex() const
 {
     glDeleteTextures(1, &_textureID);
 }
+
+GLuint Texture::getTextureID() const
+{
+    return _textureID;
+}
+
+GLuint Texture::getTextureOrder() const
+{
+    return _textureOrder;
+}

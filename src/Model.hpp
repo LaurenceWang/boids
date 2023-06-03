@@ -20,7 +20,5 @@ public:
     ~Model() = default;
 
     void                             LoadFromFile(const std::string fileName);
-    glimac::ShapeVertex*             getVertextData();       // TODO might not need this anymore
-    int                              getVertextSize() const; // TODO might not need this anymore
-    std::vector<glimac::ShapeVertex> getVertices();
+    std::vector<glimac::ShapeVertex> getVertices() const;
 };

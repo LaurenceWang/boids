@@ -3,24 +3,27 @@
 #include <iostream>
 #include "Speed.hpp"
 
-// using ObstacleHandler = std::function<void(Obstacle const&)>;
-
 Fish::Fish(glm::vec3 position, Speed s, Family fam)
     : _pos(position), _s(s), _family(fam)
 {}
 
 Fish::Fish()
 {
-    this->_pos = {0, 0, 0};
-    this->_s   = Speed(glm::vec3(1.f, 1.f, 1.f), 0.1f);
+    _pos = {0, 0, 0};
+    _s   = Speed(glm::vec3(1.f, 1.f, 1.f), 0.1f);
     Family f{
         1, 0.02f, p6::Color(255., 0., 0.)};
-    this->_family = f;
+    _family = f;
 }
 
 glm::vec3 Fish::getPos() const
 {
     return _pos;
+}
+
+float Fish::getDirectionY() const
+{
+    return _s.getDir().y;
 }
 
 void Fish::updatePosition(glm::vec3 position)
@@ -32,7 +35,6 @@ void Fish::updatePosition(glm::vec3 position)
 
 void Fish::move()
 {
-    // std::cout << "ancienne pos = " << this->getPos().z;
     glm::vec3 newPos = glm::vec3(this->_s.getDir() * this->_s.getVel());
     updatePosition(newPos);
 }
@@ -42,7 +44,7 @@ void Fish::resize(float newSize)
     _family._size = newSize;
 }
 
-void Fish::drawFish(p6::Context& context) const
+void Fish::drawFish2D(p6::Context& context) const
 {
     context.fill       = {this->_family._color};
     context.stroke     = {this->_family._color};
@@ -67,8 +69,6 @@ glm::vec3 Fish::separationForce(std::vector<Fish> const& boids, float& radius) c
             sForce += glm::normalize((_pos - neighbor._pos)) / glm::distance(_pos, neighbor._pos);
         }
     }
-    // sForce += (pos - neighbor.pos) / glm::distance(pos, neighbor.pos);
-
     return sForce;
 }
 
@@ -83,7 +83,6 @@ glm::vec3 Fish::alignmentForce(std::vector<Fish> const& boids, float& radius) co
     for (auto const& neighbor : neighbors)
     {
         aForce += glm::normalize(neighbor._s.getDir() * neighbor._s.getVel());
-        // aForce += glm::normalize(neighbor.speed);
     }
 
     aForce /= neighbors.size();
@@ -136,13 +135,6 @@ void Fish::applyObstacleForces(std::function<void(ObstacleHandler)> const& for_e
 glm::vec3 Fish::obstacleForces(std::function<void(ObstacleHandler)> const& for_each_obstacle)
 {
     glm::vec3 oForce(0, 0, 0);
-    /*for (const auto& obstacle : obstacles)
-    {
-        if (glm::distance(_pos, obstacle.getPos()) < obstacle.getRadius() * 1.5)
-        {
-            oForce += glm::normalize(_pos - obstacle.getPos());
-        }
-    }*/
     for_each_obstacle([&](const auto& obstacle) {
         if (glm::distance(_pos, obstacle.getPos()) < obstacle.getRadius() * 1.5)
         {

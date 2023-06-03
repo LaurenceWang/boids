@@ -13,21 +13,26 @@ struct objectParameters {
     float     scaleSize;
 };
 
+/*struct lightParameters {
+    glm::vec3 position;
+    float     degRotate;
+    float     scaleSize;
+};*/
+
 class Object {
 private:
 protected:
     Program&                                      _program;
-    int                                           _lod = 0;
-    std::vector<std::vector<glimac::ShapeVertex>> _lodVertices;
     GLuint                                        _vbo;
     GLuint                                        _vao;
+    int                                           _lod = 0;
+    std::vector<std::vector<glimac::ShapeVertex>> _lodVertices;
     std::vector<glimac::ShapeVertex>              _vertices;
     glm::mat4                                     _ProjMatrix;
     Texture                                       _texture;
-    void                                          createVBO();
-    void                                          createVAO();
-    void                                          createVBO2();
-    void                                          createVAO2();
+
+    void createVBO();
+    void createVAO();
 
 public:
     Object(Object& obj);
@@ -42,9 +47,9 @@ public:
     void createDrawEnvironment(p6::Context& ctx);
     void draw(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize, glm::vec3 arpPos);
     void draw(const glm::mat4& ViewMatrixCamera, objectParameters parameters);
-    void draw3(const glm::mat4& ViewMatrixCamera, glm::vec3 position, float degRotate, float scaleSize, glm::vec3 arpPos);
+    void finalDraw(p6::Context& ctx, const glm::mat4& ViewMatrixCamera, objectParameters parameters);
     void adjustLOD(glm::vec3 arpenteurPos, glm::vec3 objPos, int choice);
     void distanceLOD(glm::vec3 arpenteurPos, glm::vec3 objPos);
     void debindVAO();
-    void deleteVBO_VAO();
+    void deleteRessources();
 };
