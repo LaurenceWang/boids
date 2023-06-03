@@ -1,6 +1,6 @@
 #pragma once
-#include "Program.hpp"
 #include "p6/p6.h"
+#include "rendering/Program.hpp"
 
 class Light {
 private:

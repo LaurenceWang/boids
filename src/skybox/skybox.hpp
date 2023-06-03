@@ -1,5 +1,5 @@
 #pragma once
-#include "Texture.hpp"
+#include "rendering/Texture.hpp"
 
 struct Skybox {
     p6::Shader         _shader;

@@ -2,9 +2,9 @@
 
 #include <vector>
 #include "Family.hpp"
-#include "Food.hpp"
-#include "Params.hpp"
 #include "Speed.hpp"
+#include "food/Food.hpp"
+#include "imgui/Params.hpp"
 #include "obstacles/Obstacle.hpp"
 #include "p6/p6.h"
 
